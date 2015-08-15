@@ -9,17 +9,19 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by yihuaqi on 2015/8/15.
  */
 public class GameView extends SurfaceView {
     private SurfaceHolder holder;
-    private Paint mypaint;
+
     private GameLoopThread gameLoopThread;
-    private float bulletY = 0;
-    private float bulletX = 0;
-    private float jetX = 0;
-    private float jetY = 0;
+    private Jet mSelfJet;
+    private List<Jet> mEnemyJets;
+
 
 
     public GameView(Context context) {
@@ -40,8 +42,9 @@ public class GameView extends SurfaceView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        jetX=event.getX();
-        jetY = event.getY();
+        mSelfJet.setJetX(event.getX());
+        mSelfJet.setJetY(event.getY());
+
         return true;
     }
 
@@ -77,20 +80,33 @@ public class GameView extends SurfaceView {
 
             }
         });
-        mypaint = new Paint();
-        mypaint.setColor(Color.WHITE);
+
         gameLoopThread = new GameLoopThread(this);
+    }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        Paint p = new Paint();
+        Paint p2 = new Paint();
+        p2.setColor(Color.RED);
+        p.setColor(Color.WHITE);
+        mSelfJet = new Jet(getWidth()/2,getHeight()-50,50,p,0,0);
+        mEnemyJets = new ArrayList<>();
+        for(int i =0; i<5;i++){
+            mEnemyJets.add(new Jet((i+1)*getWidth()/6,0, 50, p2,0, 1));
 
+        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawColor(Color.BLACK);
-        canvas.drawCircle(jetX,jetY,50,mypaint);
-        canvas.drawCircle(bulletX,bulletY,10,mypaint);
-        bulletX++;
-        bulletY++;
+        mSelfJet.onDraw(canvas);
+        for(Jet jet:mEnemyJets){
+            jet.onDraw(canvas);
+        }
+
     }
 }
