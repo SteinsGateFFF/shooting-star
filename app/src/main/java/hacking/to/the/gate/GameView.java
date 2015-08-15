@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -15,8 +16,10 @@ public class GameView extends SurfaceView {
     private SurfaceHolder holder;
     private Paint mypaint;
     private GameLoopThread gameLoopThread;
-    private int bulletY = 0;
-    private int bulletX = 0;
+    private float bulletY = 0;
+    private float bulletX = 0;
+    private float jetX = 0;
+    private float jetY = 0;
 
 
     public GameView(Context context) {
@@ -33,6 +36,13 @@ public class GameView extends SurfaceView {
         super(context, attrs, defStyleAttr);
         setup();
 
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        jetX=event.getX();
+        jetY = event.getY();
+        return true;
     }
 
     private void setup(){
@@ -78,7 +88,7 @@ public class GameView extends SurfaceView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawColor(Color.BLACK);
-        canvas.drawCircle(100,100,50,mypaint);
+        canvas.drawCircle(jetX,jetY,50,mypaint);
         canvas.drawCircle(bulletX,bulletY,10,mypaint);
         bulletX++;
         bulletY++;
