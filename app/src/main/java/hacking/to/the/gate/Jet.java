@@ -2,6 +2,7 @@ package hacking.to.the.gate;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 
 import java.util.Iterator;
 import java.util.List;
@@ -10,75 +11,42 @@ import java.util.List;
  * Created by yihuaqi on 2015/8/15.
  */
 public class Jet {
-    private float mJetX;
-    private float mJetY;
+    private Position mSelfPos;
+    private Position mDestPos;
     private float mRadius;
     private Paint mPaint;
-    private float mVelocityX;
-    private float mVelocityY;
+    private Velocity mVelocity;
     private float mHealth;
-    private float mDestX;
-    private float mDestY;
+    private final String TAG = "Jet";
     private float mMaxSpeed;
     private boolean mHasDestination;
-    public Jet(float x, float y, float r, Paint p, float vx, float vy){
-        mJetX = x;
-        mJetY = y;
+    public Jet(float x, float y, float r, Paint p){
+        mSelfPos = new Position(x,y);
         mRadius = r;
         mPaint = p;
-        mVelocityX = vx;
-        mVelocityY = vy;
         mHealth = 100;
         mMaxSpeed = 20;
         mHasDestination = false;
     }
+
     public void onDraw(Canvas canvas){
         if(!mIsDead) {
 
-            canvas.drawCircle(mJetX, mJetY, mRadius, mPaint);
-            mJetX += mVelocityX;
-            mJetY += mVelocityY;
-            moveToDestination();
-
+            if(mHasDestination) {
+                mVelocity = Velocity.getDestinationVelocity(mSelfPos, mDestPos, mMaxSpeed);
+                Log.d(TAG,"HasDestination: "+mVelocity );
+            } else {
+                mVelocity = new Velocity(0,0);
+                Log.d(TAG,"No Destination: "+mVelocity);
+            }
+            mSelfPos = mSelfPos.applyVelocity(mVelocity);
+            canvas.drawCircle(mSelfPos.getPositionX(), mSelfPos.getPositionY(), mRadius, mPaint);
         }
         canvas.drawText("Health: "+mHealth,10,10,mPaint);
     }
-    private void moveToDestination(){
-        if(mHasDestination) {
-            float dx;
-            float dy;
-            float maxDx;
-            float maxDy;
-            maxDx = mDestX - mJetX;
-            maxDy = mDestY - mJetY;
-            if(maxDx*maxDx+maxDy*maxDy<mMaxSpeed*mMaxSpeed){
-                mJetX = mDestX;
-                mJetY = mDestY;
-                return;
-            }
-            float ratio = (mDestY - mJetY) / (mDestX - mJetX);
-            dx = mMaxSpeed*Math.abs((float) Math.pow(1 / (1 + Math.pow(ratio, 2)), 0.5));
-            if(mDestX<mJetX){
-                dx*=-1;
-            }
-            dy = ratio * dx;
-            mJetX += dx;
-            mJetY += dy;
-        }
-    }
-    public void setJetX(float x){
-        mJetX = x;
 
-    }
-    public void setJetY(float y){
-        mJetY = y;
-    }
-    public float getJetX(){
-        return mJetX;
-    }
-    public float getJetY(){
-        return mJetY;
-    }
+
+    public Position getSelfPosition() {return mSelfPos;};
     public Paint getPaint(){
         return mPaint;
     }
@@ -101,7 +69,14 @@ public class Jet {
         mIsDead = b;
     }
     private boolean checkHitBox(Bullet b){
-        return !mIsDead && Math.pow((mJetX-b.getBulletX()),2)+Math.pow((mJetY-b.getBulletY()),2)<Math.pow(mRadius+b.getBulletR(),2);
+        return !mIsDead
+                && (Math.pow(
+                mSelfPos.getPositionX()-b.getSelfPos().getPositionX(),
+                2)
+                +Math.pow(
+                mSelfPos.getPositionY()-b.getSelfPos().getPositionY(),
+                2)
+                < Math.pow(mRadius+b.getBulletR(),2));
 
     }
     public void checkCollision(List<Bullet> bullets){
@@ -127,8 +102,7 @@ public class Jet {
 
     }
     public void setDestination(float x, float y, boolean hasDestination ){
-        mDestX = x;
-        mDestY = y;
+        mDestPos = new Position(x,y);
         mHasDestination = hasDestination;
 
     }

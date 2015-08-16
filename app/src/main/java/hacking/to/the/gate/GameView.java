@@ -11,9 +11,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import android.widget.TextView;
+import java.util.Random;
+
 
 /**
  * Created by yihuaqi on 2015/8/15.
@@ -114,11 +114,11 @@ public class GameView extends SurfaceView {
         p2.setColor(Color.RED);
         p.setColor(Color.WHITE);
         Log.d(TAG,"new Self Jet");
-        mSelfJet = new Jet(getWidth()/2,getHeight()-50,50,p,0,0);
-        Log.d(TAG,"SelfJet: "+mSelfJet.getJetX()+" "+mSelfJet.getJetY());
+        mSelfJet = new Jet(getWidth()/2,getHeight()-50,50,p);
+
         mEnemyJets = new ArrayList<>();
         for(int i =0; i<5;i++){
-            //mEnemyJets.add(new Jet((i+1)*getWidth()/6,0, 50, p2,0, 1));
+            mEnemyJets.add(new Jet((i+1)*getWidth()/6,0, 50, p2));
 
         }
     }
@@ -131,16 +131,26 @@ public class GameView extends SurfaceView {
         if(!mSelfJet.isDead()) {
             mSelfJet.checkCollision(mEnemyBullets);
             mSelfJet.onDraw(canvas);
-
-            mSelfBullets.add(new Bullet(mSelfJet.getJetX(), mSelfJet.getJetY(), 10, mSelfJet.getPaint(), 0, -20));
+            mSelfBullets.add(new Bullet(mSelfJet.getSelfPosition(), 10, mSelfJet.getPaint(), 0, -20));
         }
 
-        Log.d(TAG,mSelfJet.getJetX()+" "+mSelfJet.getJetY());
+
         for(Jet jet:mEnemyJets){
             if(!jet.isDead()) {
                 jet.checkCollision(mSelfBullets);
                 jet.onDraw(canvas);
-                mEnemyBullets.add(new Bullet(jet.getJetX(), jet.getJetY(), 10, jet.getPaint(), 0, 20));
+                Bullet b = new Bullet(jet.getSelfPosition(), 10, jet.getPaint(), 0, 20);
+                b.setDestination(mSelfJet.getSelfPosition(),true);
+                b.setVelocityPattern(new Velocity.VelocityPattern() {
+                    @Override
+                    public Velocity nextVelocity(Velocity v) {
+                        Random random = new Random();
+                        float vx = random.nextFloat()*10;
+                        float vy = random.nextFloat()*10;
+                        return new Velocity(vx,vy);
+                    }
+                });
+                mEnemyBullets.add(b);
             }
         }
         for(Bullet b: mEnemyBullets){
