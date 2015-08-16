@@ -1,11 +1,13 @@
 package hacking.to.the.gate;
 
 import android.graphics.Canvas;
+import android.util.Log;
 
 /**
  * Created by yihuaqi on 2015/8/15.
  */
 public class GameLoopThread extends Thread{
+    private final String TAG = "GameLoopThread";
     private GameView view;
     private boolean running = false;
     public GameLoopThread(GameView view){
@@ -22,8 +24,11 @@ public class GameLoopThread extends Thread{
             Canvas c = null;
             try{
                 c = view.getHolder().lockCanvas();
+                Log.d(TAG,"onDraw");
+                if(c==null) continue;
                 synchronized (view.getHolder()){
                     view.onDraw(c);
+
                 }
             }finally {
                 if(c!= null){
@@ -33,3 +38,4 @@ public class GameLoopThread extends Thread{
         }
     }
 }
+

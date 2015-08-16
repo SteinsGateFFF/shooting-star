@@ -33,4 +33,13 @@ public class Jet {
     public void setJetY(float y){
         mJetY = y;
     }
+    public float getJetX(){
+        return mJetX;
+    }
+    public float getJetY(){
+        return mJetY;
+    }
+    public Paint getPaint(){
+        return mPaint;
+    }
 }

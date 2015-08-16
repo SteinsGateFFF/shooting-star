@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -21,6 +22,7 @@ public class GameView extends SurfaceView {
     private GameLoopThread gameLoopThread;
     private Jet mSelfJet;
     private List<Jet> mEnemyJets;
+    private List<Bullet> mBullets = new ArrayList<>();
 
 
 
@@ -85,13 +87,20 @@ public class GameView extends SurfaceView {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        init();
+
+    }
+
+    private void init(){
         Paint p = new Paint();
         Paint p2 = new Paint();
         p2.setColor(Color.RED);
         p.setColor(Color.WHITE);
+        Log.d(TAG,"new Self Jet");
         mSelfJet = new Jet(getWidth()/2,getHeight()-50,50,p,0,0);
+        Log.d(TAG,"SelfJet: "+mSelfJet.getJetX()+" "+mSelfJet.getJetY());
         mEnemyJets = new ArrayList<>();
         for(int i =0; i<5;i++){
             mEnemyJets.add(new Jet((i+1)*getWidth()/6,0, 50, p2,0, 1));
@@ -99,13 +108,20 @@ public class GameView extends SurfaceView {
         }
     }
 
+    private final String TAG = "GameView";
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawColor(Color.BLACK);
         mSelfJet.onDraw(canvas);
+        mBullets.add(new Bullet(mSelfJet.getJetX(),mSelfJet.getJetY(),10,mSelfJet.getPaint(),20,20));
+        Log.d(TAG,mSelfJet.getJetX()+" "+mSelfJet.getJetY());
         for(Jet jet:mEnemyJets){
             jet.onDraw(canvas);
+           // mBullets.add(new Bullet(jet.getJetX(),jet.getJetY(),10,jet.getPaint(),0,20));
+        }
+        for(Bullet b : mBullets){
+            b.onDraw(canvas);
         }
 
     }
