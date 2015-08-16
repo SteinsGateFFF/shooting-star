@@ -48,11 +48,22 @@ public class GameView extends SurfaceView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        mSelfJet.setJetX(event.getX());
-        mSelfJet.setJetY(event.getY());
+        switch (event.getAction())
+        {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+                mSelfJet.setDestination(event.getX(),event.getY(),true);
+                break;
+            case MotionEvent.ACTION_UP:
+                mSelfJet.setDestination(event.getX(),event.getY(),false);
+                break;
+        }
+
 
         return true;
     }
+
+
 
     private void setup(){
         holder = getHolder();
@@ -107,7 +118,7 @@ public class GameView extends SurfaceView {
         Log.d(TAG,"SelfJet: "+mSelfJet.getJetX()+" "+mSelfJet.getJetY());
         mEnemyJets = new ArrayList<>();
         for(int i =0; i<5;i++){
-            mEnemyJets.add(new Jet((i+1)*getWidth()/6,0, 50, p2,0, 1));
+            //mEnemyJets.add(new Jet((i+1)*getWidth()/6,0, 50, p2,0, 1));
 
         }
     }

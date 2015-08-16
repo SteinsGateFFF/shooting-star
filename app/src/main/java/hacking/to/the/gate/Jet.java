@@ -17,6 +17,10 @@ public class Jet {
     private float mVelocityX;
     private float mVelocityY;
     private float mHealth;
+    private float mDestX;
+    private float mDestY;
+    private float mMaxSpeed;
+    private boolean mHasDestination;
     public Jet(float x, float y, float r, Paint p, float vx, float vy){
         mJetX = x;
         mJetY = y;
@@ -25,15 +29,42 @@ public class Jet {
         mVelocityX = vx;
         mVelocityY = vy;
         mHealth = 100;
+        mMaxSpeed = 20;
+        mHasDestination = false;
     }
     public void onDraw(Canvas canvas){
         if(!mIsDead) {
+
             canvas.drawCircle(mJetX, mJetY, mRadius, mPaint);
             mJetX += mVelocityX;
             mJetY += mVelocityY;
+            moveToDestination();
 
         }
         canvas.drawText("Health: "+mHealth,10,10,mPaint);
+    }
+    private void moveToDestination(){
+        if(mHasDestination) {
+            float dx;
+            float dy;
+            float maxDx;
+            float maxDy;
+            maxDx = mDestX - mJetX;
+            maxDy = mDestY - mJetY;
+            if(maxDx*maxDx+maxDy*maxDy<mMaxSpeed*mMaxSpeed){
+                mJetX = mDestX;
+                mJetY = mDestY;
+                return;
+            }
+            float ratio = (mDestY - mJetY) / (mDestX - mJetX);
+            dx = mMaxSpeed*Math.abs((float) Math.pow(1 / (1 + Math.pow(ratio, 2)), 0.5));
+            if(mDestX<mJetX){
+                dx*=-1;
+            }
+            dy = ratio * dx;
+            mJetX += dx;
+            mJetY += dy;
+        }
     }
     public void setJetX(float x){
         mJetX = x;
@@ -54,6 +85,7 @@ public class Jet {
     public float getRadius(){
         return mRadius;
     }
+
     public boolean isDead(){
         return mIsDead;
     }
@@ -92,6 +124,12 @@ public class Jet {
             }
 
         }
+
+    }
+    public void setDestination(float x, float y, boolean hasDestination ){
+        mDestX = x;
+        mDestY = y;
+        mHasDestination = hasDestination;
 
     }
 }
