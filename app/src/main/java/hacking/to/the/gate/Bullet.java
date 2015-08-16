@@ -21,10 +21,24 @@ public class Bullet {
         mVelocityX = vx;
         mVelocityY = vy;
     }
+
+    public float getBulletX() {
+        return mBulletX;
+    }
+
+    public float getBulletY() {
+        return mBulletY;
+    }
+
+    public float getBulletR() {
+        return mBulletR;
+    }
+
     public void onDraw(Canvas canvas){
         canvas.drawCircle(mBulletX,mBulletY,mBulletR,mPaint);
         mBulletX += mVelocityX;
         mBulletY += mVelocityY;
+
 
     }
 }

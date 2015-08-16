@@ -11,7 +11,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import android.widget.TextView;
 
 /**
  * Created by yihuaqi on 2015/8/15.
@@ -19,10 +21,12 @@ import java.util.List;
 public class GameView extends SurfaceView {
     private SurfaceHolder holder;
 
+
     private GameLoopThread gameLoopThread;
     private Jet mSelfJet;
     private List<Jet> mEnemyJets;
-    private List<Bullet> mBullets = new ArrayList<>();
+    private List<Bullet> mSelfBullets = new ArrayList<>();
+    private List<Bullet> mEnemyBullets = new ArrayList<>();
 
 
 
@@ -113,16 +117,31 @@ public class GameView extends SurfaceView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawColor(Color.BLACK);
-        mSelfJet.onDraw(canvas);
-        mBullets.add(new Bullet(mSelfJet.getJetX(),mSelfJet.getJetY(),10,mSelfJet.getPaint(),20,20));
+        if(!mSelfJet.isDead()) {
+            mSelfJet.checkCollision(mEnemyBullets);
+            mSelfJet.onDraw(canvas);
+
+            mSelfBullets.add(new Bullet(mSelfJet.getJetX(), mSelfJet.getJetY(), 10, mSelfJet.getPaint(), 0, -20));
+        }
+
         Log.d(TAG,mSelfJet.getJetX()+" "+mSelfJet.getJetY());
         for(Jet jet:mEnemyJets){
-            jet.onDraw(canvas);
-           // mBullets.add(new Bullet(jet.getJetX(),jet.getJetY(),10,jet.getPaint(),0,20));
+            if(!jet.isDead()) {
+                jet.checkCollision(mSelfBullets);
+                jet.onDraw(canvas);
+                mEnemyBullets.add(new Bullet(jet.getJetX(), jet.getJetY(), 10, jet.getPaint(), 0, 20));
+            }
         }
-        for(Bullet b : mBullets){
+        for(Bullet b: mEnemyBullets){
+            b.onDraw(canvas);
+        }
+        for(Bullet b: mSelfBullets){
             b.onDraw(canvas);
         }
 
+
     }
+
+
+
 }
