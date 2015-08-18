@@ -20,7 +20,10 @@ public class Velocity {
     }
 
     public static Velocity getDestinationVelocity(Position self, Position dest, float maxSpeed) {
-
+        if(dest.getPositionX() == self.getPositionX()){
+            // Edge case fix
+            return new Velocity(0,maxSpeed);
+        }
         float ratio = (dest.getPositionY() - self.getPositionY())/(dest.getPositionX() - self.getPositionX());
         float vx = maxSpeed*Math.abs((float) Math.pow(1 / (1 + Math.pow(ratio, 2)), 0.5));
         if(dest.getPositionX()<self.getPositionX()){

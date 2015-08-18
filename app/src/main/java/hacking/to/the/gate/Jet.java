@@ -105,7 +105,7 @@ public class Jet {
 
                 }
                 setHealth(curHealth);
-                it.remove();
+                b.recycle();
 
             }
 
