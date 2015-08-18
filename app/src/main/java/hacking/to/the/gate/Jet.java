@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,6 +21,9 @@ public class Jet {
     private final String TAG = "Jet";
     private float mMaxSpeed;
     private boolean mHasDestination;
+    private List<Bullet> mBullets;
+    private int SHOOTING_RATE = 1;
+    private int frameCount = 0;
     public Jet(float x, float y, float r, Paint p){
         mSelfPos = new Position(x,y);
         mRadius = r;
@@ -27,24 +31,30 @@ public class Jet {
         mHealth = 100;
         mMaxSpeed = 20;
         mHasDestination = false;
+        mBullets = new ArrayList<>();
     }
 
-    public void onDraw(Canvas canvas){
+    public void draw(Canvas canvas){
         if(!mIsDead) {
-
-            if(mHasDestination) {
-                mVelocity = Velocity.getDestinationVelocity(mSelfPos, mDestPos, mMaxSpeed);
-                Log.d(TAG,"HasDestination: "+mVelocity );
-            } else {
-                mVelocity = new Velocity(0,0);
-                Log.d(TAG,"No Destination: "+mVelocity);
-            }
-            mSelfPos = mSelfPos.applyVelocity(mVelocity);
             canvas.drawCircle(mSelfPos.getPositionX(), mSelfPos.getPositionY(), mRadius, mPaint);
         }
-        canvas.drawText("Health: "+mHealth,10,10,mPaint);
+        for(Bullet b:mBullets){
+            b.onDraw(canvas);
+        }
+
     }
 
+    public void tick(Bullet bullet){
+        if(mHasDestination) {
+            mVelocity = Velocity.getDestinationVelocity(mSelfPos, mDestPos, mMaxSpeed);
+            Log.d(TAG,"HasDestination: "+mVelocity );
+        } else {
+            mVelocity = new Velocity(0,0);
+            Log.d(TAG,"No Destination: "+mVelocity);
+        }
+        mSelfPos = mSelfPos.applyVelocity(mVelocity);
+        shoot(bullet);
+    }
 
     public Position getSelfPosition() {return mSelfPos;};
     public Paint getPaint(){
@@ -105,5 +115,21 @@ public class Jet {
         mDestPos = new Position(x,y);
         mHasDestination = hasDestination;
 
+    }
+
+    public void shoot(){
+        mBullets.add(new Bullet(mSelfPos, 10, mPaint, 0, -20));
+    }
+
+    public void shoot(Bullet bullet){
+        if(bullet==null){
+            shoot();
+        } else {
+            mBullets.add(bullet);
+        }
+    }
+
+    public List<Bullet> getBullets(){
+        return mBullets;
     }
 }

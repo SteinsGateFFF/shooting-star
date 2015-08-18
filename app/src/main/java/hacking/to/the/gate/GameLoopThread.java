@@ -24,7 +24,7 @@ public class GameLoopThread extends Thread{
             Canvas c = null;
             try{
                 c = view.getHolder().lockCanvas();
-                Log.d(TAG,"onDraw");
+                Log.d(TAG,"draw");
                 if(c==null) continue;
                 synchronized (view.getHolder()){
                     view.onDraw(c);

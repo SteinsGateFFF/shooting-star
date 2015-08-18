@@ -12,7 +12,6 @@ import android.view.SurfaceView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 
 /**
@@ -25,8 +24,8 @@ public class GameView extends SurfaceView {
     private GameLoopThread gameLoopThread;
     private Jet mSelfJet;
     private List<Jet> mEnemyJets;
-    private List<Bullet> mSelfBullets = new ArrayList<>();
-    private List<Bullet> mEnemyBullets = new ArrayList<>();
+
+
 
 
 
@@ -129,36 +128,24 @@ public class GameView extends SurfaceView {
         super.onDraw(canvas);
         canvas.drawColor(Color.BLACK);
         if(!mSelfJet.isDead()) {
-            mSelfJet.checkCollision(mEnemyBullets);
-            mSelfJet.onDraw(canvas);
-            mSelfBullets.add(new Bullet(mSelfJet.getSelfPosition(), 10, mSelfJet.getPaint(), 0, -20));
+            mSelfJet.tick(null);
+            mSelfJet.draw(canvas);
+
         }
 
 
         for(Jet jet:mEnemyJets){
             if(!jet.isDead()) {
-                jet.checkCollision(mSelfBullets);
-                jet.onDraw(canvas);
+
+                mSelfJet.checkCollision(jet.getBullets());
+                jet.checkCollision(mSelfJet.getBullets());
                 Bullet b = new Bullet(jet.getSelfPosition(), 10, jet.getPaint(), 0, 20);
                 b.setDestination(mSelfJet.getSelfPosition(),true);
-                b.setVelocityPattern(new Velocity.VelocityPattern() {
-                    @Override
-                    public Velocity nextVelocity(Velocity v) {
-                        Random random = new Random();
-                        float vx = random.nextFloat()*10;
-                        float vy = random.nextFloat()*10;
-                        return new Velocity(vx,vy);
-                    }
-                });
-                mEnemyBullets.add(b);
+                jet.tick(b);
+                jet.draw(canvas);
             }
         }
-        for(Bullet b: mEnemyBullets){
-            b.onDraw(canvas);
-        }
-        for(Bullet b: mSelfBullets){
-            b.onDraw(canvas);
-        }
+
 
 
     }

@@ -1,7 +1,5 @@
 package hacking.to.the.gate;
 
-import java.util.Vector;
-
 /**
  * Created by yihuaqi on 2015/8/16.
  */
