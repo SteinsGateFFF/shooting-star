@@ -1,5 +1,7 @@
 package hacking.to.the.gate;
 
+import android.graphics.Rect;
+
 /**
  * Created by Jelly and Huaqi on 2015/8/16.
  */
@@ -22,4 +24,14 @@ public class Position {
     public Position applyVelocity(Velocity v){
         return new Position(mPositionX+v.getVelocityX(),mPositionY+v.getVelocityY());
     }
+
+    public boolean isOutOfScreen(int radius) {
+        Rect screenRect = GameManager.getInstance().getScreenRect();
+        int width = screenRect.width();
+        int height = screenRect.height();
+        Rect rectWithRadius = new Rect(-radius,-radius,width+radius,height+radius);
+        return !rectWithRadius.contains((int) mPositionX, (int) mPositionY);
+
+    }
+
 }

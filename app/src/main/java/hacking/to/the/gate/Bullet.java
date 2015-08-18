@@ -3,8 +3,6 @@ package hacking.to.the.gate;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import java.util.Random;
-
 /**
  * Created by Jelly and Huaqi on 2015/8/15.
  */
@@ -12,15 +10,18 @@ public class Bullet {
     private Position mSelfPos;
     private Position mDestPos;
 
-    private float mBulletR;
+    private float mRadius;
     private Velocity mVelocity;
     private Paint mPaint;
     private Velocity.VelocityPattern mVelocityPattern;
     private float mMaxSpeed;
     private boolean mHasDestination;
+    private boolean shouldRecycle = false;
+
+
 
     public Bullet(Position pos, float r, Paint paint, float vx, float vy){
-        mBulletR = r;
+        mRadius = r;
         mSelfPos = pos;
         mPaint = paint;
         mVelocity = new Velocity(vx,vy);
@@ -36,7 +37,7 @@ public class Bullet {
     public Position getSelfPos(){return mSelfPos;};
 
     public float getBulletR() {
-        return mBulletR;
+        return mRadius;
     }
 
     public void onDraw(Canvas canvas){
@@ -44,12 +45,21 @@ public class Bullet {
             mVelocity = mVelocityPattern.nextVelocity(mVelocity);
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
-        canvas.drawCircle(mSelfPos.getPositionX(),mSelfPos.getPositionY(),mBulletR,mPaint);
+        canvas.drawCircle(mSelfPos.getPositionX(),mSelfPos.getPositionY(), mRadius,mPaint);
     }
 
     public void setDestination(Position pos, boolean hasDestination ){
         mDestPos = pos;
         mHasDestination = hasDestination;
         mVelocity = Velocity.getDestinationVelocity(mSelfPos,mDestPos,mMaxSpeed);
+    }
+
+
+    public void recycle(){
+        shouldRecycle = true;
+    }
+
+    public boolean shouldRecycle(){
+        return shouldRecycle || mSelfPos.isOutOfScreen((int) mRadius);
     }
 }

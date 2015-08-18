@@ -90,11 +90,6 @@ public class GameView extends SurfaceView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        GameManager.getInstance().tick();
-        GameManager.getInstance().draw(canvas);
-
-
-
     }
 
 

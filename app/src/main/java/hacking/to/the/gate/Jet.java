@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -24,6 +25,7 @@ public class Jet {
     private List<Bullet> mBullets;
     private int SHOOTING_RATE = 1;
     private int frameCount = 0;
+
     public Jet(float x, float y, float r, Paint p){
         mSelfPos = new Position(x,y);
         mRadius = r;
@@ -31,7 +33,7 @@ public class Jet {
         mHealth = 100;
         mMaxSpeed = 20;
         mHasDestination = false;
-        mBullets = new ArrayList<>();
+        mBullets = new LinkedList<>();
     }
 
     public void draw(Canvas canvas){
@@ -45,6 +47,7 @@ public class Jet {
     }
 
     public void tick(Bullet bullet){
+        Log.d(TAG,"Bullets: "+mBullets.size());
         if(mHasDestination) {
             mVelocity = Velocity.getDestinationVelocity(mSelfPos, mDestPos, mMaxSpeed);
 
@@ -130,4 +133,19 @@ public class Jet {
     public List<Bullet> getBullets(){
         return mBullets;
     }
+
+
+
+    public void recycle(){
+        for(Iterator<Bullet> it = mBullets.iterator();it.hasNext();){
+            if(it.next().shouldRecycle()){
+                it.remove();
+            }
+        }
+    }
+
+    public boolean shouldRecycle(){
+        return mIsDead || mSelfPos.isOutOfScreen((int) mRadius);
+    }
+
 }

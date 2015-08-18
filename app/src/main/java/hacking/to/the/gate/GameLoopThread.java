@@ -24,11 +24,11 @@ public class GameLoopThread extends Thread{
             Canvas c = null;
             try{
                 c = view.getHolder().lockCanvas();
-                Log.d(TAG,"draw");
                 if(c==null) continue;
                 synchronized (view.getHolder()){
-                    view.onDraw(c);
-
+                    GameManager.getInstance().tick();
+                    GameManager.getInstance().draw(c);
+                    GameManager.getInstance().measureFrameRate(c);
                 }
             }finally {
                 if(c!= null){
