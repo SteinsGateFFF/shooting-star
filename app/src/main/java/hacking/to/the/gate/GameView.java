@@ -15,19 +15,11 @@ import java.util.List;
 
 
 /**
- * Created by yihuaqi on 2015/8/15.
+ * Created by Jelly and Huaqi on 2015/8/15.
  */
 public class GameView extends SurfaceView {
     private SurfaceHolder holder;
-
-
     private GameLoopThread gameLoopThread;
-    private Jet mSelfJet;
-    private List<Jet> mEnemyJets;
-
-
-
-
 
     public GameView(Context context) {
         super(context);
@@ -47,18 +39,7 @@ public class GameView extends SurfaceView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction())
-        {
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_MOVE:
-                mSelfJet.setDestination(event.getX(),event.getY(),true);
-                break;
-            case MotionEvent.ACTION_UP:
-                mSelfJet.setDestination(event.getX(),event.getY(),false);
-                break;
-        }
-
-
+        GameManager.getInstance().setSelfJetDest(event);
         return true;
     }
 
@@ -71,9 +52,6 @@ public class GameView extends SurfaceView {
             public void surfaceCreated(SurfaceHolder holder) {
                 gameLoopThread.setRunning(true);
                 gameLoopThread.start();
-
-
-
             }
 
             @Override
@@ -103,48 +81,17 @@ public class GameView extends SurfaceView {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        init();
+        GameManager.getInstance().init(getWidth(),getHeight());
 
     }
 
-    private void init(){
-        Paint p = new Paint();
-        Paint p2 = new Paint();
-        p2.setColor(Color.RED);
-        p.setColor(Color.WHITE);
-        Log.d(TAG,"new Self Jet");
-        mSelfJet = new Jet(getWidth()/2,getHeight()-50,50,p);
 
-        mEnemyJets = new ArrayList<>();
-        for(int i =0; i<5;i++){
-            mEnemyJets.add(new Jet((i+1)*getWidth()/6,0, 50, p2));
 
-        }
-    }
-
-    private final String TAG = "GameView";
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawColor(Color.BLACK);
-        if(!mSelfJet.isDead()) {
-            mSelfJet.tick(null);
-            mSelfJet.draw(canvas);
-
-        }
-
-
-        for(Jet jet:mEnemyJets){
-            if(!jet.isDead()) {
-
-                mSelfJet.checkCollision(jet.getBullets());
-                jet.checkCollision(mSelfJet.getBullets());
-                Bullet b = new Bullet(jet.getSelfPosition(), 10, jet.getPaint(), 0, 20);
-                b.setDestination(mSelfJet.getSelfPosition(),true);
-                jet.tick(b);
-                jet.draw(canvas);
-            }
-        }
+        GameManager.getInstance().tick();
+        GameManager.getInstance().draw(canvas);
 
 
 

@@ -1,7 +1,7 @@
 package hacking.to.the.gate;
 
 /**
- * Created by yihuaqi on 2015/8/16.
+ * Created by Jelly and Huaqi on 2015/8/16.
  */
 public class Velocity {
     private final float mVelocityX;

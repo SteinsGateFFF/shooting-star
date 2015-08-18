@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import android.util.Log;
 
 /**
- * Created by yihuaqi on 2015/8/15.
+ * Created by Jelly and Huaqi on 2015/8/15.
  */
 public class GameLoopThread extends Thread{
     private final String TAG = "GameLoopThread";

@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by yihuaqi on 2015/8/15.
+ * Created by Jelly and Huaqi on 2015/8/15.
  */
 public class Jet {
     private Position mSelfPos;
@@ -47,10 +47,10 @@ public class Jet {
     public void tick(Bullet bullet){
         if(mHasDestination) {
             mVelocity = Velocity.getDestinationVelocity(mSelfPos, mDestPos, mMaxSpeed);
-            Log.d(TAG,"HasDestination: "+mVelocity );
+
         } else {
             mVelocity = new Velocity(0,0);
-            Log.d(TAG,"No Destination: "+mVelocity);
+
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
         shoot(bullet);
@@ -101,9 +101,7 @@ public class Jet {
                     setDead(true);
 
                 }
-               setHealth(curHealth);
-
-
+                setHealth(curHealth);
                 it.remove();
 
             }

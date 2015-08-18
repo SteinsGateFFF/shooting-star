@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import java.util.Random;
 
 /**
- * Created by yihuaqi on 2015/8/15.
+ * Created by Jelly and Huaqi on 2015/8/15.
  */
 public class Bullet {
     private Position mSelfPos;
