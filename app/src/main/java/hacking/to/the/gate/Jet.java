@@ -22,10 +22,14 @@ public class Jet {
     private float mMaxSpeed;
     private boolean mHasDestination;
     private List<Bullet> mBullets;
-    private int SHOOTING_RATE = 1;
-    private int frameCount = 0;
+    /**
+     * Frames that need to wait between bullets.
+     */
+    private int mShootingInterval = 1;
+    private int mFrameCount = 0;
 
-    public Jet(float x, float y, float r, Paint p){
+
+    public Jet(float x, float y, float r, Paint p, int shootingInterval){
         mSelfPos = new Position(x,y);
         mRadius = r;
         mPaint = p;
@@ -33,6 +37,7 @@ public class Jet {
         mMaxSpeed = 20;
         mHasDestination = false;
         mBullets = new LinkedList<>();
+        mShootingInterval = shootingInterval;
     }
 
     public void draw(Canvas canvas){
@@ -55,7 +60,16 @@ public class Jet {
 
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
-        shoot(bullet);
+
+
+        if(mFrameCount >= mShootingInterval) {
+            mFrameCount = 0;
+            shoot(bullet);
+        } else {
+            mFrameCount++;
+        }
+
+
     }
 
     public Position getSelfPosition() {return mSelfPos;};
