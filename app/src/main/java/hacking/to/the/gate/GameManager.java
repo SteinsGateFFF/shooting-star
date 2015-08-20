@@ -45,11 +45,11 @@ public class GameManager {
         mFPSPaint = new Paint();
         mFPSPaint.setColor(Color.WHITE);
 
-        mSelfJet = new Jet(mScreenWidth/2,mScreenHeight-50,50,p);
+        mSelfJet = new Jet(mScreenWidth/2,mScreenHeight-50,50,p,3);
 
         mEnemyJets = new LinkedList<>();
         for(int i =0; i<5;i++){
-            mEnemyJets.add(new Jet((i+1)*mScreenWidth/6,0, 50, p2));
+            mEnemyJets.add(new Jet((i+1)*mScreenWidth/6,0, 50, p2,6));
 
         }
     }

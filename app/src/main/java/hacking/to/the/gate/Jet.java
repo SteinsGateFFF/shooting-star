@@ -4,7 +4,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,10 +22,14 @@ public class Jet {
     private float mMaxSpeed;
     private boolean mHasDestination;
     private List<Bullet> mBullets;
-    private int SHOOTING_RATE = 1;
-    private int frameCount = 0;
+    /**
+     * Frames that need to wait between bullets.
+     */
+    private int mShootingInterval = 1;
+    private int mFrameCount = 0;
 
-    public Jet(float x, float y, float r, Paint p){
+
+    public Jet(float x, float y, float r, Paint p, int shootingInterval){
         mSelfPos = new Position(x,y);
         mRadius = r;
         mPaint = p;
@@ -34,6 +37,7 @@ public class Jet {
         mMaxSpeed = 20;
         mHasDestination = false;
         mBullets = new LinkedList<>();
+        mShootingInterval = shootingInterval;
     }
 
     public void draw(Canvas canvas){
@@ -56,7 +60,16 @@ public class Jet {
 
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
-        shoot(bullet);
+
+
+        if(mFrameCount >= mShootingInterval) {
+            mFrameCount = 0;
+            shoot(bullet);
+        } else {
+            mFrameCount++;
+        }
+
+
     }
 
     public Position getSelfPosition() {return mSelfPos;};
@@ -89,7 +102,7 @@ public class Jet {
                 +Math.pow(
                 mSelfPos.getPositionY()-b.getSelfPos().getPositionY(),
                 2)
-                < Math.pow(mRadius+b.getBulletR(),2));
+                < Math.pow(mRadius+b.getRadius(),2));
 
     }
     public void checkCollision(List<Bullet> bullets){
