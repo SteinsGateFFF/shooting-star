@@ -36,7 +36,7 @@ public class Bullet {
 
     public Position getSelfPos(){return mSelfPos;};
 
-    public float getBulletR() {
+    public float getRadius() {
         return mRadius;
     }
 

@@ -4,7 +4,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -89,7 +88,7 @@ public class Jet {
                 +Math.pow(
                 mSelfPos.getPositionY()-b.getSelfPos().getPositionY(),
                 2)
-                < Math.pow(mRadius+b.getBulletR(),2));
+                < Math.pow(mRadius+b.getRadius(),2));
 
     }
     public void checkCollision(List<Bullet> bullets){
