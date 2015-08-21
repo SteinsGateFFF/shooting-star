@@ -6,6 +6,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
+import java.util.Random;
+import org.apache.http.impl.conn.tsccm.PoolEntryRequest;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,6 +32,7 @@ public class GameManager {
 
     private Jet mSelfJet;
     private List<Jet> mEnemyJets;
+    private List<PowerUp> mPowerUps;
     private float mScreenWidth;
     private float mScreenHeight;
     private Rect mScreenRect;
@@ -40,18 +43,22 @@ public class GameManager {
         mScreenRect = new Rect(0,0,(int)mScreenWidth,(int)mScreenHeight);
         Paint p = new Paint();
         Paint p2 = new Paint();
+
         p2.setColor(Color.RED);
         p.setColor(Color.WHITE);
+
         mFPSPaint = new Paint();
         mFPSPaint.setColor(Color.WHITE);
 
         mSelfJet = new Jet(mScreenWidth/2,mScreenHeight-50,50,p);
 
         mEnemyJets = new LinkedList<>();
+
         for(int i =0; i<5;i++){
             mEnemyJets.add(new Jet((i+1)*mScreenWidth/6,0, 50, p2));
 
         }
+        mPowerUps = new LinkedList<>();
     }
     public void setSelfJetDest(MotionEvent event){
         switch (event.getAction())
@@ -77,11 +84,40 @@ public class GameManager {
             if(!jet.isDead()) {
 
                 mSelfJet.checkCollision(jet.getBullets());
-                jet.checkCollision(mSelfJet.getBullets());
+                if(jet.checkCollision(mSelfJet.getBullets()))
+                {
+                    Paint powerUpPaint = new Paint();
+                    powerUpPaint.setColor(Color.GREEN);
+                    Position pos = new Position(jet.getSelfPosition().getPositionX()+10,jet.getSelfPosition().getPositionY()+10);
+                    PowerUp powerUp = new PowerUp(true,pos,0,0, powerUpPaint,5);
+                    mPowerUps.add(powerUp);
+                }
                 Bullet b = new Bullet(jet.getSelfPosition(), 10, jet.getPaint(), 0, 20);
                 b.setDestination(mSelfJet.getSelfPosition(),true);
                 jet.tick(b);
             }
+        }
+
+        for(PowerUp p:mPowerUps){
+            if(p.isVisible()){
+                for(Bullet b:mSelfJet.getBullets()) {
+                    if(p.checkHitBox(b)){
+                        p.destroy();
+                        mSelfJet.setHealth(mSelfJet.getHealth()+10);
+                    }
+                }
+                p.tick();
+            }
+        }
+
+        if(mSelfJet.getHealth()<30 && mPowerUps.size()<4){
+            Paint powerUpPaint = new Paint();
+            powerUpPaint.setColor(Color.GREEN);
+            Random rand = new Random();
+            int value = rand.nextInt(50)+1;
+            Position pos = new Position(20*value,10*value);
+            PowerUp powerUp = new PowerUp(false,pos,10,20, powerUpPaint,5);
+            mPowerUps.add(powerUp);
         }
 
         recycle();
@@ -96,6 +132,11 @@ public class GameManager {
         for(Jet jet:mEnemyJets){
             if(!jet.isDead()) {
                 jet.draw(canvas);
+            }
+        }
+        for(PowerUp p:mPowerUps){
+            if(p.isVisible()){
+                p.draw(canvas);
             }
         }
     }
@@ -119,6 +160,13 @@ public class GameManager {
                 it.remove();
             } else {
                 jet.recycle();
+            }
+        }
+
+        for(Iterator<PowerUp> i = mPowerUps.iterator();i.hasNext();){
+            PowerUp p = i.next();
+            if(!p.isVisible()){
+                i.remove();
             }
         }
     }

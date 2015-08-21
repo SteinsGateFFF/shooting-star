@@ -92,7 +92,8 @@ public class Jet {
                 < Math.pow(mRadius+b.getBulletR(),2));
 
     }
-    public void checkCollision(List<Bullet> bullets){
+    public boolean checkCollision(List<Bullet> bullets){
+        boolean collision = false;
         for(Iterator<Bullet> it = bullets.iterator(); it.hasNext();){
             Bullet b = it.next();
             if(checkHitBox(b)){
@@ -106,10 +107,12 @@ public class Jet {
                 }
                 setHealth(curHealth);
                 b.recycle();
+                collision = true;
 
             }
 
         }
+        return collision;
 
     }
     public void setDestination(float x, float y, boolean hasDestination ){
