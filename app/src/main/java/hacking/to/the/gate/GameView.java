@@ -44,7 +44,13 @@ public class GameView extends SurfaceView {
     }
 
 
-
+    /**
+     * Bind the {@link hacking.to.the.gate.GameLoopThread} with {@link android.view.SurfaceHolder.Callback}.
+     * So that when the surface is created, the {@link hacking.to.the.gate.GameLoopThread} is started,
+     * and when the surface is destroyed, the {@link hacking.to.the.gate.GameLoopThread} is stopped.
+     *
+     *TODO: Should change the control flow to support game pause. Also the join() method will cause unexpected crash.
+     */
     private void setup(){
         holder = getHolder();
         holder.addCallback(new SurfaceHolder.Callback() {
@@ -81,6 +87,7 @@ public class GameView extends SurfaceView {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
+        // Here is when the width and height of the view are determined.
         GameManager.getInstance().init(getWidth(),getHeight());
 
     }

@@ -4,6 +4,9 @@ import android.graphics.Canvas;
 import android.util.Log;
 
 /**
+ * Thread for rendering the canvas and doing game logic.
+ *
+ * TODO: Should sperate the rendering from game logic.
  * Created by Jelly and Huaqi on 2015/8/15.
  */
 public class GameLoopThread extends Thread{
