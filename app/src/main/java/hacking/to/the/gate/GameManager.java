@@ -7,7 +7,6 @@ import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -155,6 +154,11 @@ public class GameManager {
 
     private long lastTimestamp = 0;
     private Paint mFPSPaint;
+
+    /**
+     * This will measure and display the FPS on the left top corner.
+     * @param c
+     */
     public void measureFrameRate(Canvas c) {
         if(lastTimestamp != 0) {
             double frameRate = 1000/(System.currentTimeMillis() - lastTimestamp);

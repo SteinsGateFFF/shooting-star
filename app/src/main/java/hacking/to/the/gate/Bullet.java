@@ -40,6 +40,12 @@ public class Bullet {
         return mRadius;
     }
 
+    /**
+     * Draw the bullet on the given canvas.
+     *
+     * TODO: Currently the moving of the bullet and drawing are in the same method. Should separate them into tick() and draw()
+     * @param canvas
+     */
     public void onDraw(Canvas canvas){
         if(mVelocityPattern!=null) {
             mVelocity = mVelocityPattern.nextVelocity(mVelocity);
@@ -48,6 +54,11 @@ public class Bullet {
         canvas.drawCircle(mSelfPos.getPositionX(),mSelfPos.getPositionY(), mRadius,mPaint);
     }
 
+    /**
+     * Set the destination for the bullet
+     * @param pos
+     * @param hasDestination move towards the destination if it is true, otherwise stay.
+     */
     public void setDestination(Position pos, boolean hasDestination ){
         mDestPos = pos;
         mHasDestination = hasDestination;
