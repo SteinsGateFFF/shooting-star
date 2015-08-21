@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -12,17 +13,13 @@ import android.view.SurfaceView;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
- * Created by yihuaqi on 2015/8/15.
+ * Created by Jelly and Huaqi on 2015/8/15.
  */
 public class GameView extends SurfaceView {
     private SurfaceHolder holder;
-
     private GameLoopThread gameLoopThread;
-    private Jet mSelfJet;
-    private List<Jet> mEnemyJets;
-
-
 
     public GameView(Context context) {
         super(context);
@@ -42,11 +39,11 @@ public class GameView extends SurfaceView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        mSelfJet.setJetX(event.getX());
-        mSelfJet.setJetY(event.getY());
-
+        GameManager.getInstance().setSelfJetDest(event);
         return true;
     }
+
+
 
     private void setup(){
         holder = getHolder();
@@ -55,9 +52,6 @@ public class GameView extends SurfaceView {
             public void surfaceCreated(SurfaceHolder holder) {
                 gameLoopThread.setRunning(true);
                 gameLoopThread.start();
-
-
-
             }
 
             @Override
@@ -85,28 +79,19 @@ public class GameView extends SurfaceView {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        Paint p = new Paint();
-        Paint p2 = new Paint();
-        p2.setColor(Color.RED);
-        p.setColor(Color.WHITE);
-        mSelfJet = new Jet(getWidth()/2,getHeight()-50,50,p,0,0);
-        mEnemyJets = new ArrayList<>();
-        for(int i =0; i<5;i++){
-            mEnemyJets.add(new Jet((i+1)*getWidth()/6,0, 50, p2,0, 1));
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        GameManager.getInstance().init(getWidth(),getHeight());
 
-        }
     }
+
+
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawColor(Color.BLACK);
-        mSelfJet.onDraw(canvas);
-        for(Jet jet:mEnemyJets){
-            jet.onDraw(canvas);
-        }
-
     }
+
+
+
 }
