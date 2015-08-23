@@ -1,6 +1,9 @@
 package hacking.to.the.gate;
 
 /**
+ *
+ * Velocity is defined as the x and y displacement after one tick.
+ *
  * Created by Jelly and Huaqi on 2015/8/16.
  */
 public class Velocity {

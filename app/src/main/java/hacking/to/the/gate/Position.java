@@ -21,10 +21,20 @@ public class Position {
         return mPositionY;
     }
 
+    /**
+     *
+     * @param v
+     * @return a new Position that has been applied by the given velocity
+     */
     public Position applyVelocity(Velocity v){
         return new Position(mPositionX+v.getVelocityX(),mPositionY+v.getVelocityY());
     }
 
+    /**
+     *
+     * @param radius
+     * @return true if the circle with this position and given radius is totally out of the screen.
+     */
     public boolean isOutOfScreen(int radius) {
         Rect screenRect = GameManager.getInstance().getScreenRect();
         int width = screenRect.width();

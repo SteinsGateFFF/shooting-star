@@ -9,18 +9,21 @@ import android.view.MotionEvent;
 import java.util.Random;
 import org.apache.http.impl.conn.tsccm.PoolEntryRequest;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * Manager class that manages the game logic, holds all underlying data objects, and renders the canvas.
+ *
+ * TODO: Should probably seperate the call {@link #tick()} and {@link #draw(android.graphics.Canvas)} into different threads.
+ * TODO: Rendering should be using a defensive copy of the underlying data objects to avoid synchronization and performance problem.
+ *
  * Created by yihuaqi on 2015/8/17.
  */
 public class GameManager {
     private static GameManager instance;
     private GameManager(){
-
     };
     public static GameManager getInstance(){
         if(instance==null){
@@ -29,14 +32,28 @@ public class GameManager {
         return instance;
     }
 
-
+    /**
+     * Jet that controled by player.
+     */
     private Jet mSelfJet;
+    /**
+     * List of enemy Jets.
+     */
     private List<Jet> mEnemyJets;
     private List<PowerUp> mPowerUps;
     private float mScreenWidth;
     private float mScreenHeight;
     private Rect mScreenRect;
 
+    /**
+     * Init the {@link hacking.to.the.gate.GameManager} with the dimension of the {@link hacking.to.the.gate.GameView}.
+     * Create SelfJet and EnemyJets.
+     *
+     * TODO: Creating SelfJet and EnemyJets should be in seperate methods.
+     *
+     * @param screenWidht
+     * @param screenHeight
+     */
     public void init(float screenWidht, float screenHeight){
         mScreenWidth = screenWidht;
         mScreenHeight = screenHeight;
@@ -50,16 +67,21 @@ public class GameManager {
         mFPSPaint = new Paint();
         mFPSPaint.setColor(Color.WHITE);
 
-        mSelfJet = new Jet(mScreenWidth/2,mScreenHeight-50,50,p);
+        mSelfJet = new Jet(mScreenWidth/2,mScreenHeight-50,50,p,3);
 
         mEnemyJets = new LinkedList<>();
 
         for(int i =0; i<5;i++){
-            mEnemyJets.add(new Jet((i+1)*mScreenWidth/6,0, 50, p2));
+            mEnemyJets.add(new Jet((i+1)*mScreenWidth/6,0, 50, p2,6));
 
         }
         mPowerUps = new LinkedList<>();
     }
+
+    /**
+     * Set the destination of the SelfJet.
+     * @param event MotionEvent of user touch.
+     */
     public void setSelfJetDest(MotionEvent event){
         switch (event.getAction())
         {
@@ -73,6 +95,9 @@ public class GameManager {
         }
     }
 
+    /**
+    * Tick to the next move.
+     */
     public void tick(){
 
         if(!mSelfJet.isDead()) {
@@ -123,6 +148,10 @@ public class GameManager {
         recycle();
     }
 
+    /**
+     * Render to canvas
+     * @param canvas
+     */
     public void draw(Canvas canvas){
         canvas.drawColor(Color.BLACK);
         if(!mSelfJet.isDead()) {
@@ -173,6 +202,11 @@ public class GameManager {
 
     private long lastTimestamp = 0;
     private Paint mFPSPaint;
+
+    /**
+     * This will measure and display the FPS on the left top corner.
+     * @param c
+     */
     public void measureFrameRate(Canvas c) {
         if(lastTimestamp != 0) {
             double frameRate = 1000/(System.currentTimeMillis() - lastTimestamp);
