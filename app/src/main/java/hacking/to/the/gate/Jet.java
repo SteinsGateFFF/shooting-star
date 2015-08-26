@@ -53,16 +53,10 @@ public class Jet {
      * List of Bullets that are shot by this jet.
      */
     private List<Bullet> mBullets;
-    /**
-     * Frames that need to wait between bullets.
-     */
-    private int mShootingInterval = 1;
-    /**
-     * Number of frames that has passed.
-     *
-     * TODO: Should not clear this number to zero so that we can define multiple rate instead of one.
-     */
-    private int mFrameCount = 0;
+
+    private boolean mIsPlayer;
+
+    private Gun mGun;
 
     /**
      * Create a Jet Object
@@ -72,16 +66,22 @@ public class Jet {
      * @param p paint that paints the jet and bullet
      * @param shootingInterval number of ticks between each shooting
      */
-    public Jet(float x, float y, float r, Paint p, int shootingInterval){
+    public Jet(float x, float y, float r, Paint p,boolean isPlayer){
         mSelfPos = new Position(x,y);
         mRadius = r;
         mPaint = p;
         mHealth = 100;
         mMaxSpeed = 20;
         mHasDestination = false;
+        mIsPlayer = isPlayer;
         mBullets = new LinkedList<>();
-        mShootingInterval = shootingInterval;
+        mGun = Gun.getGun(Gun.GUN_TYPE_DEFAULT);
     }
+
+    public void setGunType(int gunType){
+        mGun = Gun.getGun(gunType);
+    }
+
 
     /**
      * Draw the jet to the given canvas.
@@ -101,23 +101,25 @@ public class Jet {
      * Change the jet state to next tick.
      * @param bullet
      */
-    public void tick(Bullet bullet){
-        Log.d(TAG,"Bullets: "+mBullets.size());
+    public void tick(){
+
         if(mHasDestination) {
             mVelocity = Velocity.getDestinationVelocity(mSelfPos, mDestPos, mMaxSpeed);
-
+            Log.d("destination", "Set self velocity: "+mSelfPos+" "+mDestPos+" "+mVelocity);
         } else {
             mVelocity = new Velocity(0,0);
 
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
+        if(!mIsPlayer) {
 
+            Position selfJetPos = GameManager.getInstance().getSelfJetPosition();
+            mBullets.addAll(mGun.shoot(mSelfPos,selfJetPos));
 
-        if(mFrameCount >= mShootingInterval) {
-            mFrameCount = 0;
-            shoot(bullet);
         } else {
-            mFrameCount++;
+
+            // TODO: Later should pass enemy targets.
+            mBullets.addAll(mGun.shoot(mSelfPos,null));
         }
 
 
@@ -198,31 +200,9 @@ public class Jet {
     public void setDestination(float x, float y, boolean hasDestination ){
         mDestPos = new Position(x,y);
         mHasDestination = hasDestination;
-
+        Log.d("destination", "Set self destination: "+mDestPos);
     }
 
-
-    /**
-     * Added a default Bullet to the list of bullets.
-     *
-     * TODO: This method need to be deprecated.
-     */
-    public void shoot(){
-        mBullets.add(new Bullet(mSelfPos, 10, mPaint, 0, -20));
-    }
-
-    /**
-     * Added the given bullet to the list of bullets.
-     *
-     * @param bullet
-     */
-    public void shoot(Bullet bullet){
-        if(bullet==null){
-            shoot();
-        } else {
-            mBullets.add(bullet);
-        }
-    }
 
     public List<Bullet> getBullets(){
         return mBullets;

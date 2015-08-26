@@ -33,7 +33,14 @@ public class Velocity {
             vx*=-1;
         }
         float vy = ratio * vx;
+
         return new Velocity(vx,vy);
+    }
+
+
+    public static Velocity getDisplacement(Position self, Position dest){
+        return new Velocity(dest.getPositionX()-self.getPositionX(),
+                dest.getPositionY()-self.getPositionY());
     }
 
     @Override
