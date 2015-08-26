@@ -4,6 +4,8 @@ import android.graphics.Paint;
 import android.graphics.Canvas;
 import android.graphics.Color;
 
+import java.util.Iterator;
+
 /**
  * Created by Ruiqian on 8/24/2015.
  */
@@ -50,7 +52,10 @@ public class PowerUp {
  *
  */
     public void draw(Canvas canvas){
-        canvas.drawCircle(mCurPosition.getPositionX(),mCurPosition.getPositionY(),mRadius,mPaint);
+        if(isVisible()){
+            canvas.drawCircle(mCurPosition.getPositionX(),mCurPosition.getPositionY(),mRadius,mPaint);
+
+        }
     }
 /*
  * check if the power up is visible
@@ -59,6 +64,15 @@ public class PowerUp {
         return mIsVisible || mCurPosition.isOutOfScreen((int) mRadius);
     }
 
+    public Position getPosition(){
+        return mCurPosition;
+    }
 
+    public float getRadius(){
+        return mRadius;
+    }
 
+    public void setVisible(boolean isVisible){
+        mIsVisible = isVisible;
+    }
 }
