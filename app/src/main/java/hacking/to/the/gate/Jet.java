@@ -211,10 +211,14 @@ public class Jet {
             }
         }
     }
+
+    /**
+     * increase HP after colliding with power ups
+     * @param powerups a list of PowerUps
+     */
     public void doCollision(List<PowerUp> powerups){
         for(Iterator<PowerUp> i = powerups.iterator();i.hasNext();){
             PowerUp p = i.next();
-            Log.d("Check-hitbox:","hit or");
             if(checkHitBox(p)){
                 float curHealth = 0;
                 curHealth = getHealth();

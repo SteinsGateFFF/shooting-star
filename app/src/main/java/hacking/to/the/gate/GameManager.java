@@ -130,6 +130,10 @@ public class GameManager {
         recycle();
     }
 
+    /**
+     *
+     * @return true if it's time to generate powerups
+     */
     public boolean shouldGeneratePowerUps(){
         return mPowerUps.size()<4&& mSelfJet.getHealth()<80;
     }
