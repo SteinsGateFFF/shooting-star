@@ -37,6 +37,9 @@ public class Velocity {
         return new Velocity(vx,vy);
     }
 
+    public float getSpeed() {
+        return (float) Math.pow(Math.pow(mVelocityX,2)+Math.pow(mVelocityY,2),0.5);
+    }
 
     public static Velocity getDisplacement(Position self, Position dest){
         return new Velocity(dest.getPositionX()-self.getPositionX(),

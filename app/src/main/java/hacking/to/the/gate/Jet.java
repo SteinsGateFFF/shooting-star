@@ -104,8 +104,12 @@ public class Jet {
     public void tick(){
 
         if(mHasDestination) {
-            mVelocity = Velocity.getDestinationVelocity(mSelfPos, mDestPos, mMaxSpeed);
-            Log.d("destination", "Set self velocity: "+mSelfPos+" "+mDestPos+" "+mVelocity);
+            // Fixed a bug that the ject have weird movement if destination is at the center of the jet.
+            mVelocity = Velocity.getDisplacement(mSelfPos,mDestPos);
+            if(mVelocity.getSpeed() > mMaxSpeed) {
+                mVelocity = Velocity.getDestinationVelocity(mSelfPos, mDestPos, mMaxSpeed);
+            }
+            //Log.d("destination", "Set self velocity: "+mSelfPos+" "+mDestPos+" "+mVelocity);
         } else {
             mVelocity = new Velocity(0,0);
 
