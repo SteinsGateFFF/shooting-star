@@ -145,7 +145,8 @@ public class Jet {
 
     }
 
-    public Position getSelfPosition() {return mSelfPos;};
+    public Position getSelfPosition() {return mSelfPos;}
+
     public Paint getPaint(){
         return mPaint;
     }
@@ -168,6 +169,32 @@ public class Jet {
         mIsDead = b;
     }
 
+    /**
+     *
+     * @param p
+     * @return true if the jet collides with a power up, otherwise false
+     */
+    private boolean checkHitBox(PowerUp p){
+        Log.d("Check-hitbox:","hit or not");
+        if(!mIsDead&& p.isVisible()){
+
+            double distance = Math.pow(
+                    mSelfPos.getPositionX()-p.getPosition().getPositionX(),
+                    2)
+                    +Math.pow(
+                    mSelfPos.getPositionY()-p.getPosition().getPositionY(),
+                    2);
+            Log.d("distance","jpos.x->"+mSelfPos.getPositionX());
+            Log.d("distance","jpos.y->"+mSelfPos.getPositionY());
+            Log.d("distance","ppos.x->"+p.getPosition().getPositionX());
+            Log.d("distance","ppos.y->"+p.getPosition().getPositionY());
+            Log.d("distance","d->"+distance);
+            double radius = Math.pow(mRadius+p.getRadius(),2);
+            Log.d("distance","r->"+radius);
+            return distance<radius;
+        }
+        return false;
+    }
     /**
      *
      * @param b
@@ -200,15 +227,29 @@ public class Jet {
                 curHealth -= 10;
                 if(curHealth <0) {
                     setDead(true);
-
                 }
                 setHealth(curHealth);
                 b.recycle();
-
             }
-
         }
+    }
 
+    /**
+     * increase HP after colliding with power ups
+     * @param powerups a list of PowerUps
+     */
+    public void doCollision(List<PowerUp> powerups){
+        for(Iterator<PowerUp> i = powerups.iterator();i.hasNext();){
+            PowerUp p = i.next();
+            if(checkHitBox(p)){
+                float curHealth = 0;
+                curHealth = getHealth();
+                curHealth += 20;
+                setHealth(curHealth);
+                Log.d("Jet-health:",""+getHealth());
+                p.setVisible(false);
+            }
+        }
     }
 
     /**

@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
-
+import java.util.Random;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +38,11 @@ public class GameManager {
      * List of enemy Jets.
      */
     private List<Jet> mEnemyJets;
+
+    /*
+        list of power ups
+     */
+    private List<PowerUp> mPowerUps;
     private float mScreenWidth;
     private float mScreenHeight;
     private Rect mScreenRect;
@@ -72,6 +77,8 @@ public class GameManager {
             mEnemyJets.add(enemyJet);
 
         }
+
+        mPowerUps = new LinkedList<>();
     }
 
     /**
@@ -108,12 +115,30 @@ public class GameManager {
                 jet.checkCollision(mSelfJet.getBullets());
 
                 jet.tick();
+                mSelfJet.doCollision(mPowerUps);
             }
+        }
+
+        if(shouldGeneratePowerUps()){
+            Paint powerUpPaint = new Paint();
+            powerUpPaint.setColor(Color.GREEN);
+            Random rand = new Random();
+            int value = rand.nextInt(50)+1;
+            Position pos = new Position(20*value,10*value);
+            PowerUp powerUp = new PowerUp(true,pos,0,0, powerUpPaint,23);
+            mPowerUps.add(powerUp);
         }
 
         recycle();
     }
 
+    /**
+     *
+     * @return true if it's time to generate powerups
+     */
+    public boolean shouldGeneratePowerUps(){
+        return mPowerUps.size()<4&& mSelfJet.getHealth()<80;
+    }
     /**
      * Render to canvas
      * @param canvas
@@ -127,6 +152,11 @@ public class GameManager {
         for(Jet jet:mEnemyJets){
             if(!jet.isDead()) {
                 jet.draw(canvas);
+            }
+        }
+        for(PowerUp p:mPowerUps){
+            if(p.isVisible()){
+                p.draw(canvas);
             }
         }
     }
@@ -150,6 +180,13 @@ public class GameManager {
                 it.remove();
             } else {
                 jet.recycle();
+            }
+        }
+        for(Iterator<PowerUp> i = mPowerUps.iterator();i.hasNext();){
+            PowerUp p = i.next();
+            if(!p.isVisible()){
+                i.remove();
+                Log.d("PowerUp","removed");
             }
         }
     }
