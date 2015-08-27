@@ -54,8 +54,16 @@ public class Jet {
      */
     private List<Bullet> mBullets;
 
+    /**
+     * If true then this is self jet, otherwise false.
+     */
     private boolean mIsPlayer;
 
+    /**
+     * {@link hacking.to.the.gate.Gun} of the jet.
+     *
+     * TODO: might need to support more than one gun.
+     */
     private Gun mGun;
 
     /**
@@ -78,6 +86,10 @@ public class Jet {
         mGun = Gun.getGun(Gun.GUN_TYPE_DEFAULT);
     }
 
+    /**
+     * Set the gun of this jet to the given type
+     * @param gunType
+     */
     public void setGunType(int gunType){
         mGun = Gun.getGun(gunType);
     }
@@ -115,13 +127,17 @@ public class Jet {
 
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
-        if(!mIsPlayer) {
 
+        // Shoot bullets.
+        if(!mIsPlayer) {
+            //Enemy jets shoot logic.
+            // Default target jet of enemy jets is self jet.
+            
             Position selfJetPos = GameManager.getInstance().getSelfJetPosition();
             mBullets.addAll(mGun.tick(mSelfPos, selfJetPos));
 
         } else {
-
+            //Self jet shoot logic.
             // TODO: Later should pass enemy targets.
             mBullets.addAll(mGun.tick(mSelfPos, null));
         }
@@ -207,7 +223,10 @@ public class Jet {
         Log.d("destination", "Set self destination: "+mDestPos);
     }
 
-
+    /**
+     *
+     * @return a list of bullets that are shot by this jet.
+     */
     public List<Bullet> getBullets(){
         return mBullets;
     }
