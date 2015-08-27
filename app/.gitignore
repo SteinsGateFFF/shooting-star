@@ -1,1 +1,10 @@
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+/.idea/*
+.DS_Store
 /build
+/app/.idea/*
+/app/app.iml
+shooting-star.iml
