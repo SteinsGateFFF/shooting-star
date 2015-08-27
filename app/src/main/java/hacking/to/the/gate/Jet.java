@@ -118,12 +118,12 @@ public class Jet {
         if(!mIsPlayer) {
 
             Position selfJetPos = GameManager.getInstance().getSelfJetPosition();
-            mBullets.addAll(mGun.shoot(mSelfPos,selfJetPos));
+            mBullets.addAll(mGun.tick(mSelfPos, selfJetPos));
 
         } else {
 
             // TODO: Later should pass enemy targets.
-            mBullets.addAll(mGun.shoot(mSelfPos,null));
+            mBullets.addAll(mGun.tick(mSelfPos, null));
         }
 
 

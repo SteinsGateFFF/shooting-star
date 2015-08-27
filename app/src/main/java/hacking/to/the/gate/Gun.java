@@ -8,15 +8,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by yihuaqi on 2015/8/25.
+ * Gun can determines how the bullets are shot from jet.
  */
 public class Gun {
-
+    /**
+     * Interval of ticks between two shots.
+     */
     private int mShootingInterval = 1;
+    /**
+     * Damage every bullet can deal.
+     * TODO: This has not been implemented yet.
+     */
     private int mBulletDamage = 10;
+    /**
+     * Number of frames that has passed by.
+     * TODO: Should count tick instead.
+     */
     private long mFrameCount = 0;
+    /**
+     * {@link hacking.to.the.gate.Gun.GunStyle}
+     */
     private GunStyle mGunStyle = null;
+    /**
+     * Paint of the bullet.
+     */
     private Paint mPaint = null;
+
+    /**
+     * Construct a Gun instance.
+     * @param shootingInterval
+     * @param gunStyle
+     * @param bulletStyle
+     * @param bulletDamage
+     * @param paint
+     */
     private Gun(int shootingInterval, int gunStyle, int bulletStyle, int bulletDamage, Paint paint){
         mShootingInterval = shootingInterval;
         mGunStyle = getGunStyle(gunStyle);
@@ -27,8 +52,13 @@ public class Gun {
     }
 
 
-
-    public List<Bullet> shoot(Position self,Position target) {
+    /**
+     * Checks the {@link #mFrameCount} to see if it should shoot.
+     * @param self
+     * @param target
+     * @return a list of bullets that should be added to the game at current tick.
+     */
+    public List<Bullet> tick(Position self, Position target) {
 
         mFrameCount++;
         if(mFrameCount%mShootingInterval==0 && mGunStyle!=null){
@@ -39,10 +69,21 @@ public class Gun {
     }
 
 
-
+    /**
+     * Straight Bullets
+     */
     public final static int GUN_TYPE_DEFAULT = 0;
+    /**
+     * Bullets that has the initial velocity toward self jet.
+     * Can only be used for enemy jet.
+     */
     public final static int GUN_TYPE_SELF_TARGETING = 1;
 
+    /**
+     * Return an instance of gun of given type.
+     * @param type
+     * @return
+     */
     public static Gun getGun(int type){
         Paint p = new Paint();
         switch (type) {
@@ -62,14 +103,38 @@ public class Gun {
 
     }
 
+    /**
+     * Straight Bullet.
+     */
     public final static int GUN_STYLE_TYPE_NORMAL = 0;
+    /**
+     * Keeps tracking the target
+     */
     public final static int GUN_STYLE_TYPE_HOMING = 1;
+    /**
+     * Has an initial velocity toward self jet.
+     * Can only be used for enemy jet.
+     */
     public final static int GUN_STYLE_TYPE_SELF_TARGETING = 2;
 
+    /**
+     * Determines how the bullets will get generated.
+     */
     private interface GunStyle {
+        /**
+         * Generates a list of bullets.
+         * @param self {@link hacking.to.the.gate.Position} of the jet that shoots.
+         * @param target {@link hacking.to.the.gate.Position} of the jet that is the target. Can be null.
+         * @return
+         */
         List<Bullet> generateBullets(Position self, Position target);
     }
 
+    /**
+     *
+     * @param type Possible types are {@link #GUN_STYLE_TYPE_SELF_TARGETING} {@link #GUN_STYLE_TYPE_NORMAL} and {@link #GUN_STYLE_TYPE_HOMING}
+     * @return the given type of GunStyle
+     */
     private GunStyle getGunStyle(int type) {
         switch (type){
             case GUN_STYLE_TYPE_NORMAL:
@@ -97,9 +162,9 @@ public class Gun {
                     public List<Bullet> generateBullets(Position self, Position target) {
                         List<Bullet> result = new ArrayList<>();
                         if(target==null){
-                            // Indicate this is self jet
+                            // Self targeting must have a target.
                             // TODO: Need more explicit indication.
-                            throw new UnsupportedOperationException("Self targeting GunStyle need a target Position");
+                            throw new IllegalArgumentException("Self targeting must have a target");
                         } else {
                             // Indicate this is enemy jet
                             // TODO: Need more explicit indication.
