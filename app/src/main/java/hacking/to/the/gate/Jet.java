@@ -53,16 +53,18 @@ public class Jet {
      * List of Bullets that are shot by this jet.
      */
     private List<Bullet> mBullets;
+
     /**
-     * Frames that need to wait between bullets.
+     * If true then this is self jet, otherwise false.
      */
-    private int mShootingInterval = 1;
+    private boolean mIsPlayer;
+
     /**
-     * Number of frames that has passed.
+     * {@link hacking.to.the.gate.Gun} of the jet.
      *
-     * TODO: Should not clear this number to zero so that we can define multiple rate instead of one.
+     * TODO: might need to support more than one gun.
      */
-    private int mFrameCount = 0;
+    private Gun mGun;
 
     /**
      * Create a Jet Object
@@ -72,16 +74,26 @@ public class Jet {
      * @param p paint that paints the jet and bullet
      * @param shootingInterval number of ticks between each shooting
      */
-    public Jet(float x, float y, float r, Paint p, int shootingInterval){
+    public Jet(float x, float y, float r, Paint p,boolean isPlayer){
         mSelfPos = new Position(x,y);
         mRadius = r;
         mPaint = p;
         mHealth = 100;
         mMaxSpeed = 20;
         mHasDestination = false;
+        mIsPlayer = isPlayer;
         mBullets = new LinkedList<>();
-        mShootingInterval = shootingInterval;
+        mGun = Gun.getGun(Gun.GUN_TYPE_DEFAULT);
     }
+
+    /**
+     * Set the gun of this jet to the given type
+     * @param gunType
+     */
+    public void setGunType(int gunType){
+        mGun = Gun.getGun(gunType);
+    }
+
 
     /**
      * Draw the jet to the given canvas.
@@ -101,23 +113,33 @@ public class Jet {
      * Change the jet state to next tick.
      * @param bullet
      */
-    public void tick(Bullet bullet){
-        //Log.d(TAG,"Bullets: "+mBullets.size());
-        if(mHasDestination) {
-            mVelocity = Velocity.getDestinationVelocity(mSelfPos, mDestPos, mMaxSpeed);
+    public void tick(){
 
+        if(mHasDestination) {
+            // Fixed a bug that the ject have weird movement if destination is at the center of the jet.
+            mVelocity = Velocity.getDisplacement(mSelfPos,mDestPos);
+            if(mVelocity.getSpeed() > mMaxSpeed) {
+                mVelocity = Velocity.getDestinationVelocity(mSelfPos, mDestPos, mMaxSpeed);
+            }
+            //Log.d("destination", "Set self velocity: "+mSelfPos+" "+mDestPos+" "+mVelocity);
         } else {
             mVelocity = new Velocity(0,0);
 
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
 
+        // Shoot bullets.
+        if(!mIsPlayer) {
+            //Enemy jets shoot logic.
+            // Default target jet of enemy jets is self jet.
+            
+            Position selfJetPos = GameManager.getInstance().getSelfJetPosition();
+            mBullets.addAll(mGun.tick(mSelfPos, selfJetPos));
 
-        if(mFrameCount >= mShootingInterval) {
-            mFrameCount = 0;
-            shoot(bullet);
         } else {
-            mFrameCount++;
+            //Self jet shoot logic.
+            // TODO: Later should pass enemy targets.
+            mBullets.addAll(mGun.tick(mSelfPos, null));
         }
 
 
@@ -239,32 +261,13 @@ public class Jet {
     public void setDestination(float x, float y, boolean hasDestination ){
         mDestPos = new Position(x,y);
         mHasDestination = hasDestination;
-
-    }
-
-
-    /**
-     * Added a default Bullet to the list of bullets.
-     *
-     * TODO: This method need to be deprecated.
-     */
-    public void shoot(){
-        mBullets.add(new Bullet(mSelfPos, 10, mPaint, 0, -20));
+        Log.d("destination", "Set self destination: "+mDestPos);
     }
 
     /**
-     * Added the given bullet to the list of bullets.
      *
-     * @param bullet
+     * @return a list of bullets that are shot by this jet.
      */
-    public void shoot(Bullet bullet){
-        if(bullet==null){
-            shoot();
-        } else {
-            mBullets.add(bullet);
-        }
-    }
-
     public List<Bullet> getBullets(){
         return mBullets;
     }

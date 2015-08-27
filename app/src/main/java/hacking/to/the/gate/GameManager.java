@@ -67,11 +67,14 @@ public class GameManager {
         mFPSPaint = new Paint();
         mFPSPaint.setColor(Color.WHITE);
 
-        mSelfJet = new Jet(mScreenWidth/2,mScreenHeight-50,50,p,3);
+        mSelfJet = new Jet(mScreenWidth/2,mScreenHeight-50,50,p,true);
+        mSelfJet.setGunType(Gun.GUN_TYPE_DEFAULT);
 
         mEnemyJets = new LinkedList<>();
         for(int i =0; i<5;i++){
-            mEnemyJets.add(new Jet((i+1)*mScreenWidth/6,0, 50, p2,6));
+            Jet enemyJet= new Jet((i+1)*mScreenWidth/6,0, 50, p2,false);
+            enemyJet.setGunType(Gun.GUN_TYPE_SELF_TARGETING);
+            mEnemyJets.add(enemyJet);
 
         }
 
@@ -101,7 +104,7 @@ public class GameManager {
     public void tick(){
 
         if(!mSelfJet.isDead()) {
-            mSelfJet.tick(null);
+            mSelfJet.tick();
         }
 
 
@@ -110,10 +113,9 @@ public class GameManager {
 
                 mSelfJet.checkCollision(jet.getBullets());
                 jet.checkCollision(mSelfJet.getBullets());
+
+                jet.tick();
                 mSelfJet.doCollision(mPowerUps);
-                Bullet b = new Bullet(jet.getSelfPosition(), 10, jet.getPaint(), 0, 20);
-                b.setDestination(mSelfJet.getSelfPosition(),true);
-                jet.tick(b);
             }
         }
 
@@ -170,11 +172,11 @@ public class GameManager {
         } else {
             mSelfJet.recycle();
         }
-        Log.d("Jet","EnemyJets: "+mEnemyJets.size());
+
         for(Iterator<Jet> it = mEnemyJets.iterator(); it.hasNext();){
             Jet jet = it.next();
             if(jet.shouldRecycle()){
-                Log.d("Jet","EnemyJet should recycle.");
+
                 it.remove();
             } else {
                 jet.recycle();
@@ -202,5 +204,9 @@ public class GameManager {
             c.drawText("FPS: "+frameRate,10,10,mFPSPaint);
         }
         lastTimestamp = System.currentTimeMillis();
+    }
+
+    public Position getSelfJetPosition(){
+        return mSelfJet.getSelfPosition();
     }
 }
