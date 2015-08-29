@@ -224,7 +224,7 @@ public class Jet {
 
                 float curHealth = 0;
                 curHealth = getHealth();
-                curHealth -= 10;
+                curHealth -= b.getDamage();
                 if(curHealth <0) {
                     setDead(true);
                 }

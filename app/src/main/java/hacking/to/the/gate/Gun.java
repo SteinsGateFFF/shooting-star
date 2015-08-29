@@ -19,7 +19,7 @@ public class Gun {
      * Damage every bullet can deal.
      * TODO: This has not been implemented yet.
      */
-    private int mBulletDamage = 10;
+    private float mBulletDamage = 10;
     /**
      * Number of frames that has passed by.
      * TODO: Should count tick instead.
@@ -42,10 +42,9 @@ public class Gun {
      * @param bulletDamage
      * @param paint
      */
-    private Gun(int shootingInterval, int gunStyle, int bulletStyle, int bulletDamage, Paint paint){
+    private Gun(int shootingInterval, int gunStyle, int bulletStyle, float bulletDamage, Paint paint){
         mShootingInterval = shootingInterval;
         mGunStyle = getGunStyle(gunStyle);
-        //TODO: Add BulletStyle
         mBulletDamage = bulletDamage;
         mPaint = paint;
 
@@ -90,7 +89,7 @@ public class Gun {
             case GUN_TYPE_DEFAULT:
 
                 p.setColor(Color.WHITE);
-                return new Gun(12, GUN_STYLE_TYPE_NORMAL, 0, 10, p);
+                return new Gun(12, GUN_STYLE_TYPE_NORMAL, 0, 34, p);
 
             case GUN_TYPE_SELF_TARGETING:
 
@@ -145,12 +144,12 @@ public class Gun {
                         if(target == null) {
                             // Indicate this is self jet
                             // TODO: Need more explicit indication.
-                            result.add(new Bullet(self,10,mPaint,0,-20));
+                            result.add(new Bullet(self,10,mPaint,0,-20, mBulletDamage));
 
                         } else {
                             // Indicate this is enemy jet
                             // TODO: Need more explicit indication.
-                            result.add(new Bullet(self,10,mPaint,0,20));
+                            result.add(new Bullet(self,10,mPaint,0,20, mBulletDamage));
                         }
                         return result;
 
@@ -168,7 +167,7 @@ public class Gun {
                         } else {
                             // Indicate this is enemy jet
                             // TODO: Need more explicit indication.
-                            Bullet b = new Bullet(self,10,mPaint,0,20);
+                            Bullet b = new Bullet(self,10,mPaint,0,20, mBulletDamage);
                             b.setDestination(target,true);
                             result.add(b);
                         }
