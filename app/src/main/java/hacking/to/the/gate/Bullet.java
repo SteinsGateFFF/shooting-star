@@ -55,12 +55,16 @@ public class Bullet {
      * TODO: Currently the moving of the bullet and drawing are in the same method. Should separate them into tick() and draw()
      * @param canvas
      */
-    public void onDraw(Canvas canvas){
+    public void draw(Canvas canvas){
+
+        canvas.drawCircle(mSelfPos.getPositionX(),mSelfPos.getPositionY(), mRadius,mPaint);
+    }
+
+    public void tick(){
         if(mVelocityPattern!=null) {
             mVelocity = mVelocityPattern.nextVelocity(mVelocity);
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
-        canvas.drawCircle(mSelfPos.getPositionX(),mSelfPos.getPositionY(), mRadius,mPaint);
     }
 
     /**

@@ -104,7 +104,7 @@ public class Jet {
             canvas.drawCircle(mSelfPos.getPositionX(), mSelfPos.getPositionY(), mRadius, mPaint);
         }
         for(Bullet b:mBullets){
-            b.onDraw(canvas);
+            b.draw(canvas);
         }
 
     }
@@ -140,6 +140,10 @@ public class Jet {
             //Self jet shoot logic.
             // TODO: Later should pass enemy targets.
             mBullets.addAll(mGun.tick(mSelfPos, null));
+        }
+
+        for (Bullet b : mBullets){
+            b.tick();
         }
 
 
