@@ -17,16 +17,25 @@ public class Bullet {
     private float mMaxSpeed;
     private boolean mHasDestination;
     private boolean shouldRecycle = false;
+    /**
+     * Damage that should be dealt to jet when is collided.
+     */
+    private float mDamage;
 
 
 
-    public Bullet(Position pos, float r, Paint paint, float vx, float vy){
+    public Bullet(Position pos, float r, Paint paint, float vx, float vy, float damage){
         mRadius = r;
         mSelfPos = pos;
         mPaint = paint;
         mVelocity = new Velocity(vx,vy);
         mMaxSpeed = 20;
         mHasDestination = false;
+        mDamage = damage;
+    }
+
+    public float getDamage(){
+        return mDamage;
     }
 
     public void setVelocityPattern(Velocity.VelocityPattern pattern){
@@ -46,12 +55,16 @@ public class Bullet {
      * TODO: Currently the moving of the bullet and drawing are in the same method. Should separate them into tick() and draw()
      * @param canvas
      */
-    public void onDraw(Canvas canvas){
+    public void draw(Canvas canvas){
+
+        canvas.drawCircle(mSelfPos.getPositionX(),mSelfPos.getPositionY(), mRadius,mPaint);
+    }
+
+    public void tick(){
         if(mVelocityPattern!=null) {
             mVelocity = mVelocityPattern.nextVelocity(mVelocity);
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
-        canvas.drawCircle(mSelfPos.getPositionX(),mSelfPos.getPositionY(), mRadius,mPaint);
     }
 
     /**
