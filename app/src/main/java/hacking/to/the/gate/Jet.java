@@ -72,7 +72,7 @@ public class Jet {
      * @param y y coordinate of the center of the jet
      * @param r radius of the jet
      * @param p paint that paints the jet and bullet
-     * @param shootingInterval number of ticks between each shooting
+     *
      */
     public Jet(float x, float y, float r, Paint p,boolean isPlayer){
         mSelfPos = new Position(x,y);
@@ -111,7 +111,6 @@ public class Jet {
 
     /**
      * Change the jet state to next tick.
-     * @param bullet
      */
     public void tick(){
 
@@ -134,12 +133,17 @@ public class Jet {
             // Default target jet of enemy jets is self jet.
             
             Position selfJetPos = GameManager.getInstance().getSelfJetPosition();
-            mBullets.addAll(mGun.tick(mSelfPos, selfJetPos));
+            if(!mIsDead){
+                mBullets.addAll(mGun.tick(mSelfPos, selfJetPos));
+            }
+
 
         } else {
             //Self jet shoot logic.
             // TODO: Later should pass enemy targets.
-            mBullets.addAll(mGun.tick(mSelfPos, null));
+            if(!mIsDead) {
+                mBullets.addAll(mGun.tick(mSelfPos, null));
+            }
         }
 
 
@@ -285,7 +289,8 @@ public class Jet {
     }
 
     public boolean shouldRecycle(){
-        return mIsDead || mSelfPos.isOutOfScreen((int) mRadius);
+        boolean noBullets = mBullets.isEmpty();
+        return noBullets&&(mIsDead || mSelfPos.isOutOfScreen((int) mRadius));
     }
 
 }
