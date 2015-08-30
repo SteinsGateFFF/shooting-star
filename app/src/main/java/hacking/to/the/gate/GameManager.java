@@ -105,18 +105,19 @@ public class GameManager {
 
         if(!mSelfJet.isDead()) {
             mSelfJet.tick();
+            mSelfJet.doCollision(mPowerUps);
         }
 
 
         for(Jet jet:mEnemyJets){
-            if(!jet.isDead()) {
+            //if(!jet.isDead()) {
 
                 mSelfJet.checkCollision(jet.getBullets());
                 jet.checkCollision(mSelfJet.getBullets());
 
                 jet.tick();
-                mSelfJet.doCollision(mPowerUps);
-            }
+
+            //}
         }
 
         if(shouldGeneratePowerUps()){
@@ -150,9 +151,9 @@ public class GameManager {
         }
 
         for(Jet jet:mEnemyJets){
-            if(!jet.isDead()) {
+            //if(!jet.isDead()) {
                 jet.draw(canvas);
-            }
+           // }
         }
         for(PowerUp p:mPowerUps){
             if(p.isVisible()){
