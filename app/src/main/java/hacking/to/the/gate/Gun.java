@@ -89,12 +89,12 @@ public class Gun {
             case GUN_TYPE_DEFAULT:
 
                 p.setColor(Color.WHITE);
-                return new Gun(12, GUN_STYLE_TYPE_NORMAL, 0, 34, p);
+                return new Gun(20, GUN_STYLE_TYPE_NORMAL, 0, 34, p);
 
             case GUN_TYPE_SELF_TARGETING:
 
                 p.setColor(Color.RED);
-                return new Gun(12, GUN_STYLE_TYPE_SELF_TARGETING, 0, 10,p);
+                return new Gun(20, GUN_STYLE_TYPE_SELF_TARGETING, 0, 10,p);
 
             default:
                 throw new IllegalArgumentException("Invalid Gun Type");
@@ -144,12 +144,12 @@ public class Gun {
                         if(target == null) {
                             // Indicate this is self jet
                             // TODO: Need more explicit indication.
-                            result.add(new Bullet(self,10,mPaint,0,-20, mBulletDamage));
+                            result.add(new Bullet(self,10,mPaint,0,-10, mBulletDamage));
 
                         } else {
                             // Indicate this is enemy jet
                             // TODO: Need more explicit indication.
-                            result.add(new Bullet(self,10,mPaint,0,20, mBulletDamage));
+                            result.add(new Bullet(self,10,mPaint,0,10, mBulletDamage));
                         }
                         return result;
 

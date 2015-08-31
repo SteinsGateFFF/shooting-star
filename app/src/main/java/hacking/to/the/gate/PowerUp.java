@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 
 import java.util.Iterator;
+import java.util.Random;
 
 /**
  * Created by Ruiqian on 8/24/2015.
@@ -74,5 +75,19 @@ public class PowerUp {
 
     public void setVisible(boolean isVisible){
         mIsVisible = isVisible;
+    }
+
+    public void movingRandomly(){
+        changeVelocity();
+        mCurPosition = new Position(mCurPosition.getPositionX()+mVelocity.getVelocityX(),
+                mCurPosition.getPositionY()+mVelocity.getVelocityY());
+    }
+    public void changeVelocity(){
+        Random r = new Random();
+        int v = r.nextInt(3)+1;
+        mVelocity = new Velocity(v,v*v);
+    }
+    public boolean isStatic(){
+        return mIsStatic;
     }
 }

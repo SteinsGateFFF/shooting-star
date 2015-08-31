@@ -79,6 +79,11 @@ public class GameManager {
         }
 
         mPowerUps = new LinkedList<>();
+        Random rand = new Random();
+        int randomX = rand.nextInt(50)+10;
+        int randonY = rand.nextInt(50)+200;
+        generatePowerups(false,randomX,randonY);
+
     }
 
     /**
@@ -110,27 +115,45 @@ public class GameManager {
 
 
         for(Jet jet:mEnemyJets){
-            //if(!jet.isDead()) {
 
                 mSelfJet.checkCollision(jet.getBullets());
                 jet.checkCollision(mSelfJet.getBullets());
 
                 jet.tick();
 
-            //}
+        }
+        for(PowerUp p :mPowerUps){
+            if(!p.isStatic()){
+                p.movingRandomly();
+            }
         }
 
         if(shouldGeneratePowerUps()){
-            Paint powerUpPaint = new Paint();
-            powerUpPaint.setColor(Color.GREEN);
             Random rand = new Random();
             int value = rand.nextInt(50)+1;
-            Position pos = new Position(20*value,10*value);
-            PowerUp powerUp = new PowerUp(true,pos,0,0, powerUpPaint,23);
-            mPowerUps.add(powerUp);
+            int randomX = 20*value;
+            int randomY = 10*value;
+            generatePowerups(true,randomX,randomY);
+
         }
 
+
         recycle();
+    }
+    public void generatePowerups(boolean isStatic,int posX,int posY){
+        PowerUp powerUp;
+        Paint powerUpPaint = new Paint();
+        powerUpPaint.setColor(Color.GREEN);
+        Position pos = new Position(posX,posY);
+        if(isStatic){
+            powerUp = new PowerUp(isStatic,pos,0,0, powerUpPaint,23);
+
+        }
+        else {
+            powerUp = new PowerUp(isStatic, pos, 1, 4, powerUpPaint, 23);
+        }
+        mPowerUps.add(powerUp);
+
     }
 
     /**
@@ -151,9 +174,7 @@ public class GameManager {
         }
 
         for(Jet jet:mEnemyJets){
-            //if(!jet.isDead()) {
-                jet.draw(canvas);
-           // }
+            jet.draw(canvas);
         }
         for(PowerUp p:mPowerUps){
             if(p.isVisible()){
