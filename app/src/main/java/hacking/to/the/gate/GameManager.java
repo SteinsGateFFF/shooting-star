@@ -79,11 +79,6 @@ public class GameManager {
         }
 
         mPowerUps = new LinkedList<>();
-        Random rand = new Random();
-        int randomX = rand.nextInt(50)+10;
-        int randonY = rand.nextInt(50)+200;
-        generatePowerups(false,randomX,randonY);
-
     }
 
     /**
@@ -234,8 +229,11 @@ public class GameManager {
         for(Iterator<Jet> it = mEnemyJets.iterator(); it.hasNext();){
             Jet jet = it.next();
             if(jet.shouldRecycle()){
-
                 it.remove();
+                Random rand = new Random();
+                int randomX = rand.nextInt(50)+100;
+                int randonY = rand.nextInt(50)+200;
+                generatePowerups(false,randomX,randonY);
             } else {
                 jet.recycle();
             }
