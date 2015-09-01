@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by Jelly and Huaqi on 2015/8/15.
  */
-public class Jet {
+public class Jet extends CircleCollider{
     /**
      * Position of the center of the circle that represents this jet.
      */
@@ -75,6 +75,7 @@ public class Jet {
      *
      */
     public Jet(float x, float y, float r, Paint p,boolean isPlayer){
+        super(r,new Position(x,y));
         mSelfPos = new Position(x,y);
         mRadius = r;
         mPaint = p;
@@ -126,6 +127,7 @@ public class Jet {
 
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
+        super.setPosition(mSelfPos);
 
         // Shoot bullets.
         if(!mIsPlayer) {
@@ -177,87 +179,34 @@ public class Jet {
         mIsDead = b;
     }
 
-    /**
-     *
-     * @param p
-     * @return true if the jet collides with a power up, otherwise false
-     */
-    private boolean checkHitBox(PowerUp p){
-        Log.d("Check-hitbox:","hit or not");
-        if(!mIsDead&& p.isVisible()){
-
-            double distance = Math.pow(
-                    mSelfPos.getPositionX()-p.getPosition().getPositionX(),
-                    2)
-                    +Math.pow(
-                    mSelfPos.getPositionY()-p.getPosition().getPositionY(),
-                    2);
-            Log.d("distance","jpos.x->"+mSelfPos.getPositionX());
-            Log.d("distance","jpos.y->"+mSelfPos.getPositionY());
-            Log.d("distance","ppos.x->"+p.getPosition().getPositionX());
-            Log.d("distance","ppos.y->"+p.getPosition().getPositionY());
-            Log.d("distance","d->"+distance);
-            double radius = Math.pow(mRadius+p.getRadius(),2);
-            Log.d("distance","r->"+radius);
-            return distance<radius;
-        }
-        return false;
-    }
-    /**
-     *
-     * @param b
-     * @return true if the bullet hit this jet, otherwise false
-     */
-    private boolean checkHitBox(Bullet b){
-        return !mIsDead
-                && (Math.pow(
-                mSelfPos.getPositionX()-b.getSelfPos().getPositionX(),
-                2)
-                +Math.pow(
-                mSelfPos.getPositionY()-b.getSelfPos().getPositionY(),
-                2)
-                < Math.pow(mRadius+b.getRadius(),2));
-
-    }
 
     /**
      * Given a list of bullet, check if the bullet hit this jet, and perform corresponding
      * action, like decreasing Health.
-     * @param bullets
+     * @param b bullet
      */
-    public void checkCollision(List<Bullet> bullets){
-        for(Iterator<Bullet> it = bullets.iterator(); it.hasNext();){
-            Bullet b = it.next();
-            if(checkHitBox(b)){
+    public void doCollision(Bullet b){
 
-                float curHealth = 0;
-                curHealth = getHealth();
-                curHealth -= b.getDamage();
-                if(curHealth <0) {
-                    setDead(true);
-                }
-                setHealth(curHealth);
-                b.recycle();
-            }
+        float curHealth = getHealth();
+        curHealth -= b.getDamage();
+        if(curHealth <0) {
+            setDead(true);
         }
+        setHealth(curHealth);
+        b.recycle();
     }
 
     /**
      * increase HP after colliding with power ups
-     * @param powerups a list of PowerUps
+     * @param p power up
      */
-    public void doCollision(List<PowerUp> powerups){
-        for(Iterator<PowerUp> i = powerups.iterator();i.hasNext();){
-            PowerUp p = i.next();
-            if(checkHitBox(p)){
-                float curHealth = 0;
-                curHealth = getHealth();
-                curHealth += 20;
-                setHealth(curHealth);
-                Log.d("Jet-health:",""+getHealth());
-                p.setVisible(false);
-            }
-        }
+    public void doCollision(PowerUp p){
+
+        float curHealth = getHealth();
+        curHealth += PowerUp.POWERUP_HEAL;
+        setHealth(curHealth);
+        Log.d("Jet-health:",""+getHealth());
+        p.setVisible(false);
     }
 
     /**

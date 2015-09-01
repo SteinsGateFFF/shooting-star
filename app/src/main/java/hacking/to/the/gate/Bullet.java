@@ -6,7 +6,7 @@ import android.graphics.Paint;
 /**
  * Created by Jelly and Huaqi on 2015/8/15.
  */
-public class Bullet {
+public class Bullet extends CircleCollider{
     private Position mSelfPos;
     private Position mDestPos;
 
@@ -25,6 +25,7 @@ public class Bullet {
 
 
     public Bullet(Position pos, float r, Paint paint, float vx, float vy, float damage){
+        super(r,pos);
         mRadius = r;
         mSelfPos = pos;
         mPaint = paint;
@@ -65,6 +66,7 @@ public class Bullet {
             mVelocity = mVelocityPattern.nextVelocity(mVelocity);
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
+        super.setPosition(mSelfPos);
     }
 
     /**

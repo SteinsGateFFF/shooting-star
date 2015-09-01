@@ -10,9 +10,10 @@ import java.util.Random;
 /**
  * Created by Ruiqian on 8/24/2015.
  */
-public class PowerUp {
+public class PowerUp extends CircleCollider{
 
     //declaration of variables
+    public final static int POWERUP_HEAL = 20;
 
     //current position of the power up
     private Position mCurPosition;
@@ -40,6 +41,7 @@ public class PowerUp {
 
     //constructor
     public PowerUp(boolean isStatic,Position pos, float vx, float vy,Paint paint, float r){
+        super(r,pos);
         mIsStatic = isStatic;
         mCurPosition = pos;
         mPaint = paint;
@@ -81,6 +83,7 @@ public class PowerUp {
         changeVelocity();
         mCurPosition = new Position(mCurPosition.getPositionX()+mVelocity.getVelocityX(),
                 mCurPosition.getPositionY()+mVelocity.getVelocityY());
+        super.setPosition(mCurPosition);
     }
     public void changeVelocity(){
         Random r = new Random();

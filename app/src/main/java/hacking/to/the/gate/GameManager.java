@@ -104,24 +104,62 @@ public class GameManager {
     }
 
     /**
+     * detect collision between two circle colliders
+     * @param c1 circle collider one
+     * @param c2 circel collider two
+     * @return true if two collider collided, otherwise false
+     */
+    public boolean detectCollision(CircleCollider c1, CircleCollider c2){
+       Log.d("Position","C1: "+c1.getPosition().getPositionX()+" "+c1.getPosition().getPositionY());
+        return Math.pow(
+                c1.getPosition().getPositionX()-c2.getPosition().getPositionX(),
+                2)
+                +Math.pow(
+                c1.getPosition().getPositionY()-c2.getPosition().getPositionY(),
+                2)
+                < Math.pow(c1.getRadius()+c2.getRadius(),2);
+
+    }
+
+    /**
     * Tick to the next move.
      */
     public void tick(){
 
         if(!mSelfJet.isDead()) {
             mSelfJet.tick();
-            mSelfJet.doCollision(mPowerUps);
+            //mSelfJet.doCollision(mPowerUps);
+            for(Iterator<PowerUp> i = mPowerUps.iterator();i.hasNext();) {
+                PowerUp p = i.next();
+                if(!mSelfJet.isDead()&&p.isVisible()&&detectCollision(mSelfJet,p)){
+                    mSelfJet.doCollision(p);
+                }
+            }
         }
 
 
         for(Jet jet:mEnemyJets){
 
-                mSelfJet.checkCollision(jet.getBullets());
-                jet.checkCollision(mSelfJet.getBullets());
-
+                //mSelfJet.checkCollision(jet.getBullets());
+            for(Iterator<Bullet> it = jet.getBullets().iterator(); it.hasNext();){
+                Bullet b = it.next();
+               if(!mSelfJet.isDead()&&detectCollision(mSelfJet,b)) {
+                   Log.d("collision","hit by enemy's bullet");
+                   mSelfJet.doCollision(b);
+               }
+            }
+               // jet.checkCollision(mSelfJet.getBullets());
+            for(Iterator<Bullet> it = mSelfJet.getBullets().iterator(); it.hasNext();){
+                Bullet b = it.next();
+                if(!jet.isDead()&&detectCollision(jet,b)) {
+                    Log.d("collision","hit by player's bullet");
+                    jet.doCollision(b);
+                }
+            }
                 jet.tick();
 
         }
+
         for(PowerUp p :mPowerUps){
             if(!p.isStatic()){
                 p.movingRandomly();
@@ -136,8 +174,6 @@ public class GameManager {
             generatePowerups(true,randomX,randomY);
 
         }
-
-
         recycle();
     }
     public void generatePowerups(boolean isStatic,int posX,int posY){
