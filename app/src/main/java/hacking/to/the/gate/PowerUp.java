@@ -10,9 +10,16 @@ import java.util.Random;
 /**
  * Created by Ruiqian on 8/24/2015.
  */
-public class PowerUp extends CircleCollider{
+public class PowerUp implements Hittable{
+
+    public CircleCollider getCollider(){
+        return collider;
+    }
 
     //declaration of variables
+
+    private CircleCollider collider;
+
     public final static int POWERUP_HEAL = 20;
 
     //current position of the power up
@@ -41,7 +48,7 @@ public class PowerUp extends CircleCollider{
 
     //constructor
     public PowerUp(boolean isStatic,Position pos, float vx, float vy,Paint paint, float r){
-        super(r,pos);
+        collider = new CircleCollider(r,pos);
         mIsStatic = isStatic;
         mCurPosition = pos;
         mPaint = paint;
@@ -67,25 +74,19 @@ public class PowerUp extends CircleCollider{
         return mIsVisible || mCurPosition.isOutOfScreen((int) mRadius);
     }
 
-    public Position getPosition(){
-        return mCurPosition;
-    }
-
-    public float getRadius(){
-        return mRadius;
-    }
-
     public void setVisible(boolean isVisible){
         mIsVisible = isVisible;
     }
 
-    public void movingRandomly(){
+    public void tick(){
+        if(!mIsStatic){
         changeVelocity();
         mCurPosition = new Position(mCurPosition.getPositionX()+mVelocity.getVelocityX(),
                 mCurPosition.getPositionY()+mVelocity.getVelocityY());
-        super.setPosition(mCurPosition);
+        collider.setPosition(mCurPosition);}
+
     }
-    public void changeVelocity(){
+    private void changeVelocity(){
         Random r = new Random();
         int v = r.nextInt(3)+1;
         mVelocity = new Velocity(v,v*v);

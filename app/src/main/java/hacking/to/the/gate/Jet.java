@@ -11,7 +11,13 @@ import java.util.List;
 /**
  * Created by Jelly and Huaqi on 2015/8/15.
  */
-public class Jet extends CircleCollider{
+public class Jet implements Hittable {
+
+    public CircleCollider getCollider(){
+        return collider;
+    }
+
+    private CircleCollider collider;
     /**
      * Position of the center of the circle that represents this jet.
      */
@@ -75,7 +81,7 @@ public class Jet extends CircleCollider{
      *
      */
     public Jet(float x, float y, float r, Paint p,boolean isPlayer){
-        super(r,new Position(x,y));
+        collider = new CircleCollider(r, new Position(x, y));
         mSelfPos = new Position(x,y);
         mRadius = r;
         mPaint = p;
@@ -86,6 +92,7 @@ public class Jet extends CircleCollider{
         mBullets = new LinkedList<>();
         mGun = Gun.getGun(Gun.GUN_TYPE_DEFAULT);
     }
+
 
     /**
      * Set the gun of this jet to the given type
@@ -127,7 +134,7 @@ public class Jet extends CircleCollider{
 
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
-        super.setPosition(mSelfPos);
+        collider.setPosition(mSelfPos);
 
         // Shoot bullets.
         if(!mIsPlayer) {

@@ -3,7 +3,7 @@ package hacking.to.the.gate;
 /**
  * Created by Ruiqian on 8/31/2015.
  */
-public abstract class CircleCollider {
+public class CircleCollider {
     private Position mPos;
     private float mRadius;
     public CircleCollider(float r, Position pos){
