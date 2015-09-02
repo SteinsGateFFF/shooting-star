@@ -6,6 +6,7 @@ import android.graphics.Paint;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Gun can determines how the bullets are shot from jet.
@@ -78,7 +79,13 @@ public class Gun {
      */
     public final static int GUN_TYPE_SELF_TARGETING_ODD = 1;
 
+    /**
+     * //TODO: Self targeting gun types share certain common things. Sould make a sub class for handle general case.
+     *
+     */
     public final static int GUN_TYPE_SELF_TARGETING_EVEN = 2;
+
+    public final static int GUN_TYPE_RANDOM_SPLIT = 3;
 
     /**
      * Return an instance of gun of given type.
@@ -86,10 +93,10 @@ public class Gun {
      * @return
      */
     public static Gun getGun(int type){
+        // TODO: Need a way to easily distinguish enemy and self.
         Paint p = new Paint();
         switch (type) {
             case GUN_TYPE_DEFAULT:
-
                 p.setColor(Color.WHITE);
                 return new Gun(12, GUN_STYLE_TYPE_NORMAL, 0, 34, p);
 
@@ -101,6 +108,11 @@ public class Gun {
             case GUN_TYPE_SELF_TARGETING_EVEN:
                 p.setColor(Color.RED);
                 return new Gun(12, GUN_STYLE_TYPE_SELF_TARGETING_EVEN, 0, 10,p);
+
+            case GUN_TYPE_RANDOM_SPLIT:
+                p.setColor(Color.YELLOW);
+                return new Gun(30, GUN_STYLE_TYPE_RANDOM_SPLIT,0, 10, p);
+
             default:
                 throw new IllegalArgumentException("Invalid Gun Type");
         }
@@ -121,7 +133,17 @@ public class Gun {
      */
     private final static int GUN_STYLE_TYPE_SELF_TARGETING_ODD = 2;
 
+    /**
+     * Has an initial velocity toward but a few angle off the self jet
+     * Can only be used for enemy jet.
+     */
     private final static int GUN_STYLE_TYPE_SELF_TARGETING_EVEN = 3;
+
+    /**
+     * Burst a few bullets at random angle.
+     * Should only be used for enemy jet.
+     */
+    private final static int GUN_STYLE_TYPE_RANDOM_SPLIT = 4;
 
     /**
      * Determines how the bullets will get generated.
@@ -213,6 +235,34 @@ public class Gun {
                                     mBulletDamage);
                             result.add(b1);
                             result.add(b2);
+
+                        }
+                        return result;
+                    }
+                };
+
+            case GUN_STYLE_TYPE_RANDOM_SPLIT:
+                return new GunStyle() {
+                    @Override
+                    public List<Bullet> generateBullets(Position self, Position target) {
+                        List<Bullet> result = new ArrayList<>();
+                        if(target==null){
+                            // Self targeting must have a target
+                            throw new IllegalArgumentException("Self targeting must have a target");
+                        } else {
+                            // Indicate this is enemy jet
+                            // TODO: Need more explicit indication.
+                            Random random = new Random();
+                            for (int i = 0; i < 5; i++){
+                                int angle = random.nextInt(120);
+                                Bullet b = new Bullet(self,
+                                        10,
+                                        mPaint,
+                                        // TODO: Should get max speed from Bullet or Gun.
+                                        Velocity.getDestinationVelocity(self, target, 20).rotate(angle - 60),
+                                        mBulletDamage);
+                                result.add(b);
+                            }
 
                         }
                         return result;
