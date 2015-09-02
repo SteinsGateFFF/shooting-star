@@ -40,7 +40,7 @@ public class Velocity {
     /**
      *
      * @param degree
-     * @return A new Velocity that rotate by given degree.
+     * @return A new Velocity that rotate by given degree clockwise.
      */
     public Velocity rotate(double degree){
         double radian = Math.toRadians(degree);

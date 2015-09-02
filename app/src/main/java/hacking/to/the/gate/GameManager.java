@@ -72,8 +72,8 @@ public class GameManager {
 
         mEnemyJets = new LinkedList<>();
         for(int i =0; i<5;i++){
-            Jet enemyJet= new Jet((i+1)*mScreenWidth/6,0, 50, p2,false);
-            enemyJet.setGunType(Gun.GUN_TYPE_RANDOM_SPLIT, Bullet.BULLET_STYLE_WORM);
+            Jet enemyJet= new Jet((i+1)*mScreenWidth/6,100, 50, p2,false);
+            enemyJet.setGunType(Gun.GUN_TYPE_SELF_TARGETING_EVEN, Bullet.BULLET_STYLE_SPIRAL);
             mEnemyJets.add(enemyJet);
 
         }

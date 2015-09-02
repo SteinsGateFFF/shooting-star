@@ -167,7 +167,7 @@ public class Gun {
     }
 
     /**
-     *
+     * //TODO: Bullet max speed should not be determined here.
      * @param type Possible types are {@link #GUN_STYLE_TYPE_SELF_TARGETING_ODD} {@link #GUN_STYLE_TYPE_NORMAL} and {@link #GUN_STYLE_TYPE_HOMING}
      * @return the given type of GunStyle
      */
@@ -218,7 +218,7 @@ public class Gun {
                                     10,
                                     mPaint,
                                     // TODO: Should get max speed from Bullet or Gun.
-                                    Velocity.getDestinationVelocity(self, target, 30),
+                                    Velocity.getDestinationVelocity(self, target, 10),
                                     mBulletDamage,
                                     mBulletStyle);
 
@@ -243,7 +243,7 @@ public class Gun {
                                     10,
                                     mPaint,
                                     // TODO: Should get max speed from Bullet or Gun.
-                                    Velocity.getDestinationVelocity(self, target, 20).rotate(5),
+                                    Velocity.getDestinationVelocity(self, target, 10).rotate(5),
                                     mBulletDamage,
                                     mBulletStyle);
 
@@ -280,7 +280,7 @@ public class Gun {
                                         10,
                                         mPaint,
                                         // TODO: Should get max speed from Bullet or Gun.
-                                        Velocity.getDestinationVelocity(self, target, 20).rotate(angle - 60),
+                                        Velocity.getDestinationVelocity(self, target, 15).rotate(angle - 60),
                                         mBulletDamage,
                                         mBulletStyle);
                                 result.add(b);

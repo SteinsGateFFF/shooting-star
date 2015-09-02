@@ -28,6 +28,8 @@ public class Bullet {
 
     public static final int BULLET_STYLE_WORM = 1;
 
+    public static final int BULLET_STYLE_SPIRAL = 2;
+
     public Bullet(Position pos, float r, Paint paint, Velocity v, float damage, int bulletStyle){
         mRadius = r;
         mSelfPos = pos;
@@ -35,9 +37,13 @@ public class Bullet {
         mVelocity = v;
         mMaxSpeed = 20;
         mDamage = damage;
+        //TODO: Need to support multiple patterns.
         switch (bulletStyle){
             case BULLET_STYLE_WORM:
                 mVelocityPattern = VelocityPatternFactory.produce(VelocityPattern.WORM, mVelocity);
+                break;
+            case BULLET_STYLE_SPIRAL:
+                mVelocityPattern = VelocityPatternFactory.produce(VelocityPattern.SPIRAL, mVelocity);
                 break;
         }
     }
