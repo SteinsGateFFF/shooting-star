@@ -68,12 +68,12 @@ public class GameManager {
         mFPSPaint.setColor(Color.WHITE);
 
         mSelfJet = new Jet(mScreenWidth/2,mScreenHeight-50,50,p,true);
-        mSelfJet.setGunType(Gun.GUN_TYPE_DEFAULT);
+        mSelfJet.setGunType(Gun.GUN_TYPE_DEFAULT, Bullet.BULLET_STYLE_DEFAULT);
 
         mEnemyJets = new LinkedList<>();
         for(int i =0; i<5;i++){
-            Jet enemyJet= new Jet((i+1)*mScreenWidth/6,0, 50, p2,false);
-            enemyJet.setGunType(Gun.GUN_TYPE_SELF_TARGETING);
+            Jet enemyJet= new Jet((i+1)*mScreenWidth/6,100, 50, p2,false);
+            enemyJet.setGunType(Gun.GUN_TYPE_SELF_TARGETING_EVEN, Bullet.BULLET_STYLE_SPIRAL);
             mEnemyJets.add(enemyJet);
 
         }

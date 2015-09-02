@@ -83,15 +83,15 @@ public class Jet {
         mHasDestination = false;
         mIsPlayer = isPlayer;
         mBullets = new LinkedList<>();
-        mGun = Gun.getGun(Gun.GUN_TYPE_DEFAULT);
+        mGun = Gun.getGun(Gun.GUN_TYPE_DEFAULT,Bullet.BULLET_STYLE_DEFAULT);
     }
 
     /**
      * Set the gun of this jet to the given type
      * @param gunType
      */
-    public void setGunType(int gunType){
-        mGun = Gun.getGun(gunType);
+    public void setGunType(int gunType, int bulletStyle){
+        mGun = Gun.getGun(gunType, bulletStyle);
     }
 
 
