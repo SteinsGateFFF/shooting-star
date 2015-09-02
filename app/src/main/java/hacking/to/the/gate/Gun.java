@@ -76,7 +76,9 @@ public class Gun {
      * Bullets that has the initial velocity toward self jet.
      * Can only be used for enemy jet.
      */
-    public final static int GUN_TYPE_SELF_TARGETING = 1;
+    public final static int GUN_TYPE_SELF_TARGETING_ODD = 1;
+
+    public final static int GUN_TYPE_SELF_TARGETING_EVEN = 2;
 
     /**
      * Return an instance of gun of given type.
@@ -91,11 +93,14 @@ public class Gun {
                 p.setColor(Color.WHITE);
                 return new Gun(12, GUN_STYLE_TYPE_NORMAL, 0, 34, p);
 
-            case GUN_TYPE_SELF_TARGETING:
+            case GUN_TYPE_SELF_TARGETING_ODD:
 
                 p.setColor(Color.RED);
-                return new Gun(12, GUN_STYLE_TYPE_SELF_TARGETING, 0, 10,p);
+                return new Gun(12, GUN_STYLE_TYPE_SELF_TARGETING_ODD, 0, 10,p);
 
+            case GUN_TYPE_SELF_TARGETING_EVEN:
+                p.setColor(Color.RED);
+                return new Gun(12, GUN_STYLE_TYPE_SELF_TARGETING_EVEN, 0, 10,p);
             default:
                 throw new IllegalArgumentException("Invalid Gun Type");
         }
@@ -105,16 +110,18 @@ public class Gun {
     /**
      * Straight Bullet.
      */
-    public final static int GUN_STYLE_TYPE_NORMAL = 0;
+    private final static int GUN_STYLE_TYPE_NORMAL = 0;
     /**
      * Keeps tracking the target
      */
-    public final static int GUN_STYLE_TYPE_HOMING = 1;
+    private final static int GUN_STYLE_TYPE_HOMING = 1;
     /**
      * Has an initial velocity toward self jet.
      * Can only be used for enemy jet.
      */
-    public final static int GUN_STYLE_TYPE_SELF_TARGETING = 2;
+    private final static int GUN_STYLE_TYPE_SELF_TARGETING_ODD = 2;
+
+    private final static int GUN_STYLE_TYPE_SELF_TARGETING_EVEN = 3;
 
     /**
      * Determines how the bullets will get generated.
@@ -131,7 +138,7 @@ public class Gun {
 
     /**
      *
-     * @param type Possible types are {@link #GUN_STYLE_TYPE_SELF_TARGETING} {@link #GUN_STYLE_TYPE_NORMAL} and {@link #GUN_STYLE_TYPE_HOMING}
+     * @param type Possible types are {@link #GUN_STYLE_TYPE_SELF_TARGETING_ODD} {@link #GUN_STYLE_TYPE_NORMAL} and {@link #GUN_STYLE_TYPE_HOMING}
      * @return the given type of GunStyle
      */
     private GunStyle getGunStyle(int type) {
@@ -144,18 +151,18 @@ public class Gun {
                         if(target == null) {
                             // Indicate this is self jet
                             // TODO: Need more explicit indication.
-                            result.add(new Bullet(self,10,mPaint,0,-20, mBulletDamage));
+                            result.add(new Bullet(self,10,mPaint,new Velocity(0,-20), mBulletDamage));
 
                         } else {
                             // Indicate this is enemy jet
                             // TODO: Need more explicit indication.
-                            result.add(new Bullet(self,10,mPaint,0,20, mBulletDamage));
+                            result.add(new Bullet(self,10,mPaint,new Velocity(0,20), mBulletDamage));
                         }
                         return result;
 
                     }
                 };
-            case GUN_STYLE_TYPE_SELF_TARGETING:
+            case GUN_STYLE_TYPE_SELF_TARGETING_ODD:
                 return new GunStyle() {
                     @Override
                     public List<Bullet> generateBullets(Position self, Position target) {
@@ -167,9 +174,46 @@ public class Gun {
                         } else {
                             // Indicate this is enemy jet
                             // TODO: Need more explicit indication.
-                            Bullet b = new Bullet(self,10,mPaint,0,20, mBulletDamage);
-                            b.setDestination(target,true);
+                            Bullet b = new Bullet(self,
+                                    10,
+                                    mPaint,
+                                    // TODO: Should get max speed from Bullet or Gun.
+                                    Velocity.getDestinationVelocity(self, target, 20),
+                                    mBulletDamage);
+
                             result.add(b);
+                        }
+                        return result;
+                    }
+                };
+
+            case GUN_STYLE_TYPE_SELF_TARGETING_EVEN:
+                return new GunStyle() {
+                    @Override
+                    public List<Bullet> generateBullets(Position self, Position target) {
+                        List<Bullet> result = new ArrayList<>();
+                        if(target==null){
+                            // Self targeting must have a target
+                            throw new IllegalArgumentException("Self targeting must have a target");
+                        } else {
+                            // Indicate this is enemy jet
+                            // TODO: Need more explicit indication.
+                            Bullet b1 = new Bullet(self,
+                                    10,
+                                    mPaint,
+                                    // TODO: Should get max speed from Bullet or Gun.
+                                    Velocity.getDestinationVelocity(self, target, 20).rotate(5),
+                                    mBulletDamage);
+
+                            Bullet b2 = new Bullet(self,
+                                    10,
+                                    mPaint,
+                                    // TODO: Should get max speed from Bullet or Gun.
+                                    Velocity.getDestinationVelocity(self, target, 20).rotate(-5),
+                                    mBulletDamage);
+                            result.add(b1);
+                            result.add(b2);
+
                         }
                         return result;
                     }

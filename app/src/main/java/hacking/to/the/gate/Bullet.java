@@ -8,14 +8,16 @@ import android.graphics.Paint;
  */
 public class Bullet {
     private Position mSelfPos;
-    private Position mDestPos;
+
 
     private float mRadius;
     private Velocity mVelocity;
     private Paint mPaint;
     private Velocity.VelocityPattern mVelocityPattern;
+    /**
+     * TODO: MaxSpeed actually does not guarantee the max speed.
+     */
     private float mMaxSpeed;
-    private boolean mHasDestination;
     private boolean shouldRecycle = false;
     /**
      * Damage that should be dealt to jet when is collided.
@@ -24,13 +26,12 @@ public class Bullet {
 
 
 
-    public Bullet(Position pos, float r, Paint paint, float vx, float vy, float damage){
+    public Bullet(Position pos, float r, Paint paint, Velocity v, float damage){
         mRadius = r;
         mSelfPos = pos;
         mPaint = paint;
-        mVelocity = new Velocity(vx,vy);
+        mVelocity = v;
         mMaxSpeed = 20;
-        mHasDestination = false;
         mDamage = damage;
     }
 
@@ -70,12 +71,10 @@ public class Bullet {
     /**
      * Set the destination for the bullet
      * @param pos
-     * @param hasDestination move towards the destination if it is true, otherwise stay.
      */
-    public void setDestination(Position pos, boolean hasDestination ){
-        mDestPos = pos;
-        mHasDestination = hasDestination;
-        mVelocity = Velocity.getDestinationVelocity(mSelfPos,mDestPos,mMaxSpeed);
+    public void setDestination(Position pos){
+
+        mVelocity = Velocity.getDestinationVelocity(mSelfPos,pos,mMaxSpeed);
     }
 
 

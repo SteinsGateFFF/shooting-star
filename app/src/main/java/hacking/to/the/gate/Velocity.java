@@ -7,18 +7,18 @@ package hacking.to.the.gate;
  * Created by Jelly and Huaqi on 2015/8/16.
  */
 public class Velocity {
-    private final float mVelocityX;
-    private final float mVelocityY;
-    public Velocity(float x, float y){
+    private final double mVelocityX;
+    private final double mVelocityY;
+    public Velocity(double x, double y){
         mVelocityX = x;
         mVelocityY = y;
     }
 
-    public float getVelocityX() {
+    public double getVelocityX() {
         return mVelocityX;
     }
 
-    public float getVelocityY() {
+    public double getVelocityY() {
         return mVelocityY;
     }
 
@@ -27,13 +27,25 @@ public class Velocity {
             // Edge case fix
             return new Velocity(0,maxSpeed);
         }
-        float ratio = (dest.getPositionY() - self.getPositionY())/(dest.getPositionX() - self.getPositionX());
-        float vx = maxSpeed*Math.abs((float) Math.pow(1 / (1 + Math.pow(ratio, 2)), 0.5));
+        double ratio = (dest.getPositionY() - self.getPositionY())/(dest.getPositionX() - self.getPositionX());
+        double vx = maxSpeed*Math.abs((float) Math.pow(1 / (1 + Math.pow(ratio, 2)), 0.5));
         if(dest.getPositionX()<self.getPositionX()){
             vx*=-1;
         }
-        float vy = ratio * vx;
+        double vy = ratio * vx;
 
+        return new Velocity(vx,vy);
+    }
+
+    /**
+     *
+     * @param degree
+     * @return A new Velocity that rotate by given degree.
+     */
+    public Velocity rotate(double degree){
+        double radian = Math.toRadians(degree);
+        double vx = mVelocityX * Math.cos(radian) - mVelocityY * Math.sin(radian);
+        double vy = mVelocityX * Math.sin(radian) + mVelocityY * Math.cos(radian);
         return new Velocity(vx,vy);
     }
 

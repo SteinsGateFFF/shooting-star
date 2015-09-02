@@ -6,19 +6,21 @@ import android.graphics.Rect;
  * Created by Jelly and Huaqi on 2015/8/16.
  */
 public class Position {
-    private final float mPositionX;
-    private final float mPositionY;
-    public Position(float x, float y){
+    private final double mPositionX;
+    private final double mPositionY;
+    public Position(double x, double y){
         mPositionX = x;
         mPositionY = y;
     }
 
     public float getPositionX() {
-        return mPositionX;
+        return (float)mPositionX;
     }
 
     public float getPositionY() {
-        return mPositionY;
+
+        return (float)mPositionY;
+
     }
 
     /**
