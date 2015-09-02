@@ -13,7 +13,7 @@ public class Bullet {
     private float mRadius;
     private Velocity mVelocity;
     private Paint mPaint;
-    private Velocity.VelocityPattern mVelocityPattern;
+    private VelocityPattern mVelocityPattern;
     /**
      * TODO: MaxSpeed actually does not guarantee the max speed.
      */
@@ -24,22 +24,31 @@ public class Bullet {
      */
     private float mDamage;
 
+    public static final int BULLET_STYLE_DEFAULT = 0;
 
+    public static final int BULLET_STYLE_WORM = 1;
 
-    public Bullet(Position pos, float r, Paint paint, Velocity v, float damage){
+    public Bullet(Position pos, float r, Paint paint, Velocity v, float damage, int bulletStyle){
         mRadius = r;
         mSelfPos = pos;
         mPaint = paint;
         mVelocity = v;
         mMaxSpeed = 20;
         mDamage = damage;
+        switch (bulletStyle){
+            case BULLET_STYLE_WORM:
+                mVelocityPattern = VelocityPatternFactory.produce(VelocityPattern.WORM, mVelocity);
+                break;
+        }
     }
+
+
 
     public float getDamage(){
         return mDamage;
     }
 
-    public void setVelocityPattern(Velocity.VelocityPattern pattern){
+    public void setVelocityPattern(VelocityPattern pattern){
         mVelocityPattern = pattern;
     }
 

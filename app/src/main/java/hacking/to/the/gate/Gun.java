@@ -35,6 +35,8 @@ public class Gun {
      */
     private Paint mPaint = null;
 
+    private int mBulletStyle = 0;
+
     /**
      * Construct a Gun instance.
      * @param shootingInterval
@@ -48,7 +50,7 @@ public class Gun {
         mGunStyle = getGunStyle(gunStyle);
         mBulletDamage = bulletDamage;
         mPaint = paint;
-
+        mBulletStyle = bulletStyle;
     }
 
 
@@ -75,7 +77,7 @@ public class Gun {
     public final static int GUN_TYPE_DEFAULT = 0;
     /**
      * Bullets that has the initial velocity toward self jet.
-     * Can only be used for enemy jet.
+     * Need a target
      */
     public final static int GUN_TYPE_SELF_TARGETING_ODD = 1;
 
@@ -85,33 +87,39 @@ public class Gun {
      */
     public final static int GUN_TYPE_SELF_TARGETING_EVEN = 2;
 
+    /**
+     * Burst a few bullets at random angle.
+     * Need a target.
+     */
     public final static int GUN_TYPE_RANDOM_SPLIT = 3;
+
+    public final static int GUN_TYPE_WORM = 4;
 
     /**
      * Return an instance of gun of given type.
      * @param type
      * @return
      */
-    public static Gun getGun(int type){
+    public static Gun getGun(int type, int bulletStyle){
         // TODO: Need a way to easily distinguish enemy and self.
         Paint p = new Paint();
         switch (type) {
             case GUN_TYPE_DEFAULT:
                 p.setColor(Color.WHITE);
-                return new Gun(12, GUN_STYLE_TYPE_NORMAL, 0, 34, p);
+                return new Gun(12, GUN_STYLE_TYPE_NORMAL, bulletStyle, 34, p);
 
             case GUN_TYPE_SELF_TARGETING_ODD:
 
                 p.setColor(Color.RED);
-                return new Gun(12, GUN_STYLE_TYPE_SELF_TARGETING_ODD, 0, 10,p);
+                return new Gun(12, GUN_STYLE_TYPE_SELF_TARGETING_ODD, bulletStyle, 10,p);
 
             case GUN_TYPE_SELF_TARGETING_EVEN:
                 p.setColor(Color.RED);
-                return new Gun(12, GUN_STYLE_TYPE_SELF_TARGETING_EVEN, 0, 10,p);
+                return new Gun(12, GUN_STYLE_TYPE_SELF_TARGETING_EVEN, bulletStyle, 10,p);
 
             case GUN_TYPE_RANDOM_SPLIT:
                 p.setColor(Color.YELLOW);
-                return new Gun(30, GUN_STYLE_TYPE_RANDOM_SPLIT,0, 10, p);
+                return new Gun(60, GUN_STYLE_TYPE_RANDOM_SPLIT,bulletStyle, 10, p);
 
             default:
                 throw new IllegalArgumentException("Invalid Gun Type");
@@ -173,12 +181,22 @@ public class Gun {
                         if(target == null) {
                             // Indicate this is self jet
                             // TODO: Need more explicit indication.
-                            result.add(new Bullet(self,10,mPaint,new Velocity(0,-20), mBulletDamage));
+                            result.add(new Bullet(self,
+                                    10,
+                                    mPaint,
+                                    new Velocity(0,-20),
+                                    mBulletDamage,
+                                    mBulletStyle));
 
                         } else {
                             // Indicate this is enemy jet
                             // TODO: Need more explicit indication.
-                            result.add(new Bullet(self,10,mPaint,new Velocity(0,20), mBulletDamage));
+                            result.add(new Bullet(self,
+                                    10,
+                                    mPaint,
+                                    new Velocity(0,20),
+                                    mBulletDamage,
+                                    mBulletStyle));
                         }
                         return result;
 
@@ -200,8 +218,9 @@ public class Gun {
                                     10,
                                     mPaint,
                                     // TODO: Should get max speed from Bullet or Gun.
-                                    Velocity.getDestinationVelocity(self, target, 20),
-                                    mBulletDamage);
+                                    Velocity.getDestinationVelocity(self, target, 30),
+                                    mBulletDamage,
+                                    mBulletStyle);
 
                             result.add(b);
                         }
@@ -225,14 +244,16 @@ public class Gun {
                                     mPaint,
                                     // TODO: Should get max speed from Bullet or Gun.
                                     Velocity.getDestinationVelocity(self, target, 20).rotate(5),
-                                    mBulletDamage);
+                                    mBulletDamage,
+                                    mBulletStyle);
 
                             Bullet b2 = new Bullet(self,
                                     10,
                                     mPaint,
                                     // TODO: Should get max speed from Bullet or Gun.
                                     Velocity.getDestinationVelocity(self, target, 20).rotate(-5),
-                                    mBulletDamage);
+                                    mBulletDamage,
+                                    mBulletStyle);
                             result.add(b1);
                             result.add(b2);
 
@@ -260,7 +281,8 @@ public class Gun {
                                         mPaint,
                                         // TODO: Should get max speed from Bullet or Gun.
                                         Velocity.getDestinationVelocity(self, target, 20).rotate(angle - 60),
-                                        mBulletDamage);
+                                        mBulletDamage,
+                                        mBulletStyle);
                                 result.add(b);
                             }
 

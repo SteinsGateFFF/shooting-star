@@ -49,6 +49,17 @@ public class Velocity {
         return new Velocity(vx,vy);
     }
 
+    /**
+     * Keeps the same velocity, but multiple the speed by rate.
+     * @param rate
+     * @return
+     */
+    public Velocity change(double rate){
+        double vx = mVelocityX * rate;
+        double vy = mVelocityY * rate;
+        return new Velocity(vx,vy);
+    }
+
     public float getSpeed() {
         return (float) Math.pow(Math.pow(mVelocityX,2)+Math.pow(mVelocityY,2),0.5);
     }
@@ -63,8 +74,6 @@ public class Velocity {
         return "Vx="+mVelocityX+" Vy="+mVelocityY;
     }
 
-    public static interface VelocityPattern {
-        Velocity nextVelocity(Velocity v);
-    }
+
 
 }
