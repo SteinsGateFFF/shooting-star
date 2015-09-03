@@ -5,13 +5,22 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 
 import java.util.Iterator;
+import java.util.Random;
 
 /**
  * Created by Ruiqian on 8/24/2015.
  */
-public class PowerUp {
+public class PowerUp implements Hittable{
+
+    public CircleCollider getCollider(){
+        return collider;
+    }
 
     //declaration of variables
+
+    private CircleCollider collider;
+
+    public final static int POWERUP_HEAL = 20;
 
     //current position of the power up
     private Position mCurPosition;
@@ -39,6 +48,7 @@ public class PowerUp {
 
     //constructor
     public PowerUp(boolean isStatic,Position pos, float vx, float vy,Paint paint, float r){
+        collider = new CircleCollider(r,pos);
         mIsStatic = isStatic;
         mCurPosition = pos;
         mPaint = paint;
@@ -64,15 +74,24 @@ public class PowerUp {
         return mIsVisible || mCurPosition.isOutOfScreen((int) mRadius);
     }
 
-    public Position getPosition(){
-        return mCurPosition;
-    }
-
-    public float getRadius(){
-        return mRadius;
-    }
-
     public void setVisible(boolean isVisible){
         mIsVisible = isVisible;
+    }
+
+    public void tick(){
+        if(!mIsStatic){
+        changeVelocity();
+        mCurPosition = new Position(mCurPosition.getPositionX()+mVelocity.getVelocityX(),
+                mCurPosition.getPositionY()+mVelocity.getVelocityY());
+        collider.setPosition(mCurPosition);}
+
+    }
+    private void changeVelocity(){
+        Random r = new Random();
+        int v = r.nextInt(3)+1;
+        mVelocity = new Velocity(v,v*v);
+    }
+    public boolean isStatic(){
+        return mIsStatic;
     }
 }
