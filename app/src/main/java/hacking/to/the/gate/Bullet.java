@@ -6,7 +6,8 @@ import android.graphics.Paint;
 /**
  * Created by Jelly and Huaqi on 2015/8/15.
  */
-public class Bullet {
+public class Bullet implements Hittable{
+    private CircleCollider collider;
     private Position mSelfPos;
 
 
@@ -29,8 +30,13 @@ public class Bullet {
     public static final int BULLET_STYLE_WORM = 1;
 
     public static final int BULLET_STYLE_SPIRAL = 2;
-
+	
+	public CircleCollider getCollider(){
+        return collider;
+    }
     public Bullet(Position pos, float r, Paint paint, Velocity v, float damage, int bulletStyle){
+    
+        collider = new CircleCollider(r,pos);
         mRadius = r;
         mSelfPos = pos;
         mPaint = paint;
@@ -81,6 +87,7 @@ public class Bullet {
             mVelocity = mVelocityPattern.nextVelocity(mVelocity);
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
+        collider.setPosition(mSelfPos);
     }
 
     /**

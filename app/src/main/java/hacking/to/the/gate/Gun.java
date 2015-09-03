@@ -109,7 +109,6 @@ public class Gun {
                 return new Gun(12, GUN_STYLE_TYPE_NORMAL, bulletStyle, 34, p);
 
             case GUN_TYPE_SELF_TARGETING_ODD:
-
                 p.setColor(Color.RED);
                 return new Gun(12, GUN_STYLE_TYPE_SELF_TARGETING_ODD, bulletStyle, 10,p);
 
