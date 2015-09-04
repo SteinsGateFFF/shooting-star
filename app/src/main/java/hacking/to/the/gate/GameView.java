@@ -2,16 +2,11 @@ package hacking.to.the.gate;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -19,7 +14,7 @@ import java.util.List;
  */
 public class GameView extends SurfaceView {
     private SurfaceHolder holder;
-    private GameLoopThread gameLoopThread;
+    private GameLoopTask mGameLoopTask;
 
     public GameView(Context context) {
         super(context);
@@ -43,21 +38,34 @@ public class GameView extends SurfaceView {
         return true;
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if(keyCode==KeyEvent.KEYCODE_VOLUME_DOWN || keyCode==KeyEvent.KEYCODE_VOLUME_UP){
+            mGameLoopTask.toggle();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     /**
-     * Bind the {@link hacking.to.the.gate.GameLoopThread} with {@link android.view.SurfaceHolder.Callback}.
-     * So that when the surface is created, the {@link hacking.to.the.gate.GameLoopThread} is started,
-     * and when the surface is destroyed, the {@link hacking.to.the.gate.GameLoopThread} is stopped.
+     * Bind the {@link GameLoopTask} with {@link android.view.SurfaceHolder.Callback}.
+     * So that when the surface is created, the {@link GameLoopTask} is started,
+     * and when the surface is destroyed, the {@link GameLoopTask} is stopped.
      *
      *TODO: Should change the control flow to support game pause. Also the join() method will cause unexpected crash.
      */
     private void setup(){
         holder = getHolder();
+        mGameLoopTask = new GameLoopTask(this);
+        mGameLoopTask.execute();
         holder.addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                gameLoopThread.setRunning(true);
-                gameLoopThread.start();
+                Canvas c = holder.lockCanvas();
+                if(c==null) return;
+                GameManager.getInstance().draw(c);
+                holder.unlockCanvasAndPost(c);
             }
 
             @Override
@@ -67,21 +75,9 @@ public class GameView extends SurfaceView {
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-                boolean retry = true;
-                gameLoopThread.setRunning(false);
-                while(retry){
-                    try{
-                        gameLoopThread.join();
-                        retry = false;
-                    }catch(InterruptedException e){
-
-                    }
-                }
-
+                mGameLoopTask.pause();
             }
         });
-
-        gameLoopThread = new GameLoopThread(this);
     }
 
     @Override
@@ -93,12 +89,10 @@ public class GameView extends SurfaceView {
     }
 
 
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
     }
-
 
 
 }
