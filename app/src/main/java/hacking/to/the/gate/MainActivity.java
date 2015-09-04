@@ -20,18 +20,10 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        /**
+         * Since SurfaceView cannot gain focus. This is the only way to forward KeyEvent.
+         */
         return mGameView.onKeyDown(keyCode,event);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        
-    }
 }

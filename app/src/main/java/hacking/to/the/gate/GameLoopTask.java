@@ -16,6 +16,9 @@ public class GameLoopTask extends AsyncTask<Void,Void,Void>{
     private final String TAG = "GameLoopThread";
     private GameView view;
     private boolean mIsPaused = true;
+    /**
+     * Magic Prince Kiss.
+     */
     private Object mLock = new Object();
     public GameLoopTask(GameView view){
         this.view = view;
@@ -35,6 +38,7 @@ public class GameLoopTask extends AsyncTask<Void,Void,Void>{
             synchronized (mLock) {
                 mIsPaused = false;
                 mLock.notify();
+                GameManager.getInstance().setPause(false);
             }
         }
 
@@ -43,6 +47,7 @@ public class GameLoopTask extends AsyncTask<Void,Void,Void>{
     public void pause(){
         if(!mIsPaused) {
             mIsPaused = true;
+            GameManager.getInstance().setPause(true);
         }
     }
 
@@ -53,6 +58,7 @@ public class GameLoopTask extends AsyncTask<Void,Void,Void>{
             if(mIsPaused){
                 synchronized (mLock) {
                     try {
+                        // Wait for the kiss.
                         mLock.wait();
                     } catch (InterruptedException e) {
                         Log.d(TAG, "Interrupted!");
