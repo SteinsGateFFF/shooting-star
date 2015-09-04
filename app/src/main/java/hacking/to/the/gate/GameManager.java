@@ -6,6 +6,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.Button;
+
 import java.util.Random;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -21,6 +23,14 @@ import java.util.List;
  */
 public class GameManager {
     private static GameManager instance;
+
+    private boolean mIsPaused = true;
+
+    private long lastTimestamp = 0;
+    private Paint mFPSPaint;
+    private Paint mPausePaint;
+    private Paint mResumeHintPaint;
+
     private GameManager(){
     };
     public static GameManager getInstance(){
@@ -66,6 +76,14 @@ public class GameManager {
         p.setColor(Color.WHITE);
         mFPSPaint = new Paint();
         mFPSPaint.setColor(Color.WHITE);
+
+        mPausePaint = new Paint();
+        mPausePaint.setColor(Color.WHITE);
+        mPausePaint.setTextSize(80);
+        mPausePaint.setTextAlign(Paint.Align.CENTER);
+
+        mResumeHintPaint = new Paint(mPausePaint);
+        mResumeHintPaint.setTextSize(50);
 
         mSelfJet = new Jet(mScreenWidth/2,mScreenHeight-50,50,p,true);
         mSelfJet.setGunType(Gun.GUN_TYPE_DEFAULT, Bullet.BULLET_STYLE_DEFAULT);
@@ -197,6 +215,16 @@ public class GameManager {
                 p.draw(canvas);
             }
         }
+
+        if(mIsPaused){
+            canvas.drawText("Paused",mScreenWidth/2,mScreenHeight/2,mPausePaint);
+            canvas.drawText("Press Volumn Button to Resume",mScreenWidth/2,80+mScreenHeight/2,mResumeHintPaint);
+
+        }
+    }
+
+    public void setPause(boolean isPaused){
+        mIsPaused = isPaused;
     }
 
     public Rect getScreenRect(){
@@ -218,7 +246,7 @@ public class GameManager {
                 Random rand = new Random();
                 int randomX = rand.nextInt(50)+100;
                 int randonY = rand.nextInt(50)+200;
-                generatePowerups(false,randomX,randonY);
+                generatePowerups(false, randomX, randonY);
             } else {
                 jet.recycle();
             }
@@ -232,8 +260,7 @@ public class GameManager {
         }
     }
 
-    private long lastTimestamp = 0;
-    private Paint mFPSPaint;
+
 
     /**
      * This will measure and display the FPS on the left top corner.
