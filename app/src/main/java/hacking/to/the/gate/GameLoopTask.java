@@ -15,7 +15,7 @@ import java.util.Objects;
 public class GameLoopTask extends AsyncTask<Void,Void,Void>{
     private final String TAG = "GameLoopThread";
     private GameView view;
-    private boolean mIsPaused = true;
+    private boolean mIsPaused = false;
     /**
      * Magic Prince Kiss.
      */
@@ -38,7 +38,6 @@ public class GameLoopTask extends AsyncTask<Void,Void,Void>{
             synchronized (mLock) {
                 mIsPaused = false;
                 mLock.notify();
-                GameManager.getInstance().setPause(false);
             }
         }
 
@@ -47,7 +46,6 @@ public class GameLoopTask extends AsyncTask<Void,Void,Void>{
     public void pause(){
         if(!mIsPaused) {
             mIsPaused = true;
-            GameManager.getInstance().setPause(true);
         }
     }
 

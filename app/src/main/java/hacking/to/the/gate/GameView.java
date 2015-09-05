@@ -42,7 +42,8 @@ public class GameView extends SurfaceView {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
         if(keyCode==KeyEvent.KEYCODE_VOLUME_DOWN || keyCode==KeyEvent.KEYCODE_VOLUME_UP){
-            mGameLoopTask.toggle();
+//            mGameLoopTask.toggle();
+            GameManager.getInstance().toggleState();
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -66,6 +67,8 @@ public class GameView extends SurfaceView {
                 if(c==null) return;
                 GameManager.getInstance().draw(c);
                 holder.unlockCanvasAndPost(c);
+                mGameLoopTask.resume();
+
             }
 
             @Override
@@ -75,7 +78,9 @@ public class GameView extends SurfaceView {
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
+                GameManager.getInstance().pause();
                 mGameLoopTask.pause();
+
             }
         });
     }

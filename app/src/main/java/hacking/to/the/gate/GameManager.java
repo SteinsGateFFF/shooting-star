@@ -6,7 +6,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.widget.Button;
 
 import java.util.Random;
 import java.util.Iterator;
@@ -24,12 +23,51 @@ import java.util.List;
 public class GameManager {
     private static GameManager instance;
 
-    private boolean mIsPaused = true;
+
+    /**
+     * Initial State.
+     */
+    public static final int STATE_NOT_INIT = -1;
+
+    /**
+     * State that the screen dimensions have been initialized.
+     */
+    public static final int STATE_INIT = 0;
+    /**
+     * State that all the game resources have been loaded.
+     */
+    public static final int STATE_CREATED = 1;
+    /**
+     * State that time flows.
+     */
+    public static final int STATE_STARTED = 2;
+    /**
+     * State that time stops.
+     */
+    public static final int STATE_PAUSED = 3;
+    /**
+     * State when all lives have been used up.
+     */
+    public static final int STATE_GAME_OVER = 4;
+    /**
+     * State when player wins the game.
+     * TODO: Not implemented yet.
+     */
+    public static final int STATE_GAME_WIN = 5;
+    /**
+     * Describe the current state of the game.
+     */
+    private int mGameState = STATE_NOT_INIT;
+
+    private String mGameStateText;
+    private String mGameHintText;
 
     private long lastTimestamp = 0;
     private Paint mFPSPaint;
-    private Paint mPausePaint;
-    private Paint mResumeHintPaint;
+    private Paint mStatePaint;
+    private Paint mHintPaint;
+    private Paint mEnemyJetPaint;
+    private Paint mSelfJetPaint;
 
     private GameManager(){
     };
@@ -70,28 +108,37 @@ public class GameManager {
         mScreenWidth = screenWidht;
         mScreenHeight = screenHeight;
         mScreenRect = new Rect(0,0,(int)mScreenWidth,(int)mScreenHeight);
-        Paint p = new Paint();
-        Paint p2 = new Paint();
-        p2.setColor(Color.RED);
-        p.setColor(Color.WHITE);
+        mEnemyJetPaint = new Paint();
+        mSelfJetPaint = new Paint();
+        mEnemyJetPaint.setColor(Color.RED);
+        mSelfJetPaint.setColor(Color.WHITE);
         mFPSPaint = new Paint();
         mFPSPaint.setColor(Color.WHITE);
 
-        mPausePaint = new Paint();
-        mPausePaint.setColor(Color.WHITE);
-        mPausePaint.setTextSize(80);
-        mPausePaint.setTextAlign(Paint.Align.CENTER);
+        mStatePaint = new Paint();
+        mStatePaint.setColor(Color.WHITE);
+        mStatePaint.setTextSize(80);
+        mStatePaint.setTextAlign(Paint.Align.CENTER);
 
-        mResumeHintPaint = new Paint(mPausePaint);
-        mResumeHintPaint.setTextSize(50);
+        mHintPaint = new Paint(mStatePaint);
+        mHintPaint.setTextSize(50);
 
-        mSelfJet = new Jet(mScreenWidth/2,mScreenHeight-50,50,p,true);
+        onStateChange(STATE_INIT);
+    }
+
+    /**
+     * Create self jet and enemy jets.
+     * TODO: Should be able to load from a predefined game file.
+     */
+    public void createGame(){
+        mSelfJet = new Jet(mScreenWidth/2,mScreenHeight-50,50,mSelfJetPaint,true);
         mSelfJet.setGunType(Gun.GUN_TYPE_DEFAULT, Bullet.BULLET_STYLE_DEFAULT);
 
         mEnemyJets = new LinkedList<>();
+
         for(int i =0; i<5;i++){
-            Jet enemyJet= new Jet((i+1)*mScreenWidth/6,100, 50, p2,false);
-            enemyJet.setGunType(Gun.GUN_TYPE_SELF_TARGETING_EVEN, Bullet.BULLET_STYLE_SPIRAL);
+            Jet enemyJet= new Jet((i+1)*mScreenWidth/6,100, 50, mEnemyJetPaint,false);
+            enemyJet.setGunType(Gun.GUN_TYPE_SELF_TARGETING_EVEN, Bullet.BULLET_STYLE_WORM);
             mEnemyJets.add(enemyJet);
 
         }
@@ -108,10 +155,14 @@ public class GameManager {
         {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
-                mSelfJet.setDestination(event.getX(),event.getY(),true);
+                if(mSelfJet!=null) {
+                    mSelfJet.setDestination(event.getX(), event.getY(), true);
+                }
                 break;
             case MotionEvent.ACTION_UP:
-                mSelfJet.setDestination(event.getX(),event.getY(),false);
+                if(mSelfJet!=null) {
+                    mSelfJet.setDestination(event.getX(), event.getY(), false);
+                }
                 break;
         }
     }
@@ -120,7 +171,10 @@ public class GameManager {
     * Tick to the next move.
      */
     public void tick(){
+        if(!shouldTick()) {
+            return;
 
+        }
         if(!mSelfJet.isDead()) {
             mSelfJet.tick();
             for(Iterator<PowerUp> i = mPowerUps.iterator();i.hasNext();) {
@@ -203,7 +257,14 @@ public class GameManager {
      */
     public void draw(Canvas canvas){
         canvas.drawColor(Color.BLACK);
-        if(!mSelfJet.isDead()) {
+        drawStates(canvas);
+
+        if(!shouldDraw()) {
+            return;
+        }
+
+
+        if(mSelfJet!=null && !mSelfJet.isDead()) {
             mSelfJet.draw(canvas);
         }
 
@@ -216,16 +277,36 @@ public class GameManager {
             }
         }
 
-        if(mIsPaused){
-            canvas.drawText("Paused",mScreenWidth/2,mScreenHeight/2,mPausePaint);
-            canvas.drawText("Press Volumn Button to Resume",mScreenWidth/2,80+mScreenHeight/2,mResumeHintPaint);
 
-        }
+
+
     }
 
-    public void setPause(boolean isPaused){
-        mIsPaused = isPaused;
+    /**
+     * Indicate whether the game should draw.
+     * @return
+     */
+    private boolean shouldDraw(){
+        return !(mGameState==STATE_INIT || mGameState==STATE_NOT_INIT);
     }
+
+    /**
+     * Indicate whether the game should tick.
+     * @return
+     */
+    private boolean shouldTick(){
+        return mGameState == STATE_STARTED || mGameState == STATE_GAME_OVER || mGameState == STATE_GAME_WIN;
+    }
+
+    private void drawStates(Canvas canvas) {
+
+        canvas.drawText(mGameStateText,mScreenWidth/2,mScreenHeight/2, mStatePaint);
+        canvas.drawText(mGameHintText,mScreenWidth/2,80+mScreenHeight/2, mHintPaint);
+
+
+    }
+
+
 
     public Rect getScreenRect(){
         return mScreenRect;
@@ -276,5 +357,75 @@ public class GameManager {
 
     public Position getSelfJetPosition(){
         return mSelfJet.getSelfPosition();
+    }
+
+    public void toggleState() {
+        switch (mGameState){
+            case STATE_INIT:
+                onStateChange(STATE_CREATED);
+                break;
+            case STATE_CREATED:
+                onStateChange(STATE_STARTED);
+                break;
+            case STATE_PAUSED:
+                onStateChange(STATE_STARTED);
+                break;
+            case STATE_GAME_OVER:
+                onStateChange(STATE_CREATED);
+                break;
+            case STATE_GAME_WIN:
+                onStateChange(STATE_CREATED);
+                break;
+            case STATE_STARTED:
+                onStateChange(STATE_PAUSED);
+                break;
+            default:
+                throw new IllegalStateException("Undefined Current Game State: "+mGameState);
+        }
+    }
+
+    public void pause(){
+        if(mGameState == STATE_STARTED){
+            toggleState();
+        }
+    }
+
+    public void resume(){
+        if(mGameState == STATE_PAUSED){
+            toggleState();
+        }
+    }
+
+    private void onStateChange(int nextState){
+        mGameState = nextState;
+        switch (mGameState){
+            case STATE_GAME_WIN:
+                mGameStateText = "You Win!!";
+                mGameHintText = "How come...";
+                break;
+            case STATE_INIT:
+                mGameStateText = "Init";
+                mGameHintText = "Press Volumn Button to Create Game.";
+                break;
+            case STATE_STARTED:
+                mGameStateText = "";
+                mGameHintText = "";
+                break;
+            case STATE_CREATED:
+                createGame();
+                mGameStateText = "Created";
+                mGameHintText = "Press Volumn Button to Start Game.";
+                break;
+            case STATE_GAME_OVER:
+                mGameStateText = "Game Over";
+                mGameHintText = "This game sucks...";
+                break;
+            case STATE_PAUSED:
+                mGameStateText = "Paused";
+                mGameHintText = "Press Volumn Button to Resume Game.";
+                break;
+            default:
+                throw new IllegalStateException("Undefined Next Game State: "+nextState);
+        }
     }
 }
