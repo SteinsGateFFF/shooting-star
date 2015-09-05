@@ -107,4 +107,9 @@ public class Bullet implements Hittable{
     public boolean shouldRecycle(){
         return shouldRecycle || mSelfPos.isOutOfScreen((int) mRadius);
     }
+
+    @Override
+    public String toString() {
+        return mSelfPos.toString();
+    }
 }

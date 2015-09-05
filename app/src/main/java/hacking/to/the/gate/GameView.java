@@ -34,7 +34,8 @@ public class GameView extends SurfaceView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        GameManager.getInstance().setSelfJetDest(event);
+
+        GameManager.getInstance().onTouchEvent(event);
         return true;
     }
 

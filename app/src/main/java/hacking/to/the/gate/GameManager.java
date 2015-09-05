@@ -69,6 +69,9 @@ public class GameManager {
     private Paint mEnemyJetPaint;
     private Paint mSelfJetPaint;
 
+    private int mRemainingLife;
+    private static final int DEFAULT_REMAINING_LIVES = 3;
+
     private GameManager(){
     };
     public static GameManager getInstance(){
@@ -131,26 +134,32 @@ public class GameManager {
      * TODO: Should be able to load from a predefined game file.
      */
     public void createGame(){
-        mSelfJet = new Jet(mScreenWidth/2,mScreenHeight-50,50,mSelfJetPaint,true);
-        mSelfJet.setGunType(Gun.GUN_TYPE_DEFAULT, Bullet.BULLET_STYLE_DEFAULT);
 
         mEnemyJets = new LinkedList<>();
-
-        for(int i =0; i<5;i++){
-            Jet enemyJet= new Jet((i+1)*mScreenWidth/6,100, 50, mEnemyJetPaint,false);
-            enemyJet.setGunType(Gun.GUN_TYPE_SELF_TARGETING_EVEN, Bullet.BULLET_STYLE_WORM);
-            mEnemyJets.add(enemyJet);
-
+        // To avoid crash when start a new game.
+        synchronized (mEnemyJets) {
+            for (int i = 0; i < 5; i++) {
+                Jet enemyJet = new Jet((i + 1) * mScreenWidth / 6, 100, 50, mEnemyJetPaint, false);
+                enemyJet.setGunType(Gun.GUN_TYPE_SELF_TARGETING_EVEN, Bullet.BULLET_STYLE_WORM);
+                mEnemyJets.add(enemyJet);
+            }
         }
-
+        mRemainingLife = DEFAULT_REMAINING_LIVES;
         mPowerUps = new LinkedList<>();
+    }
+
+    public void createSelfJet(float x, float y){
+        mSelfJet = new Jet(x,y,50,mSelfJetPaint,true);
+        mSelfJet.setGunType(Gun.GUN_TYPE_DEFAULT, Bullet.BULLET_STYLE_DEFAULT);
+        mRemainingLife--;
+
     }
 
     /**
      * Set the destination of the SelfJet.
      * @param event MotionEvent of user touch.
      */
-    public void setSelfJetDest(MotionEvent event){
+    private void setSelfJetDest(MotionEvent event){
         switch (event.getAction())
         {
             case MotionEvent.ACTION_DOWN:
@@ -175,7 +184,7 @@ public class GameManager {
             return;
 
         }
-        if(!mSelfJet.isDead()) {
+        if(mSelfJet!=null) {
             mSelfJet.tick();
             for(Iterator<PowerUp> i = mPowerUps.iterator();i.hasNext();) {
                 PowerUp p = i.next();
@@ -187,22 +196,26 @@ public class GameManager {
 
 
         for(Jet jet:mEnemyJets){
-            for(Iterator<Bullet> it = jet.getBullets().iterator(); it.hasNext();){
-                Bullet b = it.next();
-               if(!mSelfJet.isDead()&&CollisionEngine.detectCollision(mSelfJet,b)) {
-                   Log.d("collision","hit by enemy's bullet");
-                   mSelfJet.doCollision(b);
-               }
-            }
-
-            for(Iterator<Bullet> it = mSelfJet.getBullets().iterator(); it.hasNext();){
-                Bullet b = it.next();
-                if(!jet.isDead()&&CollisionEngine.detectCollision(jet,b)) {
-                    Log.d("collision","hit by player's bullet");
-                    jet.doCollision(b);
+            if(mSelfJet!=null) {
+                // No self jet in game.
+                for (Iterator<Bullet> it = jet.getBullets().iterator(); it.hasNext(); ) {
+                    Bullet b = it.next();
+                    if (!mSelfJet.isDead() && CollisionEngine.detectCollision(mSelfJet, b)) {
+                        Log.d("collision", "hit by enemy's bullet");
+                        mSelfJet.doCollision(b);
+                    }
                 }
-            }
 
+
+                for(Iterator<Bullet> it = mSelfJet.getBullets().iterator(); it.hasNext();){
+                    Bullet b = it.next();
+                    if(!jet.isDead()&&CollisionEngine.detectCollision(jet,b)) {
+                        Log.d("collision","hit by player's bullet");
+                        jet.doCollision(b);
+                    }
+                }
+
+            }
             jet.tick();
 
         }
@@ -249,7 +262,7 @@ public class GameManager {
      * @return true if it's time to generate powerups
      */
     public boolean shouldGeneratePowerUps(){
-        return mPowerUps.size()<4&& mSelfJet.getHealth()<80;
+        return mPowerUps.size()< 4 && mSelfJet!=null && mSelfJet.getHealth()<80;
     }
     /**
      * Render to canvas
@@ -257,6 +270,7 @@ public class GameManager {
      */
     public void draw(Canvas canvas){
         canvas.drawColor(Color.BLACK);
+
         drawStates(canvas);
 
         if(!shouldDraw()) {
@@ -264,16 +278,27 @@ public class GameManager {
         }
 
 
-        if(mSelfJet!=null && !mSelfJet.isDead()) {
+        if(mSelfJet!=null) {
             mSelfJet.draw(canvas);
         }
 
-        for(Jet jet:mEnemyJets){
-            jet.draw(canvas);
+        if(mEnemyJets!=null) {
+            // Otherwise might cause crash to call createGame()
+            synchronized (mEnemyJets) {
+                for (Jet jet : mEnemyJets) {
+                    jet.draw(canvas);
+                }
+            }
         }
-        for(PowerUp p:mPowerUps){
-            if(p.isVisible()){
-                p.draw(canvas);
+
+        if(mPowerUps!=null) {
+            // Otherwise might cause crash to call createGame()
+            synchronized (mPowerUps) {
+                for (PowerUp p : mPowerUps) {
+                    if (p.isVisible()) {
+                        p.draw(canvas);
+                    }
+                }
             }
         }
 
@@ -299,11 +324,12 @@ public class GameManager {
     }
 
     private void drawStates(Canvas canvas) {
-
+        if(mGameState==STATE_STARTED && mSelfJet!=null) {
+            // Don't draw text when player is playing.
+            return;
+        }
         canvas.drawText(mGameStateText,mScreenWidth/2,mScreenHeight/2, mStatePaint);
         canvas.drawText(mGameHintText,mScreenWidth/2,80+mScreenHeight/2, mHintPaint);
-
-
     }
 
 
@@ -313,15 +339,22 @@ public class GameManager {
 
     }
 
-    public void recycle(){
-        if(mSelfJet.shouldRecycle()){
-
-        } else {
-            mSelfJet.recycle();
+    private void recycle(){
+        if(mSelfJet!=null) {
+            if (mSelfJet.shouldRecycle()) {
+                mSelfJet = null;
+                if(mRemainingLife==0){
+                    onStateChange(STATE_GAME_OVER);
+                }
+            } else {
+                mSelfJet.recycle();
+            }
         }
 
+        boolean win = true;
         for(Iterator<Jet> it = mEnemyJets.iterator(); it.hasNext();){
             Jet jet = it.next();
+            win&=jet.isDead();
             if(jet.shouldRecycle()){
                 it.remove();
                 Random rand = new Random();
@@ -332,6 +365,13 @@ public class GameManager {
                 jet.recycle();
             }
         }
+        // Not a good indicator for winning.
+
+
+        if(win) {
+            onStateChange(STATE_GAME_WIN);
+        }
+
         for(Iterator<PowerUp> i = mPowerUps.iterator();i.hasNext();){
             PowerUp p = i.next();
             if(!p.isVisible()){
@@ -355,7 +395,8 @@ public class GameManager {
         lastTimestamp = System.currentTimeMillis();
     }
 
-    public Position getSelfJetPosition(){
+    public Position getSelfJetPosition() throws Exception {
+        if(mSelfJet==null) throw new Exception("No Self Jet in Game");
         return mSelfJet.getSelfPosition();
     }
 
@@ -409,7 +450,7 @@ public class GameManager {
                 break;
             case STATE_STARTED:
                 mGameStateText = "";
-                mGameHintText = "";
+                mGameHintText = "Click on Screen to Revive";
                 break;
             case STATE_CREATED:
                 createGame();
@@ -428,4 +469,15 @@ public class GameManager {
                 throw new IllegalStateException("Undefined Next Game State: "+nextState);
         }
     }
+
+    public void onTouchEvent(MotionEvent event) {
+        if(mGameState==STATE_STARTED) {
+            if (mSelfJet == null) {
+                createSelfJet(event.getX(), event.getY());
+            } else {
+                setSelfJetDest(event);
+            }
+        }
+    }
+
 }

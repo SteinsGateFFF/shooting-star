@@ -140,11 +140,15 @@ public class Jet implements Hittable {
         if(!mIsPlayer) {
             //Enemy jets shoot logic.
             // Default target jet of enemy jets is self jet.
-            
-            Position selfJetPos = GameManager.getInstance().getSelfJetPosition();
-            if(!mIsDead){
-                mBullets.addAll(mGun.tick(mSelfPos, selfJetPos));
+
+            try {
+                Position selfJetPos = GameManager.getInstance().getSelfJetPosition();
+                if(!mIsDead){
+                    mBullets.addAll(mGun.tick(mSelfPos, selfJetPos));
+                }
+            } catch (Exception e) {
             }
+
 
 
         } else {
@@ -250,6 +254,15 @@ public class Jet implements Hittable {
 
     public boolean shouldRecycle(){
         boolean noBullets = mBullets.isEmpty();
+        if(mIsPlayer){
+            Log.d(TAG, "Bullets: "+mBullets.size());
+            for(Bullet b : mBullets){
+                Log.d(TAG, "Should Recycle: "+b.shouldRecycle());
+                Log.d(TAG, b.toString());
+            }
+            Log.d(TAG, "mIsDead: "+mIsDead);
+            Log.d(TAG, "mIsOutOfScreen: "+mSelfPos.isOutOfScreen((int) mRadius));
+        }
         return noBullets&&(mIsDead || mSelfPos.isOutOfScreen((int) mRadius));
     }
 
