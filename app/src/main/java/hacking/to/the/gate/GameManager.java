@@ -354,7 +354,7 @@ public class GameManager {
         boolean win = true;
         for(Iterator<Jet> it = mEnemyJets.iterator(); it.hasNext();){
             Jet jet = it.next();
-            win&=jet.isDead();
+
             if(jet.shouldRecycle()){
                 it.remove();
                 Random rand = new Random();
@@ -365,10 +365,10 @@ public class GameManager {
                 jet.recycle();
             }
         }
-        // Not a good indicator for winning.
+        //TODO: Not a good indicator for winning.
 
 
-        if(win) {
+        if(mEnemyJets.size()==0) {
             onStateChange(STATE_GAME_WIN);
         }
 
