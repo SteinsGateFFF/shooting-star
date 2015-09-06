@@ -72,6 +72,8 @@ public class GameManager {
     private int mRemainingLife;
     private static final int DEFAULT_REMAINING_LIVES = 3;
 
+    private CollisionEngine mCollisionEngine;
+
     private GameManager(){
     };
     public static GameManager getInstance(){
@@ -146,12 +148,15 @@ public class GameManager {
         }
         mRemainingLife = DEFAULT_REMAINING_LIVES;
         mPowerUps = new LinkedList<>();
+        mCollisionEngine = new CollisionEngine(mEnemyJets,mPowerUps,mSelfJet);
     }
 
     public void createSelfJet(float x, float y){
         mSelfJet = new Jet(x,y,50,mSelfJetPaint,true);
         mSelfJet.setGunType(Gun.GUN_TYPE_DEFAULT, Bullet.BULLET_STYLE_DEFAULT);
         mRemainingLife--;
+        mCollisionEngine.setPlayer(mSelfJet);
+        Log.d("Selfjet","New self jet is created");
 
     }
 
@@ -182,51 +187,18 @@ public class GameManager {
     public void tick(){
         if(!shouldTick()) {
             return;
-
         }
         if(mSelfJet!=null) {
             mSelfJet.tick();
-            for(Iterator<PowerUp> i = mPowerUps.iterator();i.hasNext();) {
-                PowerUp p = i.next();
-                if(!mSelfJet.isDead()&&p.isVisible()&&CollisionEngine.detectCollision(mSelfJet,p)){
-                    mSelfJet.doCollision(p);
-                }
+            for(Jet jet:mEnemyJets){
+                jet.tick();
             }
-        }
-
-
-        for(Jet jet:mEnemyJets){
-            if(mSelfJet!=null) {
-                // No self jet in game.
-                for (Iterator<Bullet> it = jet.getBullets().iterator(); it.hasNext(); ) {
-                    Bullet b = it.next();
-                    if (!mSelfJet.isDead() && CollisionEngine.detectCollision(mSelfJet, b)) {
-                        Log.d("collision", "hit by enemy's bullet");
-                        mSelfJet.doCollision(b);
-                    }
-                }
-
-                for(Iterator<Bullet> it = mSelfJet.getBullets().iterator(); it.hasNext();){
-                    Bullet b = it.next();
-                    if(!jet.isDead()&&CollisionEngine.detectCollision(jet,b)) {
-                        Log.d("collision","hit by player's bullet");
-                        jet.doCollision(b);
-                        if(jet.isDead()){
-                            Random rand = new Random();
-                            int randomX = rand.nextInt(getScreenRect().width())+100;
-                            generatePowerups(false, randomX,(int)jet.getSelfPosition().getPositionY());
-                        }
-                    }
-                }
-
+            for(PowerUp powerup :mPowerUps){
+                powerup.tick();
             }
-            jet.tick();
-
+            mCollisionEngine.tick();
         }
 
-        for(PowerUp p :mPowerUps){
-            p.tick();
-        }
 
         recycle();
     }
@@ -468,6 +440,7 @@ public class GameManager {
             if (mSelfJet == null) {
                 createSelfJet(event.getX(), event.getY());
             } else {
+               // Log.d("Selfjet","selfjet is not null");
                 setSelfJetDest(event);
             }
         }

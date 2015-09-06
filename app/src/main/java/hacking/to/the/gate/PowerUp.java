@@ -16,6 +16,12 @@ public class PowerUp implements Hittable{
         return collider;
     }
 
+    public void onCollision(Hittable h){
+        if(h instanceof Jet){
+            setVisible(false);
+        }
+    }
+
     //declaration of variables
 
     private CircleCollider collider;
