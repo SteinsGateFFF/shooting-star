@@ -206,12 +206,16 @@ public class GameManager {
                     }
                 }
 
-
                 for(Iterator<Bullet> it = mSelfJet.getBullets().iterator(); it.hasNext();){
                     Bullet b = it.next();
                     if(!jet.isDead()&&CollisionEngine.detectCollision(jet,b)) {
                         Log.d("collision","hit by player's bullet");
                         jet.doCollision(b);
+                        if(jet.isDead()){
+                            Random rand = new Random();
+                            int randomX = rand.nextInt(getScreenRect().width())+100;
+                            generatePowerups(false, randomX,(int)jet.getSelfPosition().getPositionY());
+                        }
                     }
                 }
 
@@ -224,14 +228,6 @@ public class GameManager {
             p.tick();
         }
 
-        if(shouldGeneratePowerUps()){
-            Random rand = new Random();
-            int value = rand.nextInt(50)+1;
-            int randomX = 20*value;
-            int randomY = 10*value;
-            generatePowerups(true,randomX,randomY);
-
-        }
         recycle();
     }
 
@@ -357,10 +353,7 @@ public class GameManager {
 
             if(jet.shouldRecycle()){
                 it.remove();
-                Random rand = new Random();
-                int randomX = rand.nextInt(50)+100;
-                int randonY = rand.nextInt(50)+200;
-                generatePowerups(false, randomX, randonY);
+
             } else {
                 jet.recycle();
             }

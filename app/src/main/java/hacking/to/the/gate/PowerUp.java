@@ -81,15 +81,15 @@ public class PowerUp implements Hittable{
     public void tick(){
         if(!mIsStatic){
         changeVelocity();
-        mCurPosition = new Position(mCurPosition.getPositionX()+mVelocity.getVelocityX(),
+        mCurPosition = new Position(mCurPosition.getPositionX(),
                 mCurPosition.getPositionY()+mVelocity.getVelocityY());
         collider.setPosition(mCurPosition);}
 
     }
     private void changeVelocity(){
         Random r = new Random();
-        int v = r.nextInt(3)+1;
-        mVelocity = new Velocity(v,v*v);
+        int v = r.nextInt(8)+1;
+        mVelocity = new Velocity(0,v);
     }
     public boolean isStatic(){
         return mIsStatic;
