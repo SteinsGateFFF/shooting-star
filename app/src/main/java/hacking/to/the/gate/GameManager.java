@@ -24,8 +24,8 @@ public class GameManager {
 
     private JetLifeCycle jetLifeCycle = new JetLifeCycle() {
         @Override
-        public void effectOfKillingEnemy(int posX) {
-            generatePowerups(posX);
+        public void onDeath(Jet jet) {
+            generatePowerups((int)jet.getSelfPosition().getPositionX());
         }
     };
 

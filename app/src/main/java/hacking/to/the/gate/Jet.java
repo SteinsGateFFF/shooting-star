@@ -30,7 +30,7 @@ public class Jet implements Hittable {
         if(curHealth < 0) {
             setDead(true);
             if(!mIsPlayer) {
-                jetLifeCycle.effectOfKillingEnemy((int) getSelfPosition().getPositionX());
+                jetLifeCycle.onDeath(this);
             }
         }
     }
