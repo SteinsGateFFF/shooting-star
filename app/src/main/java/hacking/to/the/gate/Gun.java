@@ -193,7 +193,8 @@ public class Gun {
                             result.add(new Bullet(self,
                                     10,
                                     mPaint,
-                                    new Velocity(0,20),
+                                    //new Velocity(0,-20),
+                                    Velocity.getDestinationVelocity(self, target, 10),
                                     mBulletDamage,
                                     mBulletStyle));
                         }

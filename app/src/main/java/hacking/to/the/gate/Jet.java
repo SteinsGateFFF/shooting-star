@@ -192,8 +192,13 @@ public class Jet implements Hittable {
                 int i = 0;
                 for(Gun gun:mGuns){
                     Position startPos = new Position(mSelfPos.getPositionX()+50*i,mSelfPos.getPositionY());
-
-                    mBullets.addAll(gun.tick(startPos, null));
+                    List<Position> enemyPositions = GameManager.getInstance().getEnemyPositions();
+                    if(enemyPositions.isEmpty()){
+                        mBullets.addAll(gun.tick(startPos, null));
+                    }
+                    else{
+                        mBullets.addAll(gun.tick(startPos, getTargetPosition(mSelfPos,enemyPositions)));
+                    }
                     i++;
                 }
             }
@@ -203,7 +208,27 @@ public class Jet implements Hittable {
             b.tick();
         }
 
+    }
+    private Position getTargetPosition(Position selfjetPos, List<Position> enemyPositions){
+        Position targetPosition = enemyPositions.get(0);
+        float min = getDistanceInY(selfjetPos,targetPosition);
+        Log.d("target",""+min);
+        for(Position p : enemyPositions){
+            Log.d("target",""+p);
+            float diff = getDistanceInY(selfjetPos,p);
+            Log.d("target",""+diff);
+            if(diff<min){
+                targetPosition = p;
+                min = diff;
+            }
+        }
+        Log.d("target","target: "+targetPosition);
+        return targetPosition;
 
+    }
+
+    private float getDistanceInY(Position pos1, Position pos2){
+        return Math.abs(pos1.getPositionY() - pos2.getPositionY());
     }
 
     public Position getSelfPosition() {return mSelfPos;}

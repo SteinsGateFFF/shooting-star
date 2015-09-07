@@ -144,7 +144,7 @@ public class GameManager {
         // To avoid crash when start a new game.
         synchronized (mEnemyJets) {
             for (int i = 0; i < 5; i++) {
-                Jet enemyJet = new Jet((i + 1) * mScreenWidth / 6, 100, 50, mEnemyJetPaint, false);
+                Jet enemyJet = new Jet((i + 1) * mScreenWidth / 6, 25+25*i,50, mEnemyJetPaint, false);
                 enemyJet.setGunType(0,Gun.GUN_TYPE_SELF_TARGETING_EVEN, Bullet.BULLET_STYLE_WORM);
                 enemyJet.setJetLifeCycleListener(jetLifeCycle);
                 mEnemyJets.add(enemyJet);
@@ -206,8 +206,6 @@ public class GameManager {
             }
             mCollisionEngine.tick();
         }
-
-
         recycle();
     }
 
@@ -268,10 +266,6 @@ public class GameManager {
                 }
             }
         }
-
-
-
-
     }
 
     /**
@@ -362,6 +356,18 @@ public class GameManager {
     public Position getSelfJetPosition() throws Exception {
         if(mSelfJet==null) throw new Exception("No Self Jet in Game");
         return mSelfJet.getSelfPosition();
+    }
+
+    public List<Position> getEnemyPositions(){
+        List<Position> positions = new LinkedList<>();
+        if(!mEnemyJets.isEmpty()){
+            for(Jet enemy:mEnemyJets){
+                if(!enemy.isDead()) {
+                    positions.add(enemy.getSelfPosition());
+                }
+            }
+        }
+        return positions;
     }
 
     public void toggleState() {
