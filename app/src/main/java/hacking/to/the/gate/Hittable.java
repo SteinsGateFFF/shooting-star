@@ -5,4 +5,5 @@ package hacking.to.the.gate;
  */
 public interface Hittable {
     CircleCollider getCollider();
+    void onCollision(Hittable h);
 }

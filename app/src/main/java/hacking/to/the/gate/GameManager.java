@@ -7,7 +7,6 @@ import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import java.util.Random;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +21,13 @@ import java.util.List;
  */
 public class GameManager {
     private static GameManager instance;
+
+    private JetLifeCycle jetLifeCycle = new JetLifeCycle() {
+        @Override
+        public void onDeath(Jet jet) {
+            generatePowerups((int)jet.getSelfPosition().getPositionX());
+        }
+    };
 
 
     /**
@@ -71,6 +77,8 @@ public class GameManager {
 
     private int mRemainingLife;
     private static final int DEFAULT_REMAINING_LIVES = 3;
+
+    private CollisionEngine mCollisionEngine;
 
     private GameManager(){
     };
@@ -141,17 +149,22 @@ public class GameManager {
             for (int i = 0; i < 5; i++) {
                 Jet enemyJet = new Jet((i + 1) * mScreenWidth / 6, 100, 50, mEnemyJetPaint, false);
                 enemyJet.setGunType(Gun.GUN_TYPE_SELF_TARGETING_EVEN, Bullet.BULLET_STYLE_WORM);
+                enemyJet.setJetLifeCycleListener(jetLifeCycle);
                 mEnemyJets.add(enemyJet);
+
             }
         }
         mRemainingLife = DEFAULT_REMAINING_LIVES;
         mPowerUps = new LinkedList<>();
+        mCollisionEngine = new CollisionEngine(mEnemyJets,mPowerUps,mSelfJet);
     }
 
     public void createSelfJet(float x, float y){
         mSelfJet = new Jet(x,y,50,mSelfJetPaint,true);
         mSelfJet.setGunType(Gun.GUN_TYPE_DEFAULT, Bullet.BULLET_STYLE_DEFAULT);
         mRemainingLife--;
+        mCollisionEngine.setPlayer(mSelfJet);
+        Log.d("Selfjet","New self jet is created");
 
     }
 
@@ -182,77 +195,31 @@ public class GameManager {
     public void tick(){
         if(!shouldTick()) {
             return;
-
         }
         if(mSelfJet!=null) {
             mSelfJet.tick();
-            for(Iterator<PowerUp> i = mPowerUps.iterator();i.hasNext();) {
-                PowerUp p = i.next();
-                if(!mSelfJet.isDead()&&p.isVisible()&&CollisionEngine.detectCollision(mSelfJet,p)){
-                    mSelfJet.doCollision(p);
-                }
+            for(Jet jet:mEnemyJets){
+                jet.tick();
             }
-        }
-
-
-        for(Jet jet:mEnemyJets){
-            if(mSelfJet!=null) {
-                // No self jet in game.
-                for (Iterator<Bullet> it = jet.getBullets().iterator(); it.hasNext(); ) {
-                    Bullet b = it.next();
-                    if (!mSelfJet.isDead() && CollisionEngine.detectCollision(mSelfJet, b)) {
-                        Log.d("collision", "hit by enemy's bullet");
-                        mSelfJet.doCollision(b);
-                    }
-                }
-
-
-                for(Iterator<Bullet> it = mSelfJet.getBullets().iterator(); it.hasNext();){
-                    Bullet b = it.next();
-                    if(!jet.isDead()&&CollisionEngine.detectCollision(jet,b)) {
-                        Log.d("collision","hit by player's bullet");
-                        jet.doCollision(b);
-                    }
-                }
-
+            for(PowerUp powerup :mPowerUps){
+                powerup.tick();
             }
-            jet.tick();
-
+            mCollisionEngine.tick();
         }
 
-        for(PowerUp p :mPowerUps){
-            p.tick();
-        }
 
-        if(shouldGeneratePowerUps()){
-            Random rand = new Random();
-            int value = rand.nextInt(50)+1;
-            int randomX = 20*value;
-            int randomY = 10*value;
-            generatePowerups(true,randomX,randomY);
-
-        }
         recycle();
     }
 
     /**
      * generate a powerup
-     * @param isStatic identify if the powerup is static
-     * @param posX x-position of the center of the powerup
-     * @param posY y-position of the center of the powerup
      */
-    public void generatePowerups(boolean isStatic,int posX,int posY){
+    public void generatePowerups(int posX){
         PowerUp powerUp;
         Paint powerUpPaint = new Paint();
         powerUpPaint.setColor(Color.GREEN);
-        Position pos = new Position(posX,posY);
-        if(isStatic){
-            powerUp = new PowerUp(isStatic,pos,0,0, powerUpPaint,23);
-
-        }
-        else {
-            powerUp = new PowerUp(isStatic, pos, 1, 4, powerUpPaint, 23);
-        }
+        Position pos = new Position(posX,0);
+        powerUp = new PowerUp(false, pos, 1, 4, powerUpPaint, 23);
         mPowerUps.add(powerUp);
 
     }
@@ -357,10 +324,7 @@ public class GameManager {
 
             if(jet.shouldRecycle()){
                 it.remove();
-                Random rand = new Random();
-                int randomX = rand.nextInt(50)+100;
-                int randonY = rand.nextInt(50)+200;
-                generatePowerups(false, randomX, randonY);
+
             } else {
                 jet.recycle();
             }

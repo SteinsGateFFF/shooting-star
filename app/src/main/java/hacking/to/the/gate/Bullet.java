@@ -34,6 +34,12 @@ public class Bullet implements Hittable{
 	public CircleCollider getCollider(){
         return collider;
     }
+    public void onCollision(Hittable h){
+        if(h instanceof Jet){
+            recycle();
+        }
+
+    }
     public Bullet(Position pos, float r, Paint paint, Velocity v, float damage, int bulletStyle){
     
         collider = new CircleCollider(r,pos);

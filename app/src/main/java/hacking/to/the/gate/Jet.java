@@ -13,10 +13,32 @@ import java.util.List;
  */
 public class Jet implements Hittable {
 
+    private JetLifeCycle jetLifeCycle;
     public CircleCollider getCollider(){
         return collider;
     }
 
+    public void onCollision(Hittable h){
+        float curHealth = getHealth();
+        if(h instanceof PowerUp){
+            curHealth += PowerUp.POWERUP_HEAL;
+        }
+        else if(h instanceof Bullet){
+            curHealth -= ((Bullet) h).getDamage();
+        }
+        setHealth(curHealth);
+        if(curHealth < 0) {
+            setDead(true);
+            if(!mIsPlayer) {
+                jetLifeCycle.onDeath(this);
+            }
+        }
+    }
+
+    public void setJetLifeCycleListener(JetLifeCycle e){
+        jetLifeCycle = e;
+
+    }
     private CircleCollider collider;
     /**
      * Position of the center of the circle that represents this jet.
@@ -167,14 +189,6 @@ public class Jet implements Hittable {
     }
 
     public Position getSelfPosition() {return mSelfPos;}
-
-    public Paint getPaint(){
-        return mPaint;
-    }
-    public float getRadius(){
-        return mRadius;
-    }
-
     public boolean isDead(){
         return mIsDead;
     }
@@ -188,36 +202,6 @@ public class Jet implements Hittable {
     private boolean mIsDead = false;
     public void setDead(boolean b){
         mIsDead = b;
-    }
-
-
-    /**
-     * Given a list of bullet, check if the bullet hit this jet, and perform corresponding
-     * action, like decreasing Health.
-     * @param b bullet
-     */
-    public void doCollision(Bullet b){
-
-        float curHealth = getHealth();
-        curHealth -= b.getDamage();
-        if(curHealth <0) {
-            setDead(true);
-        }
-        setHealth(curHealth);
-        b.recycle();
-    }
-
-    /**
-     * increase HP after colliding with power ups
-     * @param p power up
-     */
-    public void doCollision(PowerUp p){
-
-        float curHealth = getHealth();
-        curHealth += PowerUp.POWERUP_HEAL;
-        setHealth(curHealth);
-        Log.d("Jet-health:",""+getHealth());
-        p.setVisible(false);
     }
 
     /**
