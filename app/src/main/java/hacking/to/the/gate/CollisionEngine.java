@@ -25,11 +25,11 @@ public class CollisionEngine {
     public void setPlayer(Jet newPlayer){
         mPlayer = newPlayer;
     }
-    public static boolean detectCollision(Hittable t1, Hittable t2){
+    private boolean detectCollision(Hittable t1, Hittable t2){
         return detectCollision(t1.getCollider(),t2.getCollider());
     }
 
-    private static boolean detectCollision(CircleCollider c1, CircleCollider c2){
+    private boolean detectCollision(CircleCollider c1, CircleCollider c2){
 
         return Math.pow(
                 c1.getPosition().getPositionX()-c2.getPosition().getPositionX(),
@@ -41,7 +41,7 @@ public class CollisionEngine {
 
     }
 
-    public static void doCollision(Hittable h1, Hittable h2){
+    private void doCollision(Hittable h1, Hittable h2){
         h1.onCollision(h2);
         h2.onCollision(h1);
     }
@@ -49,7 +49,7 @@ public class CollisionEngine {
     public void tick(){
         for(Iterator<PowerUp> i = mPowerups.iterator();i.hasNext();) {
             PowerUp p = i.next();
-            if(!mPlayer.isDead()&&p.isVisible()&&CollisionEngine.detectCollision(mPlayer,p)){
+            if(!mPlayer.isDead()&&p.isVisible()&& detectCollision(mPlayer,p)){
                 doCollision(mPlayer,p);
             }
         }
@@ -57,7 +57,7 @@ public class CollisionEngine {
         for(Jet jet:mEnemies){
             for (Iterator<Bullet> it = jet.getBullets().iterator(); it.hasNext(); ) {
                 Bullet b = it.next();
-                if (!mPlayer.isDead() && CollisionEngine.detectCollision(mPlayer, b)) {
+                if (!mPlayer.isDead() && detectCollision(mPlayer, b)) {
                     Log.d("collision", "hit by enemy's bullet");
                     doCollision(mPlayer,b);
                 }
@@ -65,9 +65,10 @@ public class CollisionEngine {
 
                 for(Iterator<Bullet> it = mPlayer.getBullets().iterator(); it.hasNext();){
                     Bullet b = it.next();
-                    if(!jet.isDead()&&CollisionEngine.detectCollision(jet,b)) {
+                    if(!jet.isDead()&& detectCollision(jet,b)) {
                         Log.d("collision","hit by player's bullet");
                         doCollision(jet,b);
+
 
                     }
                 }

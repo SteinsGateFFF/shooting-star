@@ -23,6 +23,13 @@ import java.util.List;
 public class GameManager {
     private static GameManager instance;
 
+    private Effect effect = new Effect() {
+        @Override
+        public void effectOfKillingEnemy(int posX) {
+            generatePowerups(posX);
+        }
+    };
+
 
     /**
      * Initial State.
@@ -143,7 +150,9 @@ public class GameManager {
             for (int i = 0; i < 5; i++) {
                 Jet enemyJet = new Jet((i + 1) * mScreenWidth / 6, 100, 50, mEnemyJetPaint, false);
                 enemyJet.setGunType(Gun.GUN_TYPE_SELF_TARGETING_EVEN, Bullet.BULLET_STYLE_WORM);
+                enemyJet.register(effect);
                 mEnemyJets.add(enemyJet);
+
             }
         }
         mRemainingLife = DEFAULT_REMAINING_LIVES;
@@ -205,22 +214,13 @@ public class GameManager {
 
     /**
      * generate a powerup
-     * @param isStatic identify if the powerup is static
-     * @param posX x-position of the center of the powerup
-     * @param posY y-position of the center of the powerup
      */
-    public void generatePowerups(boolean isStatic,int posX,int posY){
+    public void generatePowerups(int posX){
         PowerUp powerUp;
         Paint powerUpPaint = new Paint();
         powerUpPaint.setColor(Color.GREEN);
-        Position pos = new Position(posX,posY);
-        if(isStatic){
-            powerUp = new PowerUp(isStatic,pos,0,0, powerUpPaint,23);
-
-        }
-        else {
-            powerUp = new PowerUp(isStatic, pos, 1, 4, powerUpPaint, 23);
-        }
+        Position pos = new Position(posX,0);
+        powerUp = new PowerUp(false, pos, 1, 4, powerUpPaint, 23);
         mPowerUps.add(powerUp);
 
     }
