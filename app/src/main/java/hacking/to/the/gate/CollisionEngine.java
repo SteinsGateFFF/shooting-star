@@ -62,17 +62,13 @@ public class CollisionEngine {
                     doCollision(mPlayer,b);
                 }
             }
-
-                for(Iterator<Bullet> it = mPlayer.getBullets().iterator(); it.hasNext();){
-                    Bullet b = it.next();
-                    if(!jet.isDead()&& detectCollision(jet,b)) {
-                        Log.d("collision","hit by player's bullet");
-                        doCollision(jet,b);
-
-
-                    }
+            for(Iterator<Bullet> it = mPlayer.getBullets().iterator(); it.hasNext();){
+                Bullet b = it.next();
+                if(!jet.isDead()&& detectCollision(jet,b)) {
+                    Log.d("collision","hit by player's bullet");
+                    doCollision(jet,b);
                 }
-
+            }
         }
 
     }

@@ -7,7 +7,6 @@ import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import java.util.Random;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +22,7 @@ import java.util.List;
 public class GameManager {
     private static GameManager instance;
 
-    private Effect effect = new Effect() {
+    private JetLifeCycle jetLifeCycle = new JetLifeCycle() {
         @Override
         public void effectOfKillingEnemy(int posX) {
             generatePowerups(posX);
@@ -150,7 +149,7 @@ public class GameManager {
             for (int i = 0; i < 5; i++) {
                 Jet enemyJet = new Jet((i + 1) * mScreenWidth / 6, 100, 50, mEnemyJetPaint, false);
                 enemyJet.setGunType(Gun.GUN_TYPE_SELF_TARGETING_EVEN, Bullet.BULLET_STYLE_WORM);
-                enemyJet.register(effect);
+                enemyJet.setJetLifeCycleListener(jetLifeCycle);
                 mEnemyJets.add(enemyJet);
 
             }
@@ -440,7 +439,6 @@ public class GameManager {
             if (mSelfJet == null) {
                 createSelfJet(event.getX(), event.getY());
             } else {
-               // Log.d("Selfjet","selfjet is not null");
                 setSelfJetDest(event);
             }
         }

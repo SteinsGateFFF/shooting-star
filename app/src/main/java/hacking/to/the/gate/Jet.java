@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class Jet implements Hittable {
 
-    private Effect effect;
+    private JetLifeCycle jetLifeCycle;
     public CircleCollider getCollider(){
         return collider;
     }
@@ -30,13 +30,13 @@ public class Jet implements Hittable {
         if(curHealth < 0) {
             setDead(true);
             if(!mIsPlayer) {
-                effect.effectOfKillingEnemy((int) getSelfPosition().getPositionX());
+                jetLifeCycle.effectOfKillingEnemy((int) getSelfPosition().getPositionX());
             }
         }
     }
 
-    public void register(Effect e){
-        effect = e;
+    public void setJetLifeCycleListener(JetLifeCycle e){
+        jetLifeCycle = e;
 
     }
     private CircleCollider collider;
