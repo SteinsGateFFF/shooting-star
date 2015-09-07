@@ -40,14 +40,14 @@ public class Bullet implements Hittable{
         }
 
     }
-    public Bullet(Position pos, float r, Paint paint, Velocity v, float damage, int bulletStyle){
+    public Bullet(Position pos, float r, Paint paint, Velocity v, float damage, int bulletStyle, float maxSpeed){
     
         collider = new CircleCollider(r,pos);
         mRadius = r;
         mSelfPos = pos;
         mPaint = paint;
         mVelocity = v;
-        mMaxSpeed = 20;
+        mMaxSpeed = maxSpeed;
         mDamage = damage;
         //TODO: Need to support multiple patterns.
         switch (bulletStyle){
@@ -59,7 +59,6 @@ public class Bullet implements Hittable{
                 break;
         }
     }
-
 
 
     public float getDamage(){

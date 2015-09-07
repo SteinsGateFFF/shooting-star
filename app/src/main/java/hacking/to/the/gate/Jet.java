@@ -91,6 +91,7 @@ public class Jet implements Hittable {
      * {@link hacking.to.the.gate.Gun} of the jet.
      *
      * TODO: might need to support more than one gun.
+     * propose to close
      */
     private List<Gun>  mGuns;
 
@@ -188,6 +189,7 @@ public class Jet implements Hittable {
         } else {
             //Self jet shoot logic.
             // TODO: Later should pass enemy targets.
+            //propose to close
             if(!mIsDead) {
                 int i = 0;
                 for(Gun gun:mGuns){
