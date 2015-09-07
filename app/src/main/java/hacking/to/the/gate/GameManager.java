@@ -57,7 +57,6 @@ public class GameManager {
     public static final int STATE_GAME_OVER = 4;
     /**
      * State when player wins the game.
-     * TODO: Not implemented yet.
      */
     public static final int STATE_GAME_WIN = 5;
     /**
@@ -110,8 +109,6 @@ public class GameManager {
      * Init the {@link hacking.to.the.gate.GameManager} with the dimension of the {@link hacking.to.the.gate.GameView}.
      * Create SelfJet and EnemyJets.
      *
-     * TODO: Creating SelfJet and EnemyJets should be in seperate methods.
-     *
      * @param screenWidht
      * @param screenHeight
      */
@@ -148,7 +145,7 @@ public class GameManager {
         synchronized (mEnemyJets) {
             for (int i = 0; i < 5; i++) {
                 Jet enemyJet = new Jet((i + 1) * mScreenWidth / 6, 100, 50, mEnemyJetPaint, false);
-                enemyJet.setGunType(Gun.GUN_TYPE_SELF_TARGETING_EVEN, Bullet.BULLET_STYLE_WORM);
+                enemyJet.setGunType(0,Gun.GUN_TYPE_SELF_TARGETING_EVEN, Bullet.BULLET_STYLE_WORM);
                 enemyJet.setJetLifeCycleListener(jetLifeCycle);
                 mEnemyJets.add(enemyJet);
 
@@ -161,7 +158,10 @@ public class GameManager {
 
     public void createSelfJet(float x, float y){
         mSelfJet = new Jet(x,y,50,mSelfJetPaint,true);
-        mSelfJet.setGunType(Gun.GUN_TYPE_DEFAULT, Bullet.BULLET_STYLE_DEFAULT);
+        for(int i = 0; i<mSelfJet.getNumOfGuns();i++){
+            mSelfJet.setGunType(i,Gun.GUN_TYPE_DEFAULT, Bullet.BULLET_STYLE_DEFAULT);
+        }
+
         mRemainingLife--;
         mCollisionEngine.setPlayer(mSelfJet);
         Log.d("Selfjet","New self jet is created");

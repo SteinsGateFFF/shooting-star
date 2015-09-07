@@ -92,7 +92,7 @@ public class Jet implements Hittable {
      *
      * TODO: might need to support more than one gun.
      */
-    private Gun mGun;
+    private List<Gun>  mGuns;
 
     /**
      * Create a Jet Object
@@ -112,7 +112,12 @@ public class Jet implements Hittable {
         mHasDestination = false;
         mIsPlayer = isPlayer;
         mBullets = new LinkedList<>();
-        mGun = Gun.getGun(Gun.GUN_TYPE_DEFAULT,Bullet.BULLET_STYLE_DEFAULT);
+        mGuns = new LinkedList<>();
+        mGuns.add(Gun.getGun(Gun.GUN_TYPE_DEFAULT, Bullet.BULLET_STYLE_DEFAULT));
+        if(isPlayer)
+        {
+            mGuns.add(Gun.getGun(Gun.GUN_TYPE_DEFAULT,Bullet.BULLET_STYLE_DEFAULT));
+        }
     }
 
 
@@ -120,8 +125,15 @@ public class Jet implements Hittable {
      * Set the gun of this jet to the given type
      * @param gunType
      */
-    public void setGunType(int gunType, int bulletStyle){
-        mGun = Gun.getGun(gunType, bulletStyle);
+    public void setGunType(int index,int gunType, int bulletStyle){
+        if(index < mGuns.size()){
+            mGuns.set(index, Gun.getGun(gunType, bulletStyle));
+        }
+
+    }
+
+    public int getNumOfGuns(){
+        return mGuns.size();
     }
 
 
@@ -166,18 +178,24 @@ public class Jet implements Hittable {
             try {
                 Position selfJetPos = GameManager.getInstance().getSelfJetPosition();
                 if(!mIsDead){
-                    mBullets.addAll(mGun.tick(mSelfPos, selfJetPos));
+                    for(Gun gun:mGuns){
+                        mBullets.addAll(gun.tick(mSelfPos, selfJetPos));
+                    }
+
                 }
             } catch (Exception e) {
             }
-
-
-
         } else {
             //Self jet shoot logic.
             // TODO: Later should pass enemy targets.
             if(!mIsDead) {
-                mBullets.addAll(mGun.tick(mSelfPos, null));
+                int i = 0;
+                for(Gun gun:mGuns){
+                    Position startPos = new Position(mSelfPos.getPositionX()+50*i,mSelfPos.getPositionY());
+
+                    mBullets.addAll(gun.tick(startPos, null));
+                    i++;
+                }
             }
         }
 
