@@ -1,0 +1,217 @@
+$MSG_TYPE = TH11_MSG
+
+function proc0{
+	skip(FALSE);
+	enable_img(player, 0);
+	enable_img(enemy, 0);
+	image_change(player, 6);
+	sleep(4);
+
+	image_change(enemy, 0);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	sleep(30);
+
+	skip(TRUE);
+	set_baloon_type(0);
+	set_ballon_position(448, 232);
+	print("こら正邪や");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 5);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	print("そろそろ返してくれないかい？");
+	print("残りの小槌の魔力を");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 4);
+	mode(player);
+	set_ballon_position(176, 280);
+	set_baloon_type(3);
+	print("え？　何を言っているんですか？");
+	print("これからですよ、本当の下克上は");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 6);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	print("うーん");
+	print("残念だけど……");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 6);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	set_baloon_type(0);
+	print("もう下克上は無理だよ");
+	print("我々は闘いに敗れたんだ");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 7);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("そんな弱音を吐いて……");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 4);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("大丈夫ですよ");
+	print("これだけの反則的な魔力があれば");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 1);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("いつだって幻想郷中の妖怪を");
+	print("支配下に置けますよ");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 0);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	print("いいんだいいんだ、もう");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 2);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	print("一緒に降伏しよう");
+	print("幻想郷の妖怪達は敵対したりしない");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 5);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("お言葉ですが……");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 1);
+	mode(player);
+	set_ballon_position(176, 280);
+	set_baloon_type(1);
+	print("やなこった！");
+	print("誰が降伏なんかするもんか");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 6);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	set_baloon_type(0);
+	print("ま、あんたならそう言うと思ったけどね");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 0);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	set_baloon_type(1);
+	print("ならば、その魔力返して貰おうか！");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 2);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	set_baloon_type(0);
+	print("ちなみに反対するならば～");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 1);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	print("本気で捕らえるように");
+	print("|4,14,・・・");
+	print("みんなに伝えておいたよ");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 5);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	set_baloon_type(3);
+	print("命あっての物種");
+	print("じゃないかねぇ");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 6);
+	mode(player);
+	set_ballon_position(176, 280);
+	set_baloon_type(0);
+	print("どんな奴に命を狙われようとも");
+	print("こんな素晴らしい力返す理由が無いな");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 1);
+	mode(player);
+	set_ballon_position(176, 280);
+	set_baloon_type(1);
+	print("我が名は正邪");
+	print("生まれ持ってのアマノジャクだ！");
+	sleep(4);
+
+	enter_sleep(600);
+	disable_img(player);
+	disable_img(enemy);
+	disable_textarea();
+	skip(FALSE);
+	sleep(30);
+
+}
+function proc1{
+	show_tutorial(7);
+	sleep(2);
+
+}

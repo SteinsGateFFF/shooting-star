@@ -1,0 +1,135 @@
+$MSG_TYPE = TH11_MSG
+
+function proc0{
+	skip(FALSE);
+	enable_img(player, 0);
+	sleep(4);
+
+	image_change(player, 6);
+	mode(player);
+	set_ballon_position(176, 280);
+	sleep(30);
+
+	skip(TRUE);
+	set_baloon_type(0);
+	set_ballon_position(176, 280);
+	print("くそう、舐めやがって！");
+	print("雑魚のくせに");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 1);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("ま、こんな弾幕、ちょちょいと");
+	print("躱してまた潜伏するか");
+	sleep(4);
+
+	enter_sleep(600);
+	set_baloon_type(0);
+	enable_img(enemy, 0);
+	sleep(4);
+
+	image_change(enemy, 1);
+	mode(enemy);
+	set_ballon_position(464, 280);
+	print("あはは");
+	print("|-4,6,　はんぎゃくしゃ");
+	print("天邪鬼を捕まえたら褒美が出るってさ！");
+	sleep(4);
+
+	enter_sleep(600);
+	set_baloon_type(3);
+	sleep(4);
+
+	image_change(player, 6);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("……舐めるなよ");
+	print("お前ら道具如きに捕まる筈が無いだろうが");
+	sleep(4);
+
+	enter_sleep(600);
+	set_baloon_type(0);
+	sleep(4);
+
+	image_change(enemy, 1);
+	mode(enemy);
+	set_ballon_position(464, 280);
+	print("ふっふっふ、反逆者には");
+	print("どんな手を使っても良いんだってさ");
+	sleep(4);
+
+	enter_sleep(600);
+	set_baloon_type(1);
+	sleep(4);
+
+	image_change(enemy, 5);
+	mode(enemy);
+	set_ballon_position(464, 280);
+	print("いっちょやってみるわー！");
+	print("|93,7,インポッシブルスペルカード");
+	print("避けてみな、不可能弾幕！");
+	sleep(4);
+
+	enter_sleep(600);
+	disable_img(player);
+	disable_img(enemy);
+	disable_textarea();
+	skip(FALSE);
+	sleep(30);
+
+}
+function proc1{
+	skip(FALSE);
+	enable_img(player, 0);
+	sleep(4);
+
+	image_change(player, 7);
+	mode(player);
+	set_ballon_position(176, 280);
+	sleep(30);
+
+	skip(TRUE);
+	set_baloon_type(1);
+	set_ballon_position(176, 280);
+	print("なんだこりゃ！");
+	sleep(4);
+
+	enter_sleep(600);
+	set_baloon_type(3);
+	sleep(4);
+
+	image_change(player, 1);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("そっちが反則でくるなら");
+	print("こっちにも策があるぞ");
+	sleep(4);
+
+	enter_sleep(600);
+	show_tutorial(0);
+	disable_img(player);
+	disable_img(enemy);
+	disable_textarea();
+	skip(FALSE);
+	sleep(2);
+
+}
+function proc2{
+	show_tutorial(1);
+	sleep(2);
+
+}
+function proc3{
+	show_tutorial(2);
+	sleep(2);
+
+}
+function proc4{
+	show_tutorial(3);
+	sleep(2);
+
+}
