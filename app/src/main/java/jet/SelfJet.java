@@ -32,7 +32,7 @@ public class SelfJet extends Jet implements Hittable{
     }
     public SelfJet(float x, float y, float r, Paint p) {
         super(x,y,r,p);
-        mGuns.add(Gun.getGun(Gun.GUN_TYPE_DEFAULT, mBulletStyles));
+        mGuns.add(Gun.getGun(Gun.GUN_TYPE_NO_TARGET_UP, mBulletStyles));
     }
 
     @Override

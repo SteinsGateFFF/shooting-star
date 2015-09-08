@@ -168,7 +168,7 @@ public class GameManager {
         for(int i = 0; i<mSelfJet.getNumOfGuns();i++){
             ArrayList<Integer> bulletStyles = new ArrayList<>();
             bulletStyles.add(Bullet.BULLET_STYLE_DEFAULT);
-            mSelfJet.setGunType(i,Gun.GUN_TYPE_DEFAULT, bulletStyles);
+            //mSelfJet.setGunType(i,Gun.GUN_TYPE_DEFAULT, bulletStyles);
         }
 
         mRemainingLife--;
