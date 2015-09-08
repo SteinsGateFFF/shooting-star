@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jet.EnemyJet;
 import jet.SelfJet;
@@ -19,7 +20,7 @@ public class Bullet implements Hittable{
     private float mRadius;
     private Velocity mVelocity;
     private Paint mPaint;
-    private VelocityPattern mVelocityPattern;
+    private List<VelocityPattern> mVelocityPatterns;
     /**
      * TODO: MaxSpeed actually does not guarantee the max speed.
      */
@@ -29,6 +30,8 @@ public class Bullet implements Hittable{
      * Damage that should be dealt to jet when is collided.
      */
     private float mDamage;
+
+    private int mVelocityPatternCounter;
 
     public static final int BULLET_STYLE_DEFAULT = 0;
 
@@ -54,6 +57,7 @@ public class Bullet implements Hittable{
         mVelocity = v;
         mMaxSpeed = maxSpeed;
         mDamage = damage;
+        mVelocityPatterns = new ArrayList<>();
         //TODO: Need to support multiple patterns.
         //propose to close
         for(int style:bulletStyles){
@@ -66,10 +70,10 @@ public class Bullet implements Hittable{
 
         switch (bulletStyle){
             case BULLET_STYLE_WORM:
-                mVelocityPattern = VelocityPatternFactory.produce(VelocityPattern.WORM, mVelocity);
+                mVelocityPatterns.add(VelocityPatternFactory.produce(VelocityPattern.WORM, mVelocity));
                 break;
             case BULLET_STYLE_SPIRAL:
-                mVelocityPattern = VelocityPatternFactory.produce(VelocityPattern.SPIRAL, mVelocity);
+                mVelocityPatterns.add(VelocityPatternFactory.produce(VelocityPattern.SPIRAL, mVelocity));
                 break;
         }
     }
@@ -78,11 +82,6 @@ public class Bullet implements Hittable{
     public float getDamage(){
         return mDamage;
     }
-
-    public void setVelocityPattern(VelocityPattern pattern){
-        mVelocityPattern = pattern;
-    }
-
 
     public Position getSelfPos(){return mSelfPos;};
 
@@ -96,11 +95,18 @@ public class Bullet implements Hittable{
     }
 
     public void tick(){
-        if(mVelocityPattern!=null) {
-            mVelocity = mVelocityPattern.nextVelocity(mVelocity);
+
+        if(mVelocityPatterns!=null && mVelocityPatterns.size()!= 0) {
+            if(mVelocityPatterns.get(mVelocityPatternCounter)!= null) {
+                mVelocity = mVelocityPatterns.get(mVelocityPatternCounter).nextVelocity(mVelocity);
+            }
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
         collider.setPosition(mSelfPos);
+        mVelocityPatternCounter++;
+        if(mVelocityPatternCounter>mVelocityPatterns.size()-1){
+            mVelocityPatternCounter=0;
+        }
     }
 
     /**

@@ -150,8 +150,8 @@ public class GameManager {
             for (int i = 0; i < 5; i++) {
                 EnemyJet enemyJet = new EnemyJet((i + 1) * mScreenWidth / 6, 25+25*i,50, mEnemyJetPaint);
                 ArrayList<Integer> bulletStyles = new ArrayList<>();
-                bulletStyles.add(Bullet.BULLET_STYLE_WORM);
                 bulletStyles.add(Bullet.BULLET_STYLE_SPIRAL);
+                bulletStyles.add(Bullet.BULLET_STYLE_WORM);
                 enemyJet.setGunType(0,Gun.GUN_TYPE_SELF_TARGETING_EVEN,bulletStyles);
                 enemyJet.setJetLifeCycleListener(jetLifeCycle);
                 mEnemyJets.add(enemyJet);
