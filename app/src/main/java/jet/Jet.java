@@ -22,7 +22,7 @@ import hacking.to.the.gate.Velocity;
 /**
  * Created by Ruiqian on 9/8/2015.
  */
-abstract class Jet implements Hittable{
+public class Jet{
 
     public CircleCollider getCollider(){
         return collider;

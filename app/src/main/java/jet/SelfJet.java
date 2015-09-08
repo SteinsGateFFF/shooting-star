@@ -15,7 +15,7 @@ import hacking.to.the.gate.PowerUp;
 /**
  * Created by Ruiqian on 9/8/2015.
  */
-public class SelfJet extends Jet {
+public class SelfJet extends Jet implements Hittable{
 
     public void onCollision(Hittable h){
         float curHealth = getHealth();
