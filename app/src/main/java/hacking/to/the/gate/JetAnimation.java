@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This is a class for drawing animation.
+ *
  * Created by yihuaqi on 2015/9/7.
  */
 public class JetAnimation {
@@ -35,6 +37,12 @@ public class JetAnimation {
     private static final int ENEMY_JET_0_WIDTH = 48;
     private static final int ENEMY_JET_0_HEIGHT = 32;
 
+    /**
+     * Must be called before any operation.
+     *
+     * @param context
+     * @throws IOException
+     */
     public static void init(Context context) throws IOException {
         for (int i = 0; i < 8; i++) {
             SELF_JET_STILL_RECTS.add(new Rect(i * SELF_JET_WIDTH, 0, (i + 1) * SELF_JET_WIDTH, SELF_JET_HEIGHT));
@@ -73,14 +81,32 @@ public class JetAnimation {
         }
     }
 
+    /**
+     * The bitmap that contains the frames of animation.
+     */
     private Bitmap mBitmap;
+    /**
+     * List of rects when jet is moving towards left.
+     */
     private List<Rect> mLeft;
+    /**
+     * List of rects when jet is still in x.
+     */
     private List<Rect> mStill;
+    /**
+     * List of rects when jet is moving towards right.
+     */
     private List<Rect> mRight;
-
+    /**
+     * Position of the previous movement.
+     */
     private Position mPrevPos = null;
+    /**
+     * Previous Move type.
+     */
     private int mPrevMove = -1;
-    private int mTick;
+
+    private long mTick;
 
     private static final int MOVE_STILL = 0;
     private static final int MOVE_LEFT = 1;
@@ -110,6 +136,12 @@ public class JetAnimation {
         }
     };
 
+    /**
+     * Checks if the current movement would be towards left or right or still.
+     * TODO: Might make more sense if we pass the velocity here.
+     * @param p
+     * @return
+     */
     private int checkMove(Position p){
         if(mPrevPos!=null) {
             if ((int) p.getPositionX() > (int) mPrevPos.getPositionX()) {
@@ -124,6 +156,10 @@ public class JetAnimation {
         }
     }
 
+    /**
+     * Update tick and prevmove.
+     * @param move
+     */
     private void tick(int move){
         if(mPrevMove == move){
             mTick++;
@@ -146,20 +182,20 @@ public class JetAnimation {
     };
 
     private void drawTick(Canvas c, Position p, List<Rect> rects){
-        int index = mTick/20;
+        long index = mTick/20;
         if(index<4){
-            drawTick(c,p,rects.get(index));
+            drawTick(c,p,rects.get((int) index));
         } else {
-            drawTick(c,p,rects.get(index%4+4));
+            drawTick(c,p,rects.get((int) (index%4+4)));
         }
 
     }
 
-    private void drawTick(Canvas c, Position p, Rect rect){
-        c.drawBitmap(mBitmap,rect, getRectF(rect, p),null);
+    private void drawTick(Canvas c, Position p, Rect src){
+        c.drawBitmap(mBitmap,src, getDestRectF(src, p),null);
     }
 
-    private RectF getRectF(Rect rect, Position p){
+    private RectF getDestRectF(Rect rect, Position p){
         return new RectF(p.getPositionX()-rect.width()*2,p.getPositionY()-rect.height()*2,
                 p.getPositionX()+rect.width()*2,p.getPositionY()+rect.height()*2);
     }
