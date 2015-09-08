@@ -1,5 +1,6 @@
 package hacking.to.the.gate;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -7,6 +8,7 @@ import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -115,7 +117,7 @@ public class GameManager {
      * @param screenWidht
      * @param screenHeight
      */
-    public void init(float screenWidht, float screenHeight){
+    public void init(Context context, float screenWidht, float screenHeight) throws IOException {
         mScreenWidth = screenWidht;
         mScreenHeight = screenHeight;
         mScreenRect = new Rect(0,0,(int)mScreenWidth,(int)mScreenHeight);
@@ -135,6 +137,8 @@ public class GameManager {
         mHintPaint.setTextSize(50);
 
         onStateChange(STATE_INIT);
+
+        JetAnimation.init(context);
     }
 
     /**
@@ -147,7 +151,7 @@ public class GameManager {
         // To avoid crash when start a new game.
         synchronized (mEnemyJets) {
             for (int i = 0; i < 5; i++) {
-                Jet enemyJet = new Jet((i + 1) * mScreenWidth / 6, 100, 50, mEnemyJetPaint, false);
+                Jet enemyJet = new Jet((i + 1) * mScreenWidth / 6, 100, 50, mEnemyJetPaint, false, JetAnimation.TYPE_ENEMY_JET_0);
                 enemyJet.setGunType(Gun.GUN_TYPE_SELF_TARGETING_EVEN, Bullet.BULLET_STYLE_WORM);
                 enemyJet.setJetLifeCycleListener(jetLifeCycle);
                 mEnemyJets.add(enemyJet);
@@ -160,7 +164,7 @@ public class GameManager {
     }
 
     public void createSelfJet(float x, float y){
-        mSelfJet = new Jet(x,y,50,mSelfJetPaint,true);
+        mSelfJet = new Jet(x,y,50,mSelfJetPaint,true,JetAnimation.TYPE_SELF_JET);
         mSelfJet.setGunType(Gun.GUN_TYPE_DEFAULT, Bullet.BULLET_STYLE_DEFAULT);
         mRemainingLife--;
         mCollisionEngine.setPlayer(mSelfJet);
@@ -268,8 +272,6 @@ public class GameManager {
                 }
             }
         }
-
-
 
 
     }

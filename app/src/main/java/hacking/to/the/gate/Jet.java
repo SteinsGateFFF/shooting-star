@@ -102,7 +102,9 @@ public class Jet implements Hittable {
      * @param p paint that paints the jet and bullet
      *
      */
-    public Jet(float x, float y, float r, Paint p,boolean isPlayer){
+
+    private JetAnimation mAnimation;
+    public Jet(float x, float y, float r, Paint p,boolean isPlayer, int animationType){
         collider = new CircleCollider(r, new Position(x, y));
         mSelfPos = new Position(x,y);
         mRadius = r;
@@ -113,6 +115,7 @@ public class Jet implements Hittable {
         mIsPlayer = isPlayer;
         mBullets = new LinkedList<>();
         mGun = Gun.getGun(Gun.GUN_TYPE_DEFAULT,Bullet.BULLET_STYLE_DEFAULT);
+        mAnimation = JetAnimation.getInstance(animationType);
     }
 
 
@@ -131,7 +134,8 @@ public class Jet implements Hittable {
      */
     public void draw(Canvas canvas){
         if(!mIsDead) {
-            canvas.drawCircle(mSelfPos.getPositionX(), mSelfPos.getPositionY(), mRadius, mPaint);
+//            canvas.drawCircle(mSelfPos.getPositionX(), mSelfPos.getPositionY(), mRadius, mPaint);
+            mAnimation.draw(canvas,mSelfPos);
         }
         for(Bullet b:mBullets){
             b.draw(canvas);
@@ -249,5 +253,6 @@ public class Jet implements Hittable {
         }
         return noBullets&&(mIsDead || mSelfPos.isOutOfScreen((int) mRadius));
     }
+
 
 }
