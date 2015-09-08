@@ -2,6 +2,7 @@ package hacking.to.the.gate;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class Bullet implements Hittable{
     /**
      * TODO: MaxSpeed actually does not guarantee the max speed.
      */
+    //propose to close
     private float mMaxSpeed;
     private boolean shouldRecycle = false;
     /**
@@ -31,6 +33,7 @@ public class Bullet implements Hittable{
      */
     private float mDamage;
 
+//index of current velocity pattern in velocityPattern set.
     private int mVelocityPatternCounter;
 
     public static final int BULLET_STYLE_DEFAULT = 0;
@@ -54,10 +57,10 @@ public class Bullet implements Hittable{
         mRadius = r;
         mSelfPos = pos;
         mPaint = paint;
-        mVelocity = v;
         mMaxSpeed = maxSpeed;
         mDamage = damage;
         mVelocityPatterns = new ArrayList<>();
+        mVelocity = v;
         //TODO: Need to support multiple patterns.
         //propose to close
         for(int style:bulletStyles){
@@ -68,6 +71,9 @@ public class Bullet implements Hittable{
 
     private void applyStyle(int bulletStyle){
 
+        if(mVelocity!=null&&!validateVelocity(mVelocity)){
+            mVelocity = normalizeVelocity(mVelocity);
+        }
         switch (bulletStyle){
             case BULLET_STYLE_WORM:
                 mVelocityPatterns.add(VelocityPatternFactory.produce(VelocityPattern.WORM, mVelocity));
@@ -76,6 +82,31 @@ public class Bullet implements Hittable{
                 mVelocityPatterns.add(VelocityPatternFactory.produce(VelocityPattern.SPIRAL, mVelocity));
                 break;
         }
+    }
+
+    /**
+     * check if the given velocity v is valid
+     * @param v
+     * @return true if it's valid, otherwise false
+     */
+    private boolean validateVelocity(Velocity v){
+        float speed = v.getSpeed();
+        return speed > mMaxSpeed;
+
+    }
+
+    /**
+     * give a velocity v
+     *
+     * @param v velocity
+     * @return a velocity that doesn't exceed maxspeed.
+     */
+    private Velocity normalizeVelocity(Velocity v){
+
+        float ratio = mMaxSpeed/v.getSpeed();
+
+        return new Velocity(v.getVelocityX()*ratio,v.getVelocityY()*ratio);
+
     }
 
 
@@ -96,17 +127,19 @@ public class Bullet implements Hittable{
 
     public void tick(){
 
+        if(mVelocityPatternCounter>mVelocityPatterns.size()-1){
+            mVelocityPatternCounter=0;
+        }
         if(mVelocityPatterns!=null && mVelocityPatterns.size()!= 0) {
             if(mVelocityPatterns.get(mVelocityPatternCounter)!= null) {
                 mVelocity = mVelocityPatterns.get(mVelocityPatternCounter).nextVelocity(mVelocity);
+               // Log.d("Bullet-velocity: ",""+mVelocity+" speed"+mVelocity.getSpeed());
             }
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
         collider.setPosition(mSelfPos);
         mVelocityPatternCounter++;
-        if(mVelocityPatternCounter>mVelocityPatterns.size()-1){
-            mVelocityPatternCounter=0;
-        }
+
     }
 
     /**
