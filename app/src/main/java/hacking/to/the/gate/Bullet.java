@@ -3,6 +3,11 @@ package hacking.to.the.gate;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import java.util.ArrayList;
+
+import jet.EnemyJet;
+import jet.SelfJet;
+
 /**
  * Created by Jelly and Huaqi on 2015/8/15.
  */
@@ -35,12 +40,12 @@ public class Bullet implements Hittable{
         return collider;
     }
     public void onCollision(Hittable h){
-        if(h instanceof Jet){
+        if(h instanceof EnemyJet || h instanceof SelfJet){
             recycle();
         }
 
     }
-    public Bullet(Position pos, float r, Paint paint, Velocity v, float damage, int bulletStyle, float maxSpeed){
+    public Bullet(Position pos, float r, Paint paint, Velocity v, float damage, ArrayList<Integer> bulletStyles, float maxSpeed){
     
         collider = new CircleCollider(r,pos);
         mRadius = r;
@@ -50,6 +55,15 @@ public class Bullet implements Hittable{
         mMaxSpeed = maxSpeed;
         mDamage = damage;
         //TODO: Need to support multiple patterns.
+        //propose to close
+        for(int style:bulletStyles){
+            applyStyle(style);
+        }
+
+    }
+
+    private void applyStyle(int bulletStyle){
+
         switch (bulletStyle){
             case BULLET_STYLE_WORM:
                 mVelocityPattern = VelocityPatternFactory.produce(VelocityPattern.WORM, mVelocity);
