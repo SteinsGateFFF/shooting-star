@@ -85,7 +85,7 @@ public class Bullet implements Hittable{
     }
 
     /**
-     * check if the given velocity v is valid
+     * check if the given velocity v is valid(not greater than maxspeed)
      * @param v
      * @return true if it's valid, otherwise false
      */
@@ -96,9 +96,9 @@ public class Bullet implements Hittable{
     }
 
     /**
-     * give a velocity v
+     * give a non-zero velocity v
      *
-     * @param v velocity whose speed is greater than maxspeed
+     * @param v non-zero velocity
      * @return a velocity that equals to maxspeed.
      */
     private Velocity normalizeVelocity(Velocity v){
