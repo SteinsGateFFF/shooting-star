@@ -30,8 +30,8 @@ public class EnemyJet extends Jet implements Hittable{
     }
 
     private JetLifeCycle jetLifeCycle;
-    public EnemyJet(float x, float y, float r, Paint p) {
-        super(x,y,r,p);
+    public EnemyJet(float x, float y, float r, Paint p,int animationType) {
+        super(x,y,r,p,animationType);
     }
 
     @Override

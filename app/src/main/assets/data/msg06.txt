@@ -1,0 +1,131 @@
+$MSG_TYPE = TH11_MSG
+
+function proc0{
+	skip(FALSE);
+	enable_img(player, 0);
+	sleep(4);
+
+	image_change(player, 0);
+	mode(player);
+	set_ballon_position(176, 280);
+	sleep(30);
+
+	skip(TRUE);
+	set_baloon_type(0);
+	set_ballon_position(176, 280);
+	print("まだ終わらないのか");
+	sleep(4);
+
+	enter_sleep(600);
+	enable_img(enemy, 0);
+	sleep(4);
+
+	image_change(enemy, 5);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	print("おい、そこの天邪鬼や");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 0);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	print("もう観念した方がええぞ");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 5);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("誰だか知らんが");
+	print("まっぴらごめんだね");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 1);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	print("|36,14,ブンヤ");
+	print("既に天狗達も動き出している");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 5);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	print("新聞が出ればそろそろ");
+	print("腰の重い連中も動き始めるぞい");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 0);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	print("……ま");
+	print("儂には関係無い事じゃがのう");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 5);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	print("ただアイテムの力を十分に");
+	print("引き出せていないのが気になってな……");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 6);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("どういう意味だ？");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 5);
+	mode(enemy);
+	set_ballon_position(448, 232);
+	print("もう片方の手が遊んでるじゃないか");
+	print("両手に装備すれば……あるいは");
+	sleep(4);
+
+	enter_sleep(600);
+	set_baloon_type(2);
+	sleep(4);
+
+	image_change(player, 0);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("両手に……");
+	print("だと？");
+	sleep(4);
+
+	enter_sleep(600);
+	show_tutorial(8);
+	disable_img(player);
+	disable_img(enemy);
+	disable_textarea();
+	skip(FALSE);
+	sleep(30);
+
+}
+function proc1{
+	show_tutorial(7);
+	sleep(2);
+
+}

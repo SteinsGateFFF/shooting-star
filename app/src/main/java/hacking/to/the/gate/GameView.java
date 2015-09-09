@@ -8,6 +8,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.io.IOException;
+
 
 /**
  * Created by Jelly and Huaqi on 2015/8/15.
@@ -89,7 +91,11 @@ public class GameView extends SurfaceView {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         // Here is when the width and height of the view are determined.
-        GameManager.getInstance().init(getWidth(),getHeight());
+        try {
+            GameManager.getInstance().init(getContext(), getWidth(),getHeight());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

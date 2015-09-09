@@ -1,0 +1,160 @@
+$MSG_TYPE = TH11_MSG
+
+function proc0{
+	skip(FALSE);
+	enable_img(player, 0);
+	enable_img(enemy, 0);
+	sleep(4);
+
+	image_change(enemy, 0);
+	mode(enemy);
+	set_ballon_position(448, 200);
+	sleep(30);
+
+	skip(TRUE);
+	set_baloon_type(0);
+	set_ballon_position(448, 200);
+	print("往生際が悪いね");
+	print("大人しく捕まったら？");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 0);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("あー？");
+	print("なんだ、付喪神か");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 0);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("大体、お前らがこうして自由を");
+	print("得ているのも");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 5);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("元をただせば私が小槌の魔力を");
+	print("解放したからだろう？");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 5);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("恩に着るこそすれ");
+	print("邪魔するなど以ての外じゃ無いか？");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 0);
+	mode(enemy);
+	set_ballon_position(448, 200);
+	print("逆だねぇ");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 0);
+	mode(enemy);
+	set_ballon_position(448, 200);
+	print("小槌の魔力を知ってるからこそ");
+	print("貴方を捕まえるのよ");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 0);
+	mode(enemy);
+	set_ballon_position(448, 200);
+	print("そんな乱暴な使われ方をされては");
+	print("道具が泣いている");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 5);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("……道具の分際で偉そうに");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 6);
+	mode(enemy);
+	set_ballon_position(448, 200);
+	print("不可能弾幕でも変に道具を");
+	print("使われるだけだから");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 0);
+	mode(enemy);
+	set_ballon_position(448, 200);
+	print("純粋に弾幕パワーで押し切ってやるよ！");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 1);
+	mode(enemy);
+	set_ballon_position(448, 200);
+	print("小細工無しで避けてみよ！");
+	sleep(4);
+
+	enter_sleep(600);
+	set_baloon_type(2);
+	sleep(4);
+
+	image_change(player, 6);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("馬鹿馬鹿しいな");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(player, 5);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("残りは使いにくいアイテムばかりだが……");
+	print("確かこういう時に丁度良いアイテムがあったな");
+	sleep(4);
+
+	enter_sleep(600);
+	show_tutorial(6);
+	disable_img(player);
+	disable_img(enemy);
+	disable_textarea();
+	skip(FALSE);
+	sleep(30);
+
+}
+function proc1{
+	show_tutorial(7);
+	sleep(2);
+
+}

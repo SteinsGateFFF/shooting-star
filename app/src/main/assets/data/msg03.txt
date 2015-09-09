@@ -1,0 +1,77 @@
+$MSG_TYPE = TH11_MSG
+
+function proc0{
+	skip(FALSE);
+	enable_img(player, 0);
+	enable_img(enemy, 0);
+	sleep(4);
+
+	image_change(enemy, 0);
+	mode(enemy);
+	set_ballon_position(448, 264);
+	sleep(30);
+
+	skip(TRUE);
+	set_baloon_type(1);
+	set_ballon_position(448, 264);
+	print("見つけたわよ！");
+	print("お尋ね者の天邪鬼");
+	sleep(4);
+
+	enter_sleep(600);
+	set_baloon_type(0);
+	sleep(4);
+
+	image_change(player, 6);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("げ、こんなところまで");
+	print("広まってるのか");
+	sleep(4);
+
+	enter_sleep(600);
+	sleep(4);
+
+	image_change(enemy, 0);
+	mode(enemy);
+	set_ballon_position(448, 264);
+	print("本腰入れて不可能弾幕でやっつけろって");
+	print("お触れが出てるわ");
+	sleep(4);
+
+	enter_sleep(600);
+	set_baloon_type(3);
+	sleep(4);
+
+	image_change(player, 6);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("誰なんだ？");
+	print("そんなお触れを出した奴……");
+	sleep(4);
+
+	enter_sleep(600);
+	set_baloon_type(0);
+	sleep(4);
+
+	image_change(player, 5);
+	mode(player);
+	set_ballon_position(176, 280);
+	print("しょうがない、悔しいが");
+	print("とっておきの不思議道具も使っちゃうか");
+	sleep(4);
+
+	enter_sleep(600);
+	show_tutorial(4);
+	disable_img(player);
+	disable_img(enemy);
+	disable_textarea();
+	skip(FALSE);
+	sleep(30);
+
+}
+function proc1{
+	show_tutorial(5);
+	sleep(2);
+
+}

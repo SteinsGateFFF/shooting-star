@@ -1,12 +1,13 @@
 package hacking.to.the.gate;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -116,7 +117,7 @@ public class GameManager {
      * @param screenWidht
      * @param screenHeight
      */
-    public void init(float screenWidht, float screenHeight){
+    public void init(Context context, float screenWidht, float screenHeight) throws IOException {
         mScreenWidth = screenWidht;
         mScreenHeight = screenHeight;
         mScreenRect = new Rect(0,0,(int)mScreenWidth,(int)mScreenHeight);
@@ -136,6 +137,8 @@ public class GameManager {
         mHintPaint.setTextSize(50);
 
         onStateChange(STATE_INIT);
+
+        JetAnimation.init(context);
     }
 
     /**
@@ -148,7 +151,7 @@ public class GameManager {
         // To avoid crash when start a new game.
         synchronized (mEnemyJets) {
             for (int i = 0; i < 5; i++) {
-                EnemyJet enemyJet = new EnemyJet((i + 1) * mScreenWidth / 6, 25+25*i,50, mEnemyJetPaint);
+                EnemyJet enemyJet = new EnemyJet((i + 1) * mScreenWidth / 6, 25+25*i,50, mEnemyJetPaint, JetAnimation.TYPE_ENEMY_JET_0);
                 ArrayList<Integer> bulletStyles = new ArrayList<>();
                 bulletStyles.add(Bullet.BULLET_STYLE_SPIRAL);
                 bulletStyles.add(Bullet.BULLET_STYLE_WORM);
@@ -164,13 +167,13 @@ public class GameManager {
     }
 
     public void createSelfJet(float x, float y){
-        mSelfJet = new SelfJet(x,y,50,mSelfJetPaint);
+
+        mSelfJet = new SelfJet(x,y,50,mSelfJetPaint,JetAnimation.TYPE_SELF_JET);
         for(int i = 0; i<mSelfJet.getNumOfGuns();i++){
             ArrayList<Integer> bulletStyles = new ArrayList<>();
             bulletStyles.add(Bullet.BULLET_STYLE_DEFAULT);
             //mSelfJet.setGunType(i,Gun.GUN_TYPE_DEFAULT, bulletStyles);
         }
-
         mRemainingLife--;
         mCollisionEngine.setPlayer(mSelfJet);
         Log.d("Selfjet","New self jet is created");

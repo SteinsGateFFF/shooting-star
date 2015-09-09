@@ -14,6 +14,7 @@ import hacking.to.the.gate.CircleCollider;
 import hacking.to.the.gate.GameManager;
 import hacking.to.the.gate.Gun;
 import hacking.to.the.gate.Hittable;
+import hacking.to.the.gate.JetAnimation;
 import hacking.to.the.gate.JetLifeCycle;
 import hacking.to.the.gate.Position;
 import hacking.to.the.gate.PowerUp;
@@ -68,12 +69,19 @@ public class Jet{
 
     protected ArrayList<Integer> mBulletStyles;
 
+    /**
+     * Create a Jet Object
+     * @param x x coordinate of the center of the jet
+     * @param y y coordinate of the center of the jet
+     * @param r radius of the jet
+     * @param p paint that paints the jet and bullet
+     *
+     */
+
+    private JetAnimation mAnimation;
     protected boolean mIsDead = false;
 
-
-
-
-    public Jet(float x, float y, float r, Paint p){
+public Jet(float x, float y, float r, Paint p, int animationType){
         collider = new CircleCollider(r, new Position(x, y));
         mSelfPos = new Position(x,y);
         mRadius = r;
@@ -82,6 +90,7 @@ public class Jet{
         mMaxSpeed = 20;
         mHasDestination = false;
         mBullets = new LinkedList<>();
+        mAnimation = JetAnimation.getInstance(animationType);
         mGuns = new LinkedList<>();
         mBulletStyles = new ArrayList<>();
         mBulletStyles.add(Bullet.BULLET_STYLE_DEFAULT);
@@ -110,7 +119,8 @@ public class Jet{
      */
     public void draw(Canvas canvas){
         if(!mIsDead) {
-            canvas.drawCircle(mSelfPos.getPositionX(), mSelfPos.getPositionY(), mRadius, mPaint);
+//            canvas.drawCircle(mSelfPos.getPositionX(), mSelfPos.getPositionY(), mRadius, mPaint);
+            mAnimation.draw(canvas,mSelfPos);
         }
         for(Bullet b:mBullets){
             b.draw(canvas);

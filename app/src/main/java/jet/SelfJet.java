@@ -30,8 +30,8 @@ public class SelfJet extends Jet implements Hittable{
             setDead(true);
         }
     }
-    public SelfJet(float x, float y, float r, Paint p) {
-        super(x,y,r,p);
+    public SelfJet(float x, float y, float r, Paint p,int animationType) {
+        super(x,y,r,p,animationType);
         mGuns.add(Gun.getGun(Gun.GUN_TYPE_NO_TARGET_UP, mBulletStyles));
     }
 
