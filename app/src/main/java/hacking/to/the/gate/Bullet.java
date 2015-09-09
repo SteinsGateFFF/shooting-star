@@ -98,8 +98,8 @@ public class Bullet implements Hittable{
     /**
      * give a velocity v
      *
-     * @param v velocity
-     * @return a velocity that doesn't exceed maxspeed.
+     * @param v velocity whose speed is greater than maxspeed
+     * @return a velocity that equals to maxspeed.
      */
     private Velocity normalizeVelocity(Velocity v){
 

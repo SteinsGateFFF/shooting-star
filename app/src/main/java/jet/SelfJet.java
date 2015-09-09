@@ -57,7 +57,7 @@ public class SelfJet extends Jet implements Hittable{
         }
     }
 
-    private Position getTargetPosition(Position selfjetPos, List<Position> enemyPositions){
+    private static Position getTargetPosition(Position selfjetPos, List<Position> enemyPositions){
         Position targetPosition = enemyPositions.get(0);
         float min = getDistanceInY(selfjetPos,targetPosition);
         Log.d("target", "" + min);
@@ -75,7 +75,7 @@ public class SelfJet extends Jet implements Hittable{
 
     }
 
-    private float getDistanceInY(Position pos1, Position pos2){
+    private static float getDistanceInY(Position pos1, Position pos2){
         return Math.abs(pos1.getPositionY() - pos2.getPositionY());
     }
 }
