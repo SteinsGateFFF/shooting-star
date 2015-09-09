@@ -1,5 +1,7 @@
 package hacking.to.the.gate;
 
+import android.util.Log;
+
 /**
  * Created by yihuaqi on 2015/9/1.
  */
@@ -18,6 +20,7 @@ public class VelocityPatternFactory {
                         count++;
                         double percentage = Math.pow((count%60)-30,2)/900d;
 //                        double percentage = Math.abs((count%60)-30)/30d;
+                        Log.d("percentage: ",""+percentage);
                         return mInitVelocity.change(percentage);
 
                     }

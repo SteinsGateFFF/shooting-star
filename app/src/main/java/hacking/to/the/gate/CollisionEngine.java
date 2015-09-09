@@ -4,25 +4,27 @@ import android.util.Log;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
+
+import jet.EnemyJet;
+import jet.SelfJet;
 
 /**
  * Created by Ruiqian on 9/2/2015.
  */
 public class CollisionEngine {
 
-    private List<Jet> mEnemies;
-    private Jet mPlayer;
+    private List<EnemyJet> mEnemies;
+    private SelfJet mPlayer;
     private List<PowerUp> mPowerups;
 
 
-    public CollisionEngine(List<Jet> jets, List<PowerUp> powerups, Jet player){
+    public CollisionEngine(List<EnemyJet> jets, List<PowerUp> powerups, SelfJet player){
         mEnemies = jets;
         mPowerups = powerups;
         mPlayer = player;
     }
 
-    public void setPlayer(Jet newPlayer){
+    public void setPlayer(SelfJet newPlayer){
         mPlayer = newPlayer;
     }
     private boolean detectCollision(Hittable t1, Hittable t2){
@@ -54,7 +56,7 @@ public class CollisionEngine {
             }
         }
 
-        for(Jet jet:mEnemies){
+        for(EnemyJet jet:mEnemies){
             for (Iterator<Bullet> it = jet.getBullets().iterator(); it.hasNext(); ) {
                 Bullet b = it.next();
                 if (!mPlayer.isDead() && detectCollision(mPlayer, b)) {

@@ -7,9 +7,13 @@ import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import jet.EnemyJet;
+import jet.SelfJet;
 
 /**
  * Manager class that manages the game logic, holds all underlying data objects, and renders the canvas.
@@ -24,7 +28,7 @@ public class GameManager {
 
     private JetLifeCycle jetLifeCycle = new JetLifeCycle() {
         @Override
-        public void onDeath(Jet jet) {
+        public void onDeath(EnemyJet jet) {
             generatePowerups((int)jet.getSelfPosition().getPositionX());
         }
     };
@@ -57,7 +61,6 @@ public class GameManager {
     public static final int STATE_GAME_OVER = 4;
     /**
      * State when player wins the game.
-     * TODO: Not implemented yet.
      */
     public static final int STATE_GAME_WIN = 5;
     /**
@@ -92,11 +95,11 @@ public class GameManager {
     /**
      * Jet that controled by player.
      */
-    private Jet mSelfJet;
+    private SelfJet mSelfJet;
     /**
      * List of enemy Jets.
      */
-    private List<Jet> mEnemyJets;
+    private List<EnemyJet> mEnemyJets;
 
     /*
         list of power ups
@@ -109,8 +112,6 @@ public class GameManager {
     /**
      * Init the {@link hacking.to.the.gate.GameManager} with the dimension of the {@link hacking.to.the.gate.GameView}.
      * Create SelfJet and EnemyJets.
-     *
-     * TODO: Creating SelfJet and EnemyJets should be in seperate methods.
      *
      * @param screenWidht
      * @param screenHeight
@@ -147,8 +148,11 @@ public class GameManager {
         // To avoid crash when start a new game.
         synchronized (mEnemyJets) {
             for (int i = 0; i < 5; i++) {
-                Jet enemyJet = new Jet((i + 1) * mScreenWidth / 6, 100, 50, mEnemyJetPaint, false);
-                enemyJet.setGunType(Gun.GUN_TYPE_SELF_TARGETING_EVEN, Bullet.BULLET_STYLE_WORM);
+                EnemyJet enemyJet = new EnemyJet((i + 1) * mScreenWidth / 6, 25+25*i,50, mEnemyJetPaint);
+                ArrayList<Integer> bulletStyles = new ArrayList<>();
+                bulletStyles.add(Bullet.BULLET_STYLE_SPIRAL);
+                bulletStyles.add(Bullet.BULLET_STYLE_WORM);
+                enemyJet.setGunType(0,Gun.GUN_TYPE_SELF_TARGETING_EVEN,bulletStyles);
                 enemyJet.setJetLifeCycleListener(jetLifeCycle);
                 mEnemyJets.add(enemyJet);
 
@@ -160,8 +164,13 @@ public class GameManager {
     }
 
     public void createSelfJet(float x, float y){
-        mSelfJet = new Jet(x,y,50,mSelfJetPaint,true);
-        mSelfJet.setGunType(Gun.GUN_TYPE_DEFAULT, Bullet.BULLET_STYLE_DEFAULT);
+        mSelfJet = new SelfJet(x,y,50,mSelfJetPaint);
+        for(int i = 0; i<mSelfJet.getNumOfGuns();i++){
+            ArrayList<Integer> bulletStyles = new ArrayList<>();
+            bulletStyles.add(Bullet.BULLET_STYLE_DEFAULT);
+            //mSelfJet.setGunType(i,Gun.GUN_TYPE_DEFAULT, bulletStyles);
+        }
+
         mRemainingLife--;
         mCollisionEngine.setPlayer(mSelfJet);
         Log.d("Selfjet","New self jet is created");
@@ -198,7 +207,7 @@ public class GameManager {
         }
         if(mSelfJet!=null) {
             mSelfJet.tick();
-            for(Jet jet:mEnemyJets){
+            for(EnemyJet jet:mEnemyJets){
                 jet.tick();
             }
             for(PowerUp powerup :mPowerUps){
@@ -206,8 +215,6 @@ public class GameManager {
             }
             mCollisionEngine.tick();
         }
-
-
         recycle();
     }
 
@@ -252,7 +259,7 @@ public class GameManager {
         if(mEnemyJets!=null) {
             // Otherwise might cause crash to call createGame()
             synchronized (mEnemyJets) {
-                for (Jet jet : mEnemyJets) {
+                for (EnemyJet jet : mEnemyJets) {
                     jet.draw(canvas);
                 }
             }
@@ -268,10 +275,6 @@ public class GameManager {
                 }
             }
         }
-
-
-
-
     }
 
     /**
@@ -319,8 +322,8 @@ public class GameManager {
         }
 
         boolean win = true;
-        for(Iterator<Jet> it = mEnemyJets.iterator(); it.hasNext();){
-            Jet jet = it.next();
+        for(Iterator<EnemyJet> it = mEnemyJets.iterator(); it.hasNext();){
+            EnemyJet jet = it.next();
 
             if(jet.shouldRecycle()){
                 it.remove();
@@ -362,6 +365,18 @@ public class GameManager {
     public Position getSelfJetPosition() throws Exception {
         if(mSelfJet==null) throw new Exception("No Self Jet in Game");
         return mSelfJet.getSelfPosition();
+    }
+
+    public List<Position> getEnemyPositions(){
+        List<Position> positions = new LinkedList<>();
+        if(!mEnemyJets.isEmpty()){
+            for(EnemyJet enemy:mEnemyJets){
+                if(!enemy.isDead()) {
+                    positions.add(enemy.getSelfPosition());
+                }
+            }
+        }
+        return positions;
     }
 
     public void toggleState() {

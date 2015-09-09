@@ -2,10 +2,8 @@ package hacking.to.the.gate;
 
 import android.graphics.Paint;
 import android.graphics.Canvas;
-import android.graphics.Color;
-
-import java.util.Iterator;
 import java.util.Random;
+import jet.SelfJet;
 
 /**
  * Created by Ruiqian on 8/24/2015.
@@ -17,7 +15,7 @@ public class PowerUp implements Hittable{
     }
 
     public void onCollision(Hittable h){
-        if(h instanceof Jet){
+        if(h instanceof SelfJet){
             setVisible(false);
         }
     }

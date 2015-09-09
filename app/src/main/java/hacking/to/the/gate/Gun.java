@@ -35,22 +35,25 @@ public class Gun {
      */
     private Paint mPaint = null;
 
-    private int mBulletStyle = 0;
+    private ArrayList<Integer> mBulletStyles;
+
+    private float mBulletMaxSpeed;
 
     /**
      * Construct a Gun instance.
      * @param shootingInterval
      * @param gunStyle
-     * @param bulletStyle
+     * @param bulletStyles
      * @param bulletDamage
      * @param paint
      */
-    private Gun(int shootingInterval, int gunStyle, int bulletStyle, float bulletDamage, Paint paint){
+    private Gun(int shootingInterval, int gunStyle, ArrayList<Integer> bulletStyles, float bulletDamage, Paint paint, float bulletMaxSpeed){
         mShootingInterval = shootingInterval;
         mGunStyle = getGunStyle(gunStyle);
         mBulletDamage = bulletDamage;
         mPaint = paint;
-        mBulletStyle = bulletStyle;
+        mBulletStyles = bulletStyles;
+        mBulletMaxSpeed = bulletMaxSpeed;
     }
 
 
@@ -95,30 +98,40 @@ public class Gun {
 
     public final static int GUN_TYPE_WORM = 4;
 
+    public final static int GUN_TYPE_NO_TARGET_UP = 5;
+
+    public final static int GUN_TYPE_NO_TARGET_DOWN = 6;
+
     /**
      * Return an instance of gun of given type.
      * @param type
      * @return
      */
-    public static Gun getGun(int type, int bulletStyle){
+    public static Gun getGun(int type, ArrayList<Integer> bulletStyles){
         // TODO: Need a way to easily distinguish enemy and self.
         Paint p = new Paint();
         switch (type) {
+            case GUN_STYLE_TYPE_NO_TARGET_DOWN:
+                p.setColor(Color.RED);
+                return new Gun(12,GUN_STYLE_TYPE_NO_TARGET_DOWN,bulletStyles,20,p,10);
+            case GUN_STYLE_TYPE_NO_TARGET_UP:
+                p.setColor(Color.WHITE);
+                return new Gun(12,GUN_STYLE_TYPE_NO_TARGET_UP,bulletStyles,20,p,10);
             case GUN_TYPE_DEFAULT:
                 p.setColor(Color.WHITE);
-                return new Gun(12, GUN_STYLE_TYPE_NORMAL, bulletStyle, 34, p);
+                return new Gun(12, GUN_STYLE_TYPE_NORMAL, bulletStyles, 34, p,10);
 
             case GUN_TYPE_SELF_TARGETING_ODD:
                 p.setColor(Color.RED);
-                return new Gun(12, GUN_STYLE_TYPE_SELF_TARGETING_ODD, bulletStyle, 10,p);
+                return new Gun(12, GUN_STYLE_TYPE_SELF_TARGETING_ODD, bulletStyles, 10,p,10);
 
             case GUN_TYPE_SELF_TARGETING_EVEN:
                 p.setColor(Color.RED);
-                return new Gun(12, GUN_STYLE_TYPE_SELF_TARGETING_EVEN, bulletStyle, 10,p);
+                return new Gun(12, GUN_STYLE_TYPE_SELF_TARGETING_EVEN, bulletStyles, 10,p,10);
 
             case GUN_TYPE_RANDOM_SPLIT:
                 p.setColor(Color.YELLOW);
-                return new Gun(60, GUN_STYLE_TYPE_RANDOM_SPLIT,bulletStyle, 10, p);
+                return new Gun(60, GUN_STYLE_TYPE_RANDOM_SPLIT,bulletStyles, 10, p,10);
 
             default:
                 throw new IllegalArgumentException("Invalid Gun Type");
@@ -152,6 +165,9 @@ public class Gun {
      */
     private final static int GUN_STYLE_TYPE_RANDOM_SPLIT = 4;
 
+    private final static int GUN_STYLE_TYPE_NO_TARGET_UP = 5;
+    private final static int GUN_STYLE_TYPE_NO_TARGET_DOWN = 6;
+
     /**
      * Determines how the bullets will get generated.
      */
@@ -172,30 +188,60 @@ public class Gun {
      */
     private GunStyle getGunStyle(int type) {
         switch (type){
+            case GUN_STYLE_TYPE_NO_TARGET_UP:
+                return new GunStyle() {
+                    @Override
+                    public List<Bullet> generateBullets(Position self, Position target) {
+                        List<Bullet> result = new ArrayList<>();
+
+                            result.add(new Bullet(self,
+                                    10,
+                                    mPaint,
+                                    new Velocity(0,-mBulletMaxSpeed),
+                                    mBulletDamage,
+                                    mBulletStyles,
+                                    mBulletMaxSpeed));
+
+                        return result;
+
+                    }
+                };
+
+            case GUN_STYLE_TYPE_NO_TARGET_DOWN:
+                return new GunStyle() {
+                    @Override
+                    public List<Bullet> generateBullets(Position self, Position target) {
+                        List<Bullet> result = new ArrayList<>();
+
+                        result.add(new Bullet(self,
+                                10,
+                                mPaint,
+                                new Velocity(0,mBulletMaxSpeed),
+                                mBulletDamage,
+                                mBulletStyles,
+                                mBulletMaxSpeed));
+
+                        return result;
+
+                    }
+                };
+
             case GUN_STYLE_TYPE_NORMAL:
                 return new GunStyle() {
                     @Override
                     public List<Bullet> generateBullets(Position self, Position target) {
                         List<Bullet> result = new ArrayList<>();
                         if(target == null) {
-                            // Indicate this is self jet
-                            // TODO: Need more explicit indication.
-                            result.add(new Bullet(self,
-                                    10,
-                                    mPaint,
-                                    new Velocity(0,-20),
-                                    mBulletDamage,
-                                    mBulletStyle));
-
+                            return result;
+                            //throw new IllegalArgumentException("default type must have a target");
                         } else {
-                            // Indicate this is enemy jet
-                            // TODO: Need more explicit indication.
                             result.add(new Bullet(self,
                                     10,
                                     mPaint,
-                                    new Velocity(0,20),
+                                    Velocity.getDestinationVelocity(self, target, mBulletMaxSpeed),
                                     mBulletDamage,
-                                    mBulletStyle));
+                                    mBulletStyles,
+                                    mBulletMaxSpeed));
                         }
                         return result;
 
@@ -217,9 +263,11 @@ public class Gun {
                                     10,
                                     mPaint,
                                     // TODO: Should get max speed from Bullet or Gun.
-                                    Velocity.getDestinationVelocity(self, target, 10),
+                                    //propose to close
+                                    Velocity.getDestinationVelocity(self, target, mBulletMaxSpeed),
                                     mBulletDamage,
-                                    mBulletStyle);
+                                    mBulletStyles,
+                                    mBulletMaxSpeed);
 
                             result.add(b);
                         }
@@ -242,17 +290,21 @@ public class Gun {
                                     10,
                                     mPaint,
                                     // TODO: Should get max speed from Bullet or Gun.
-                                    Velocity.getDestinationVelocity(self, target, 10).rotate(5),
+                                    //propose to close
+                                    Velocity.getDestinationVelocity(self, target, mBulletMaxSpeed).rotate(5),
                                     mBulletDamage,
-                                    mBulletStyle);
+                                    mBulletStyles,
+                                    mBulletMaxSpeed);
 
                             Bullet b2 = new Bullet(self,
                                     10,
                                     mPaint,
                                     // TODO: Should get max speed from Bullet or Gun.
-                                    Velocity.getDestinationVelocity(self, target, 20).rotate(-5),
+                                    //propose to close
+                                    Velocity.getDestinationVelocity(self, target, mBulletMaxSpeed).rotate(-5),
                                     mBulletDamage,
-                                    mBulletStyle);
+                                    mBulletStyles,
+                                    mBulletMaxSpeed);
                             result.add(b1);
                             result.add(b2);
 
@@ -279,9 +331,11 @@ public class Gun {
                                         10,
                                         mPaint,
                                         // TODO: Should get max speed from Bullet or Gun.
-                                        Velocity.getDestinationVelocity(self, target, 15).rotate(angle - 60),
+                                        //propose to close
+                                        Velocity.getDestinationVelocity(self, target, mBulletMaxSpeed).rotate(angle - 60),
                                         mBulletDamage,
-                                        mBulletStyle);
+                                        mBulletStyles,
+                                        mBulletMaxSpeed);
                                 result.add(b);
                             }
 
