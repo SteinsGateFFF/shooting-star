@@ -57,7 +57,6 @@ public class GameView extends SurfaceView {
      * So that when the surface is created, the {@link GameLoopTask} is started,
      * and when the surface is destroyed, the {@link GameLoopTask} is stopped.
      *
-     *TODO: Should change the control flow to support game pause. Also the join() method will cause unexpected crash.
      */
     private void setup(){
         holder = getHolder();
