@@ -193,14 +193,15 @@ public class Gun {
                     @Override
                     public List<Bullet> generateBullets(Position self, Position target) {
                         List<Bullet> result = new ArrayList<>();
-
-                            result.add(new Bullet(self,
-                                    10,
-                                    mPaint,
-                                    new Velocity(0,-mBulletMaxSpeed),
-                                    mBulletDamage,
-                                    mBulletStyles,
-                                    mBulletMaxSpeed));
+                        Bullet b = new Bullet(self,
+                                10,
+                                mPaint,
+                                new Velocity(0,-mBulletMaxSpeed),
+                                mBulletDamage,
+                                mBulletStyles,
+                                mBulletMaxSpeed);
+                        b.setBulletAnimation(BulletAnimation.TYPE_SELF_BULLET,0);
+                        result.add(b);
 
                         return result;
 

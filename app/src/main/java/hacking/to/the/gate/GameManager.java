@@ -139,6 +139,7 @@ public class GameManager {
         onStateChange(STATE_INIT);
 
         JetAnimation.init(context);
+        BulletAnimation.init(context);
     }
 
     /**
