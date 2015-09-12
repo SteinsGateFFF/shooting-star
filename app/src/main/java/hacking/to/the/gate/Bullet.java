@@ -65,14 +65,16 @@ public class Bullet implements Hittable{
         mVelocity = v;
         //TODO: Need to support multiple patterns.
         //propose to close
-        for(int style:bulletStyles){
-            applyStyle(style);
+        if(bulletStyles!=null) {
+            for (int style : bulletStyles) {
+                applyStyle(style);
+            }
         }
 
     }
 
-    public void setBulletAnimation(int type, int color){
-        mAnimation = BulletAnimation.getInstance(type,color);
+    public void setBulletAnimation(int type){
+        mAnimation = BulletAnimation.getInstance(type);
     }
 
     private void applyStyle(int bulletStyle){

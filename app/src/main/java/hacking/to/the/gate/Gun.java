@@ -39,6 +39,8 @@ public class Gun {
 
     private float mBulletMaxSpeed;
 
+    private int mBulletAnimationType;
+
     /**
      * Construct a Gun instance.
      * @param shootingInterval
@@ -54,6 +56,10 @@ public class Gun {
         mPaint = paint;
         mBulletStyles = bulletStyles;
         mBulletMaxSpeed = bulletMaxSpeed;
+    }
+
+    public void setBulletAnimation(int animationType){
+        mBulletAnimationType = animationType;
     }
 
 
@@ -200,7 +206,7 @@ public class Gun {
                                 mBulletDamage,
                                 mBulletStyles,
                                 mBulletMaxSpeed);
-                        b.setBulletAnimation(BulletAnimation.TYPE_SELF_BULLET,0);
+                        b.setBulletAnimation(mBulletAnimationType);
                         result.add(b);
 
                         return result;
@@ -213,14 +219,15 @@ public class Gun {
                     @Override
                     public List<Bullet> generateBullets(Position self, Position target) {
                         List<Bullet> result = new ArrayList<>();
-
-                        result.add(new Bullet(self,
+                        Bullet b = new Bullet(self,
                                 10,
                                 mPaint,
                                 new Velocity(0,mBulletMaxSpeed),
                                 mBulletDamage,
                                 mBulletStyles,
-                                mBulletMaxSpeed));
+                                mBulletMaxSpeed);
+                        b.setBulletAnimation(mBulletAnimationType);
+                        result.add(b);
 
                         return result;
 
@@ -236,13 +243,15 @@ public class Gun {
                             return result;
                             //throw new IllegalArgumentException("default type must have a target");
                         } else {
-                            result.add(new Bullet(self,
+                            Bullet b = new Bullet(self,
                                     10,
                                     mPaint,
                                     Velocity.getDestinationVelocity(self, target, mBulletMaxSpeed),
                                     mBulletDamage,
                                     mBulletStyles,
-                                    mBulletMaxSpeed));
+                                    mBulletMaxSpeed);
+                            b.setBulletAnimation(mBulletAnimationType);
+                            result.add(b);
                         }
                         return result;
 
@@ -269,7 +278,7 @@ public class Gun {
                                     mBulletDamage,
                                     mBulletStyles,
                                     mBulletMaxSpeed);
-
+                            b.setBulletAnimation(mBulletAnimationType);
                             result.add(b);
                         }
                         return result;
@@ -296,7 +305,7 @@ public class Gun {
                                     mBulletDamage,
                                     mBulletStyles,
                                     mBulletMaxSpeed);
-
+                            b1.setBulletAnimation(mBulletAnimationType);
                             Bullet b2 = new Bullet(self,
                                     10,
                                     mPaint,
@@ -306,6 +315,7 @@ public class Gun {
                                     mBulletDamage,
                                     mBulletStyles,
                                     mBulletMaxSpeed);
+                            b2.setBulletAnimation(mBulletAnimationType);
                             result.add(b1);
                             result.add(b2);
 
@@ -337,6 +347,7 @@ public class Gun {
                                         mBulletDamage,
                                         mBulletStyles,
                                         mBulletMaxSpeed);
+                                b.setBulletAnimation(mBulletAnimationType);
                                 result.add(b);
                             }
 
