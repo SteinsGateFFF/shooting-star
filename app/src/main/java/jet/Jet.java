@@ -97,10 +97,22 @@ public Jet(float x, float y, float r, Paint p, int animationType){
      * @param gunType
      */
     public void setGunType(int index,int gunType, ArrayList<Integer> bulletStyles){
+
         if(index < mGuns.size()){
             mGuns.set(index, Gun.getGun(gunType, bulletStyles));
+        } else {
+            throw new IndexOutOfBoundsException("Index: "+index+" is equal or larger than Guns size: "+mGuns.size());
         }
+    }
 
+    /**
+     * This should only be called after guns are set.
+     * @param animationType
+     */
+    public void setBulletAnimation(int animationType){
+        for(Gun gun:mGuns){
+            gun.setBulletAnimation(animationType);
+        }
     }
 
     public int getNumOfGuns(){

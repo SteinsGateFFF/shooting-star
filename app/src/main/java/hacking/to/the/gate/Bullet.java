@@ -41,6 +41,8 @@ public class Bullet implements Hittable{
     public static final int BULLET_STYLE_WORM = 1;
 
     public static final int BULLET_STYLE_SPIRAL = 2;
+
+    private BulletAnimation mAnimation;
 	
 	public CircleCollider getCollider(){
         return collider;
@@ -63,10 +65,16 @@ public class Bullet implements Hittable{
         mVelocity = v;
         //TODO: Need to support multiple patterns.
         //propose to close
-        for(int style:bulletStyles){
-            applyStyle(style);
+        if(bulletStyles!=null) {
+            for (int style : bulletStyles) {
+                applyStyle(style);
+            }
         }
 
+    }
+
+    public void setBulletAnimation(int type){
+        mAnimation = BulletAnimation.getInstance(type);
     }
 
     private void applyStyle(int bulletStyle){
@@ -121,8 +129,12 @@ public class Bullet implements Hittable{
     }
 
     public void draw(Canvas canvas){
-
-        canvas.drawCircle(mSelfPos.getPositionX(),mSelfPos.getPositionY(), mRadius,mPaint);
+        if(mAnimation==null) {
+            // TODO: Should get rid of this condition.
+            canvas.drawCircle(mSelfPos.getPositionX(), mSelfPos.getPositionY(), mRadius, mPaint);
+        } else {
+            mAnimation.draw(canvas,mSelfPos);
+        }
     }
 
     public void tick(){

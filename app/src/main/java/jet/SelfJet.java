@@ -1,5 +1,6 @@
 package jet;
 
+import android.app.AlertDialog;
 import android.graphics.Paint;
 import android.util.Log;
 
@@ -32,7 +33,8 @@ public class SelfJet extends Jet implements Hittable{
     }
     public SelfJet(float x, float y, float r, Paint p,int animationType) {
         super(x,y,r,p,animationType);
-        mGuns.add(Gun.getGun(Gun.GUN_TYPE_NO_TARGET_UP, mBulletStyles));
+//        mGuns.add(Gun.getGun(Gun.GUN_TYPE_NO_TARGET_UP, mBulletStyles));
+
     }
 
     @Override
