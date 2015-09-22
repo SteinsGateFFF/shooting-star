@@ -1,4 +1,4 @@
-package hacking.to.the.gate;
+package jet;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import hacking.to.the.gate.Position;
 
 /**
  * This is a class for drawing animation.

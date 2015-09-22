@@ -1,6 +1,5 @@
-package hacking.to.the.gate;
+package jet;
 
-import jet.EnemyJet;
 
 /**
  * Created by Ruiqian on 9/6/2015.

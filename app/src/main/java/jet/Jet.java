@@ -11,13 +11,8 @@ import java.util.List;
 
 import hacking.to.the.gate.Bullet;
 import hacking.to.the.gate.CircleCollider;
-import hacking.to.the.gate.GameManager;
 import hacking.to.the.gate.Gun;
-import hacking.to.the.gate.Hittable;
-import hacking.to.the.gate.JetAnimation;
-import hacking.to.the.gate.JetLifeCycle;
 import hacking.to.the.gate.Position;
-import hacking.to.the.gate.PowerUp;
 import hacking.to.the.gate.Velocity;
 
 /**
@@ -46,7 +41,7 @@ public class Jet{
     /**
      * The current velocity of the jet.
      */
-    private Velocity mVelocity;
+    protected Velocity mVelocity;
     /**
      * Health of the jet. Jet is destroyed if Heath < 0
      */
@@ -120,7 +115,7 @@ public Jet(float x, float y, float r, Paint p, int animationType){
     public void draw(Canvas canvas){
         if(!mIsDead) {
 //            canvas.drawCircle(mSelfPos.getPositionX(), mSelfPos.getPositionY(), mRadius, mPaint);
-            mAnimation.draw(canvas,mSelfPos);
+            mAnimation.draw(canvas, mSelfPos);
         }
         for(Bullet b:mBullets){
             b.draw(canvas);

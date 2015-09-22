@@ -12,8 +12,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
+import bomb.AtomicBomb;
+import bomb.Bomb;
+import bomb.BombFactory;
 import jet.EnemyJet;
+import jet.JetAnimation;
+import jet.JetLifeCycle;
 import jet.SelfJet;
 
 /**
@@ -34,7 +40,7 @@ public class GameManager {
         }
     };
 
-
+    private Context mContext;
     /**
      * Initial State.
      */
@@ -78,6 +84,11 @@ public class GameManager {
     private Paint mHintPaint;
     private Paint mEnemyJetPaint;
     private Paint mSelfJetPaint;
+    private BombFactory mBombFactory;
+    //bombs that are currently in use.
+    private List<Bomb> mBombs;
+    //bombs collected.
+    private List<Integer> mRemainingBombs;
 
     private int mRemainingLife;
     private static final int DEFAULT_REMAINING_LIVES = 3;
@@ -110,6 +121,7 @@ public class GameManager {
     private float mScreenHeight;
     private Rect mScreenRect;
 
+
     /**
      * Init the {@link hacking.to.the.gate.GameManager} with the dimension of the {@link hacking.to.the.gate.GameView}.
      * Create SelfJet and EnemyJets.
@@ -127,6 +139,8 @@ public class GameManager {
         mSelfJetPaint.setColor(Color.WHITE);
         mFPSPaint = new Paint();
         mFPSPaint.setColor(Color.WHITE);
+        mContext = context;
+
 
         mStatePaint = new Paint();
         mStatePaint.setColor(Color.WHITE);
@@ -135,6 +149,7 @@ public class GameManager {
 
         mHintPaint = new Paint(mStatePaint);
         mHintPaint.setTextSize(50);
+
 
         onStateChange(STATE_INIT);
 
@@ -163,7 +178,18 @@ public class GameManager {
         }
         mRemainingLife = DEFAULT_REMAINING_LIVES;
         mPowerUps = new LinkedList<>();
-        mCollisionEngine = new CollisionEngine(mEnemyJets,mPowerUps,mSelfJet);
+        mBombs = new LinkedList<>();
+        mRemainingBombs = new LinkedList<>();
+        mBombFactory = new BombFactory();
+        mCollisionEngine = new CollisionEngine(mEnemyJets,mPowerUps,mSelfJet,mBombs);
+        /*
+        following code is for test purpose.
+        TODO:should have triggers to collect bombs.
+         */
+        mRemainingBombs.add(2);
+        mRemainingBombs.add(0);
+        mRemainingBombs.add(1);
+
     }
 
     public void createSelfJet(float x, float y){
@@ -180,26 +206,7 @@ public class GameManager {
 
     }
 
-    /**
-     * Set the destination of the SelfJet.
-     * @param event MotionEvent of user touch.
-     */
-    private void setSelfJetDest(MotionEvent event){
-        switch (event.getAction())
-        {
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_MOVE:
-                if(mSelfJet!=null) {
-                    mSelfJet.setDestination(event.getX(), event.getY(), true);
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                if(mSelfJet!=null) {
-                    mSelfJet.setDestination(event.getX(), event.getY(), false);
-                }
-                break;
-        }
-    }
+
 
     /**
     * Tick to the next move.
@@ -207,6 +214,12 @@ public class GameManager {
     public void tick(){
         if(!shouldTick()) {
             return;
+        }
+        if(mBombs!=null){
+            for(Bomb bomb:mBombs){
+                bomb.tick();
+            }
+
         }
         if(mSelfJet!=null) {
             mSelfJet.tick();
@@ -218,6 +231,7 @@ public class GameManager {
             }
             mCollisionEngine.tick();
         }
+
         recycle();
     }
 
@@ -232,6 +246,10 @@ public class GameManager {
         powerUp = new PowerUp(false, pos, 1, 4, powerUpPaint, 23);
         mPowerUps.add(powerUp);
 
+    }
+
+    public Context getContext(){
+        return mContext;
     }
 
     /**
@@ -276,6 +294,12 @@ public class GameManager {
                         p.draw(canvas);
                     }
                 }
+            }
+        }
+        if(mBombs!=null){
+            synchronized (mBombs){
+                for(Bomb b: mBombs)
+                b.draw(canvas);
             }
         }
     }
@@ -347,6 +371,13 @@ public class GameManager {
             if(!p.isVisible()){
                 i.remove();
                 Log.d("PowerUp","removed");
+            }
+        }
+        for(Iterator<Bomb> it = mBombs.iterator(); it.hasNext();){
+            Bomb b = it.next();
+
+            if(b.shouldRecycle()){
+                it.remove();
             }
         }
     }
@@ -458,7 +489,61 @@ public class GameManager {
                 createSelfJet(event.getX(), event.getY());
             } else {
                 setSelfJetDest(event);
+                setOffBombs(event);
             }
+        }
+    }
+
+    /**
+     * Set the destination of the SelfJet.
+     * @param event MotionEvent of user touch.
+     */
+    private void setSelfJetDest(MotionEvent event){
+        switch (event.getAction())
+        {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+                if(mSelfJet!=null) {
+                    mSelfJet.setDestination(event.getX(), event.getY(), true);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if(mSelfJet!=null) {
+                    mSelfJet.setDestination(event.getX(), event.getY(), false);
+                }
+                break;
+        }
+    }
+    private void setOffBombs(MotionEvent event){
+        int pointerIndex = event.getActionIndex();
+        switch (event.getAction()& MotionEvent.ACTION_MASK){
+            case MotionEvent.ACTION_POINTER_DOWN:
+                Log.d("Touch","two fingers");
+                if(!mRemainingBombs.isEmpty()){
+                    int bombType = mRemainingBombs.get(0);
+                    mRemainingBombs.remove(0);
+                    float x = event.getX(pointerIndex);
+                    float y = event.getY(pointerIndex);
+                    switch (bombType){
+                        case 0:
+                            x = getScreenRect().centerX();
+                            y = getScreenRect().centerY();
+                            break;
+                        case 1:
+                            x = new Random().nextInt(100)+200;
+                            y = getScreenRect().centerY();
+                            break;
+                        case 2:
+                            y = getScreenRect().height();
+                            break;
+                        case 3:
+                            x = mSelfJet.getSelfPosition().getPositionX();
+                            y = mSelfJet.getSelfPosition().getPositionY();
+                            break;
+                    }
+                    mBombs.add(mBombFactory.getBomb(bombType,x,y));
+                }
+
         }
     }
 

@@ -2,11 +2,12 @@ package jet;
 
 import android.graphics.Paint;
 
+import bomb.AtomicBomb;
+import bomb.LighteningBomb;
 import hacking.to.the.gate.Bullet;
 import hacking.to.the.gate.GameManager;
 import hacking.to.the.gate.Gun;
 import hacking.to.the.gate.Hittable;
-import hacking.to.the.gate.JetLifeCycle;
 import hacking.to.the.gate.Position;
 import hacking.to.the.gate.PowerUp;
 
@@ -17,11 +18,16 @@ public class EnemyJet extends Jet implements Hittable{
 
     public void onCollision(Hittable h){
         float curHealth = getHealth();
-        if(h instanceof PowerUp){
-            curHealth += PowerUp.POWERUP_HEAL;
+        if(h instanceof AtomicBomb){
+            curHealth -= AtomicBomb.BOMB_DAMAGE;
         }
         else if(h instanceof Bullet){
             curHealth -= ((Bullet) h).getDamage();
+        }
+        else if(h instanceof LighteningBomb){
+            curHealth -= LighteningBomb.BOMB_DAMAGE;
+        }else if(h instanceof  FriendJet){
+            curHealth -= FriendJet.ATTACK_DAMAGE;
         }
         setHealth(curHealth);
         if(curHealth < 0) {

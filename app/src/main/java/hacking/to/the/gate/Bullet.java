@@ -7,6 +7,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import bomb.ATFieldBomb;
+import bomb.AtomicBomb;
 import jet.EnemyJet;
 import jet.SelfJet;
 
@@ -16,8 +18,6 @@ import jet.SelfJet;
 public class Bullet implements Hittable{
     private CircleCollider collider;
     private Position mSelfPos;
-
-
     private float mRadius;
     private Velocity mVelocity;
     private Paint mPaint;
@@ -46,7 +46,7 @@ public class Bullet implements Hittable{
         return collider;
     }
     public void onCollision(Hittable h){
-        if(h instanceof EnemyJet || h instanceof SelfJet){
+        if(h instanceof EnemyJet || h instanceof SelfJet || h instanceof AtomicBomb|| h instanceof ATFieldBomb){
             recycle();
         }
 
