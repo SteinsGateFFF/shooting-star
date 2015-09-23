@@ -16,7 +16,7 @@ public class Bomb {
     protected boolean mShouldRecycle = false;
 
     private int mBombTime ;
-    private int mCounter;
+    protected int mCounter;
 
     public Bomb(float x, float y, float r, Paint p){
         mSelfPos = new Position(x,y);

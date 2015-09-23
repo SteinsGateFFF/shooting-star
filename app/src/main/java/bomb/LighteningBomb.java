@@ -1,6 +1,7 @@
 package bomb;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
@@ -16,6 +17,8 @@ public class LighteningBomb extends Bomb implements Hittable {
     public static int BOMB_DAMAGE = 80;
     private float mWidth;
     private float mHeight;
+    private int mFlashInterval = 20;
+    private boolean mIsFlashing = false;
     private BoxCollider mCollider;
     public LighteningBomb(float x, float y,float w, float h, Paint p){
         super(x,y,0,p);
@@ -34,6 +37,9 @@ public class LighteningBomb extends Bomb implements Hittable {
 
     @Override
     public void draw(Canvas canvas){
+        if(mIsFlashing){
+            canvas.drawColor(Color.WHITE);
+        }
         if(!mShouldRecycle) {
             Rect rect = new Rect((int)(mSelfPos.getPositionX()-mWidth/2),
                     (int)(mSelfPos.getPositionY()-mHeight/2),
@@ -46,6 +52,10 @@ public class LighteningBomb extends Bomb implements Hittable {
     @Override
     public void tick(){
         super.tick();
+        if(mCounter%mFlashInterval == 0)
+        {
+            mIsFlashing = !mIsFlashing;
+        }
 
         mCollider.setPosition(mSelfPos);
     }
