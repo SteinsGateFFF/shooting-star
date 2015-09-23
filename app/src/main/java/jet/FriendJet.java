@@ -12,8 +12,41 @@ import hacking.to.the.gate.Velocity;
 public class FriendJet extends Jet implements Hittable{
 
     public static int ATTACK_DAMAGE = 45;
-    public FriendJet(float x, float y, float r, Paint p,int animationType){
-        super(x,y,r,p,animationType);
+    public static class Builder extends Jet.Builder {
+        public Builder(float x, float y, float r,int animationType) {
+            super(x,y,r,animationType);
+        }
+        public Builder health(int val){
+            mHealth = val;
+            return this;
+        }
+
+        public Builder maxSpeed(int val){
+            mMaxSpeed = val;
+            return this;
+        }
+
+        public Builder hasDestination(boolean val){
+            mHasDestination = val;
+            return this;
+        }
+
+        public Builder setGunType(int val){
+            mGunType = val;
+            return this;
+        }
+
+        public Builder setBulletStyle(int val){
+            mBulletStyle = val;
+            return this;
+        }
+
+        public FriendJet build(){
+            return new FriendJet(this);
+        }
+    }
+    private FriendJet(Builder builder){
+        super(builder);
         mVelocity = new Velocity(0,-10);
 
     }

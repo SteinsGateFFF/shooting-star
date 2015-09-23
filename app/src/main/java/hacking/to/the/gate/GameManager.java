@@ -167,8 +167,8 @@ public class GameManager {
         // To avoid crash when start a new game.
         synchronized (mEnemyJets) {
             for (int i = 0; i < 5; i++) {
-                EnemyJet enemyJet = new EnemyJet((i + 1) * mScreenWidth / 6, 25+25*i,50, mEnemyJetPaint, JetAnimation.TYPE_ENEMY_JET_0);
-                enemyJet.setGunType(0,Gun.GUN_TYPE_SELF_TARGETING_EVEN,null);
+                EnemyJet enemyJet = new EnemyJet.Builder((i + 1) * mScreenWidth / 6, 25+25*i,50, JetAnimation.TYPE_ENEMY_JET_0).setGunType(Gun.GUN_TYPE_SELF_TARGETING_EVEN).build();
+                //enemyJet.setGunType(0,Gun.GUN_TYPE_SELF_TARGETING_EVEN,null);
                 enemyJet.setBulletAnimation(i+1);
                 enemyJet.setJetLifeCycleListener(jetLifeCycle);
                 mEnemyJets.add(enemyJet);
@@ -187,13 +187,14 @@ public class GameManager {
          */
         mRemainingBombs.add(2);
         mRemainingBombs.add(0);
+        mRemainingBombs.add(3);
         mRemainingBombs.add(1);
 
     }
 
     public void createSelfJet(float x, float y){
 
-        mSelfJet = new SelfJet(x,y,50,mSelfJetPaint,JetAnimation.TYPE_SELF_JET);
+        mSelfJet = new SelfJet.Builder(x,y,50,JetAnimation.TYPE_SELF_JET).build();
         for(int i = 0; i<mSelfJet.getNumOfGuns();i++){
             ArrayList<Integer> bulletStyles = new ArrayList<>();
             bulletStyles.add(Bullet.BULLET_STYLE_DEFAULT);

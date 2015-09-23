@@ -18,6 +18,43 @@ import hacking.to.the.gate.PowerUp;
  */
 public class SelfJet extends Jet implements Hittable{
 
+    public static class Builder extends Jet.Builder {
+        public Builder(float x, float y, float r,int animationType) {
+            super(x,y,r,animationType);
+        }
+        public Builder health(int val){
+            mHealth = val;
+            return this;
+        }
+
+        public Builder maxSpeed(int val){
+            mMaxSpeed = val;
+            return this;
+        }
+
+        public Builder hasDestination(boolean val){
+            mHasDestination = val;
+            return this;
+        }
+
+        public Builder setGunType(int val){
+            mGunType = val;
+            return this;
+        }
+
+        public Builder setBulletStyle(int val){
+            mBulletStyle = val;
+            return this;
+        }
+
+        public SelfJet build(){
+            return new SelfJet(this);
+        }
+    }
+    private SelfJet(Builder builder){
+        super(builder);
+
+    }
     public void onCollision(Hittable h){
         float curHealth = getHealth();
         if(h instanceof PowerUp){
@@ -30,11 +67,6 @@ public class SelfJet extends Jet implements Hittable{
         if(curHealth < 0) {
             setDead(true);
         }
-    }
-    public SelfJet(float x, float y, float r, Paint p,int animationType) {
-        super(x,y,r,p,animationType);
-//        mGuns.add(Gun.getGun(Gun.GUN_TYPE_NO_TARGET_UP, mBulletStyles));
-
     }
 
     @Override

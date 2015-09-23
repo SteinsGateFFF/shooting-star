@@ -47,8 +47,8 @@ public class KamikazeBomb extends Bomb{
         int i = 1;
         while(i < 10){
             int xPos = i*60;
-            mFriendJets.add(new FriendJet(xPos,mSelfPos.getPositionY(),20,
-                    new Paint(Color.BLUE), JetAnimation.TYPE_SELF_JET));
+            mFriendJets.add(new FriendJet.Builder(xPos,mSelfPos.getPositionY(),20,
+                   JetAnimation.TYPE_SELF_JET).build());
             i++;
         }
 

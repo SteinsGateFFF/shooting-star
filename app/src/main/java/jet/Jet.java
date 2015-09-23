@@ -20,6 +20,31 @@ import hacking.to.the.gate.Velocity;
  */
 public class Jet{
 
+    public static class Builder{
+        //Required parameters
+        private float mRadius;
+        private Position mSelfPos;
+        private JetAnimation mAnimation;
+        private CircleCollider collider;
+
+        //optional parameters
+        protected float mHealth = 100;
+        protected float mMaxSpeed = 20;
+        protected boolean mHasDestination = false;
+        protected int mGunType = Gun.GUN_TYPE_DEFAULT;
+        protected int mBulletStyle = Bullet.BULLET_STYLE_DEFAULT;
+
+
+        public Builder(float xPosition, float yPosition,float radius, int animationType){
+            mRadius = radius;
+            mSelfPos = new Position(xPosition,yPosition);
+            mAnimation = JetAnimation.getInstance(animationType);
+            collider = new CircleCollider(radius, mSelfPos);
+        }
+        public Jet build(){
+            return new Jet(this);
+        }
+    }
     public CircleCollider getCollider(){
         return collider;
     }
@@ -34,10 +59,6 @@ public class Jet{
      */
     private Position mDestPos;
     private float mRadius;
-    /**
-     * Paint for drawing the jet and bullets.
-     */
-    private Paint mPaint;
     /**
      * The current velocity of the jet.
      */
@@ -64,6 +85,10 @@ public class Jet{
 
     protected ArrayList<Integer> mBulletStyles;
 
+    private int mGunType;
+
+    private int mBulletStyle;
+
     /**
      * Create a Jet Object
      * @param x x coordinate of the center of the jet
@@ -75,21 +100,23 @@ public class Jet{
 
     private JetAnimation mAnimation;
     protected boolean mIsDead = false;
+    protected Jet(Builder builder){
 
-public Jet(float x, float y, float r, Paint p, int animationType){
-        collider = new CircleCollider(r, new Position(x, y));
-        mSelfPos = new Position(x,y);
-        mRadius = r;
-        mPaint = p;
-        mHealth = 100;
-        mMaxSpeed = 20;
-        mHasDestination = false;
-        mBullets = new LinkedList<>();
-        mAnimation = JetAnimation.getInstance(animationType);
+        collider = builder.collider;
+        mSelfPos = builder.mSelfPos;
+        mRadius = builder.mRadius;
+        mHealth = builder.mHealth;
+        mMaxSpeed = builder.mMaxSpeed;
+        mHasDestination = builder.mHasDestination;
+        mAnimation = builder.mAnimation;
+        mGunType = builder.mGunType;
+        mBulletStyle = builder.mBulletStyle;
         mGuns = new LinkedList<>();
         mBulletStyles = new ArrayList<>();
-        mBulletStyles.add(Bullet.BULLET_STYLE_DEFAULT);
-        mGuns.add(Gun.getGun(Gun.GUN_TYPE_DEFAULT,mBulletStyles));
+        mBullets = new LinkedList<>();
+        mBulletStyles.add(mBulletStyle);
+        mGuns.add(Gun.getGun(mGunType,mBulletStyles));
+
     }
 
     /**
