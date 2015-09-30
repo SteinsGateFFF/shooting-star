@@ -18,34 +18,12 @@ public class FriendJet extends Jet{
     }
 
     public static int ATTACK_DAMAGE = 15;
-    public static class Builder extends Jet.Builder {
-        public Builder(float x, float y, float r,int animationType) {
-            super(x,y,r,animationType);
-        }
-        public Builder health(int val){
-            mHealth = val;
-            return this;
+    public static class Builder extends Jet.Builder<Builder> {
+        public Builder() {
+            super();
+            mAnimation = JetAnimation.getInstance(JetAnimation.TYPE_SELF_JET);
         }
 
-        public Builder maxSpeed(int val){
-            mMaxSpeed = val;
-            return this;
-        }
-
-        public Builder hasDestination(boolean val){
-            mHasDestination = val;
-            return this;
-        }
-
-        public Builder setGunType(int val){
-            mGunType = val;
-            return this;
-        }
-
-        public Builder setBulletStyle(int val){
-            mBulletStyle = val;
-            return this;
-        }
 
         public FriendJet build(){
             return new FriendJet(this);

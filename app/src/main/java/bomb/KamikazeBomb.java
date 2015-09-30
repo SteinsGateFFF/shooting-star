@@ -54,13 +54,14 @@ public class KamikazeBomb extends Bomb{
             }
         }
     }
-
     private void generateFriendJets(){
         int i = 1;
         while(i < 10){
             int xPos = i*60;
-            mFriendJets.add(new FriendJet.Builder(xPos,mSelfPos.getPositionY(),20,
-                   JetAnimation.TYPE_SELF_JET).build());
+            mFriendJets.add(new FriendJet.Builder()
+                    .selfPosition(xPos,mSelfPos.getPositionY())
+                    .radius(20)
+                    .build());
             i++;
         }
 

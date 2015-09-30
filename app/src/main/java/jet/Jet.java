@@ -2,6 +2,7 @@ package jet;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -21,14 +22,15 @@ import hacking.to.the.gate.Velocity;
  */
 public abstract class Jet implements Hittable{
 
-    public static class Builder{
+    public static class Builder<T extends Builder>{
         //Required parameters
-        private float mRadius;
-        private Position mSelfPos;
-        private JetAnimation mAnimation;
-        private CircleCollider collider;
 
         //optional parameters
+        protected float mRadius;
+        protected Position mSelfPos;
+        protected JetAnimation mAnimation;
+        protected CircleCollider collider;
+
         protected float mHealth = 100;
         protected float mMaxSpeed = 20;
         protected boolean mHasDestination = false;
@@ -36,16 +38,58 @@ public abstract class Jet implements Hittable{
         protected int mBulletStyle = Bullet.BULLET_STYLE_DEFAULT;
 
 
-        public Builder(float xPosition, float yPosition,float radius, int animationType){
-            mRadius = radius;
-            mSelfPos = new Position(xPosition,yPosition);
-            mAnimation = JetAnimation.getInstance(animationType);
-            collider = new CircleCollider(radius, mSelfPos);
+        public Builder(){
+            mRadius = 50;
+            mSelfPos = new Position(0,0);
+            mAnimation = JetAnimation.getInstance(JetAnimation.TYPE_ENEMY_JET_0);
+            collider = new CircleCollider(mRadius, mSelfPos);
         }
 
-       // public Jet build(){
-            //return new Jet(this);
-        //}
+        public T radius(int val){
+            mRadius = val;
+            return (T) this;
+        }
+
+        public T selfPosition(float xPosition,float yPosition){
+            mSelfPos = new Position(xPosition,yPosition);
+            return (T) this;
+        }
+
+        public T animationType(int val)
+        {
+            if(val != JetAnimation.TYPE_ENEMY_JET_0 && val!= JetAnimation.TYPE_SELF_JET){
+                throw new IllegalArgumentException("Type provided is not valid");
+            }
+            else{
+                mAnimation = JetAnimation.getInstance(val);
+            }
+            return (T) this;
+        }
+
+        public T health(int val){
+            mHealth = val;
+            return (T) this;
+        }
+
+        public T maxSpeed(int val){
+            mMaxSpeed = val;
+            return (T)this;
+        }
+
+        public T hasDestination(boolean val){
+            mHasDestination = val;
+            return (T)this;
+        }
+
+        public T setGunType(int val){
+            mGunType = val;
+            return (T)this;
+        }
+
+        public T setBulletStyle(int val){
+            mBulletStyle = val;
+            return (T)this;
+        }
     }
     public CircleCollider getCollider(){
         return collider;

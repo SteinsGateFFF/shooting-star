@@ -11,7 +11,6 @@ import hacking.to.the.gate.GameManager;
 import hacking.to.the.gate.Gun;
 import hacking.to.the.gate.Hittable;
 import hacking.to.the.gate.Position;
-import hacking.to.the.gate.PowerUp;
 
 /**
  * Created by Ruiqian on 9/8/2015.
@@ -39,41 +38,14 @@ public class EnemyJet extends Jet{
             if(curHealth < 0) {
                 setDead(true);
             }
-
         }
-
     }
 
     private JetLifeCycle jetLifeCycle;
-    public static class Builder extends Jet.Builder {
-        public Builder(float x, float y, float r,int animationType) {
-            super(x,y,r,animationType);
+    public static class Builder extends Jet.Builder<Builder> {
+        public Builder() {
+            super();
         }
-        public Builder health(int val){
-            mHealth = val;
-            return this;
-        }
-
-        public Builder maxSpeed(int val){
-            mMaxSpeed = val;
-            return this;
-        }
-
-        public Builder hasDestination(boolean val){
-            mHasDestination = val;
-            return this;
-        }
-
-        public Builder setGunType(int val){
-            mGunType = val;
-            return this;
-        }
-
-        public Builder setBulletStyle(int val){
-            mBulletStyle = val;
-            return this;
-        }
-
         public EnemyJet build(){
             return new EnemyJet(this);
         }
@@ -82,7 +54,6 @@ public class EnemyJet extends Jet{
         super(builder);
 
     }
-
     @Override
     public void tick(){
         super.tick();
@@ -92,7 +63,6 @@ public class EnemyJet extends Jet{
                 for(Gun gun:mGuns){
                     mBullets.addAll(gun.tick(mSelfPos, selfJetPos));
                 }
-
             }
         } catch (Exception e) {
         }
