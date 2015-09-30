@@ -17,6 +17,7 @@ import java.util.Random;
 
 import bomb.Bomb;
 import bomb.BombFactory;
+import bomb.BombLifeCycle;
 import jet.EnemyJet;
 
 import jet.JetAnimation;
@@ -41,6 +42,12 @@ public class GameManager {
         }
     };
 
+    private BombLifeCycle bombLifeCycle = new BombLifeCycle() {
+        @Override
+        public void onStop() {
+            stopVibration();
+        }
+    };
     private Context mContext;
     /**
      * Initial State.
@@ -168,7 +175,7 @@ public class GameManager {
         synchronized (mEnemyJets) {
             for (int i = 0; i < 5; i++) {
                 EnemyJet enemyJet = new EnemyJet.Builder()
-                        .selfPosition((i + 1) * mScreenWidth / 6, 25+25*i)
+                        .selfPosition((i + 1) * mScreenWidth / 6, 25 + 25 * i)
                         .setGunType(Gun.GUN_TYPE_SELF_TARGETING_EVEN)
                         .build();
 
@@ -188,8 +195,8 @@ public class GameManager {
         following code is for test purpose.
         TODO:should have triggers to collect bombs.
          */
-        mRemainingBombs.add(2);
         mRemainingBombs.add(0);
+        mRemainingBombs.add(2);
         mRemainingBombs.add(3);
         mRemainingBombs.add(1);
 
@@ -521,7 +528,11 @@ public class GameManager {
     }
     private void vibrateDevice(){
         Vibrator v = (Vibrator)mContext.getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(600);
+        v.vibrate(60000);
+    }
+    private void stopVibration(){
+        Vibrator v = (Vibrator)mContext.getSystemService(Context.VIBRATOR_SERVICE);
+        v.cancel();
     }
     private void setOffBombs(MotionEvent event){
         int pointerIndex = event.getActionIndex();
@@ -552,7 +563,7 @@ public class GameManager {
                             break;
                     }
                     synchronized (mBombs){
-                        mBombs.add(mBombFactory.getBomb(bombType,x,y));
+                        mBombs.add(mBombFactory.getBomb(bombType,x,y,bombLifeCycle));
                     }
 
                 }

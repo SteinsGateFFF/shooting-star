@@ -12,14 +12,16 @@ public class BombFactory {
     public final static int LIGHTENING_BOMB = 1;
     public final static int KAMIKAZE_BOMB = 2;
     public final static int AT_FIELD_BOMB = 3;
-    public Bomb getBomb(int bombType, float x, float y){
+    public Bomb getBomb(int bombType, float x, float y,BombLifeCycle e){
 
         Paint p = new Paint();
         switch (bombType){
             case ATOMIC_BOMB:
 
                 p.setColor(Color.YELLOW);
-                return new AtomicBomb(x,y,GameManager.getInstance().getScreenRect().width()/4f,p);
+                AtomicBomb b =new AtomicBomb(x,y,GameManager.getInstance().getScreenRect().width()/4f,p);
+                b.setBombCycleListener(e);
+                return b;
             case LIGHTENING_BOMB:
                 p.setColor(Color.BLUE);
                 return new LighteningBomb(x,y,30,

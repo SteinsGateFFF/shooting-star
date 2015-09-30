@@ -11,6 +11,7 @@ import hacking.to.the.gate.Position;
  */
 public class AtomicBomb extends Bomb{
 
+    private BombLifeCycle bombLifeCycle;
     private CircleCollider mCollider;
     public static int BOMB_DAMAGE = 30;
     public AtomicBomb(float x, float y, float r, Paint p){
@@ -18,9 +19,7 @@ public class AtomicBomb extends Bomb{
         mCollider = new CircleCollider(r, new Position(x, y));
     }
 
-    public void onCollision(Hittable h){
-
-    }
+    public void onCollision(Hittable h){}
     public List<Hittable> getHittableChildren(){
         return null;
     }
@@ -31,7 +30,15 @@ public class AtomicBomb extends Bomb{
     @Override
     public void tick(){
         super.tick();
+    }
+    @Override
+    public void timeIsUp(){
+        setDead(true);
+        bombLifeCycle.onStop();
+    }
 
+    public void setBombCycleListener(BombLifeCycle e){
+        bombLifeCycle = e;
     }
 
 }

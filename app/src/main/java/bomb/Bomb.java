@@ -56,9 +56,11 @@ public abstract class Bomb implements Hittable{
         if(!mShouldRecycle){
             mCounter++;
             if(mCounter>mBombTime){
-                setDead(true);
+                timeIsUp();
             }
         }
-
+    }
+    public void timeIsUp(){
+        setDead(true);
     }
 }
