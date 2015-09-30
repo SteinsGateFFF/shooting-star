@@ -19,7 +19,7 @@ public class BombFactory {
             case ATOMIC_BOMB:
 
                 p.setColor(Color.YELLOW);
-                return new AtomicBomb(x,y,x/2f,p);
+                return new AtomicBomb(x,y,GameManager.getInstance().getScreenRect().width()/4f,p);
             case LIGHTENING_BOMB:
                 p.setColor(Color.BLUE);
                 return new LighteningBomb(x,y,30,

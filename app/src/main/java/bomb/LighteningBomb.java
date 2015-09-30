@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
+import java.util.List;
+
 import hacking.to.the.gate.BoxCollider;
 import hacking.to.the.gate.Hittable;
 import hacking.to.the.gate.Position;
@@ -12,7 +14,7 @@ import hacking.to.the.gate.Position;
 /**
  * Created by Ruiqian on 9/20/2015.
  */
-public class LighteningBomb extends Bomb implements Hittable {
+public class LighteningBomb extends Bomb{
 
     public static int BOMB_DAMAGE = 80;
     private float mWidth;
@@ -27,8 +29,9 @@ public class LighteningBomb extends Bomb implements Hittable {
         mCollider = new BoxCollider(w,h,new Position(x,y));
 
     }
-    public void onCollision(Hittable h){
-
+    public void onCollision(Hittable h){}
+    public List<Hittable> getHittableChildren(){
+        return null;
     }
 
     public BoxCollider getCollider(){
@@ -57,6 +60,5 @@ public class LighteningBomb extends Bomb implements Hittable {
             mIsFlashing = !mIsFlashing;
         }
 
-        mCollider.setPosition(mSelfPos);
     }
 }

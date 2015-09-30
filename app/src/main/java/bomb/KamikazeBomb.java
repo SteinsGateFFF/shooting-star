@@ -4,8 +4,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import hacking.to.the.gate.Collider;
+import hacking.to.the.gate.Hittable;
 import jet.FriendJet;
 import jet.JetAnimation;
 
@@ -15,9 +19,17 @@ import jet.JetAnimation;
 public class KamikazeBomb extends Bomb{
 
     private List<FriendJet> mFriendJets;
+    public void onCollision(Hittable h){}
+    public Collider getCollider(){
+        return null;
+    }
+
+    public List<FriendJet> getHittableChildren(){
+       return mFriendJets;
+    }
     public KamikazeBomb(float x, float y,Paint p){
         super(x,y,0,p);
-        mFriendJets = new LinkedList<>();
+        mFriendJets = new ArrayList<>();
         generateFriendJets();
 
     }

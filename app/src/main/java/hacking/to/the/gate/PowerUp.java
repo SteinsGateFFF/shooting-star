@@ -2,6 +2,8 @@ package hacking.to.the.gate;
 
 import android.graphics.Paint;
 import android.graphics.Canvas;
+
+import java.util.List;
 import java.util.Random;
 import jet.SelfJet;
 
@@ -18,6 +20,9 @@ public class PowerUp implements Hittable{
         if(h instanceof SelfJet){
             setVisible(false);
         }
+    }
+    public List<Hittable> getHittableChildren(){
+        return null;
     }
 
     //declaration of variables

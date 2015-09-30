@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.MotionEvent;
 import java.io.IOException;
@@ -14,10 +15,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import bomb.AtomicBomb;
 import bomb.Bomb;
 import bomb.BombFactory;
 import jet.EnemyJet;
+
 import jet.JetAnimation;
 import jet.JetLifeCycle;
 import jet.SelfJet;
@@ -162,7 +163,6 @@ public class GameManager {
      * TODO: Should be able to load from a predefined game file.
      */
     public void createGame(){
-
         mEnemyJets = new LinkedList<>();
         // To avoid crash when start a new game.
         synchronized (mEnemyJets) {
@@ -215,11 +215,13 @@ public class GameManager {
         if(!shouldTick()) {
             return;
         }
-        if(mBombs!=null){
-            for(Bomb bomb:mBombs){
-                bomb.tick();
-            }
+        if(mBombs!=null) {
+            synchronized (mBombs) {
+                for (Bomb bomb : mBombs) {
+                    bomb.tick();
+                }
 
+            }
         }
         if(mSelfJet!=null) {
             mSelfJet.tick();
@@ -514,6 +516,10 @@ public class GameManager {
                 break;
         }
     }
+    private void vibrateDevice(){
+        Vibrator v = (Vibrator)mContext.getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(600);
+    }
     private void setOffBombs(MotionEvent event){
         int pointerIndex = event.getActionIndex();
         switch (event.getAction()& MotionEvent.ACTION_MASK){
@@ -526,8 +532,9 @@ public class GameManager {
                     float y = event.getY(pointerIndex);
                     switch (bombType){
                         case 0:
-                            x = getScreenRect().centerX();
-                            y = getScreenRect().centerY();
+                            //x = getScreenRect().centerX();
+                            //y = getScreenRect().centerY();
+                            vibrateDevice();
                             break;
                         case 1:
                             x = new Random().nextInt(100)+200;
@@ -541,7 +548,10 @@ public class GameManager {
                             y = mSelfJet.getSelfPosition().getPositionY();
                             break;
                     }
-                    mBombs.add(mBombFactory.getBomb(bombType,x,y));
+                    synchronized (mBombs){
+                        mBombs.add(mBombFactory.getBomb(bombType,x,y));
+                    }
+
                 }
 
         }

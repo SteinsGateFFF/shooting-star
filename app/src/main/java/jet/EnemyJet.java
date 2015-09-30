@@ -2,6 +2,8 @@ package jet;
 
 import android.graphics.Paint;
 
+import java.util.List;
+
 import bomb.AtomicBomb;
 import bomb.LighteningBomb;
 import hacking.to.the.gate.Bullet;
@@ -14,25 +16,32 @@ import hacking.to.the.gate.PowerUp;
 /**
  * Created by Ruiqian on 9/8/2015.
  */
-public class EnemyJet extends Jet implements Hittable{
+public class EnemyJet extends Jet{
 
+    public List<Bullet> getHittableChildren(){
+        return mBullets;
+    }
     public void onCollision(Hittable h){
-        float curHealth = getHealth();
-        if(h instanceof AtomicBomb){
-            curHealth -= AtomicBomb.BOMB_DAMAGE;
+        if(!isDead()){
+            float curHealth = getHealth();
+            if(h instanceof AtomicBomb){
+                curHealth -= AtomicBomb.BOMB_DAMAGE;
+            }
+            else if(h instanceof Bullet){
+                curHealth -= ((Bullet) h).getDamage();
+            }
+            else if(h instanceof LighteningBomb){
+                curHealth -= LighteningBomb.BOMB_DAMAGE;
+            }else if(h instanceof  FriendJet){
+                curHealth -= FriendJet.ATTACK_DAMAGE;
+            }
+            setHealth(curHealth);
+            if(curHealth < 0) {
+                setDead(true);
+            }
+
         }
-        else if(h instanceof Bullet){
-            curHealth -= ((Bullet) h).getDamage();
-        }
-        else if(h instanceof LighteningBomb){
-            curHealth -= LighteningBomb.BOMB_DAMAGE;
-        }else if(h instanceof  FriendJet){
-            curHealth -= FriendJet.ATTACK_DAMAGE;
-        }
-        setHealth(curHealth);
-        if(curHealth < 0) {
-            setDead(true);
-        }
+
     }
 
     private JetLifeCycle jetLifeCycle;

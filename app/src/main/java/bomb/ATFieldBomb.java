@@ -1,6 +1,9 @@
 package bomb;
 
 import android.graphics.Paint;
+
+import java.util.List;
+
 import hacking.to.the.gate.CircleCollider;
 import hacking.to.the.gate.GameManager;
 import hacking.to.the.gate.Hittable;
@@ -16,10 +19,14 @@ public class ATFieldBomb extends Bomb implements Hittable {
     public ATFieldBomb(float x, float y, float r, Paint p){
         super(x,y,r,p);
         mCollider = new CircleCollider(r, new Position(x, y));
+        setBombTime(600);
 
     }
 
     public void onCollision(Hittable h){}
+    public List<Hittable> getHittableChildren(){
+        return null;
+    }
 
     public CircleCollider getCollider(){
         return mCollider;
@@ -27,13 +34,18 @@ public class ATFieldBomb extends Bomb implements Hittable {
 
     @Override
     public void tick(){
-        setBombTime(600);
+
         super.tick();
         try{
             setSelfPos(GameManager.getInstance().getSelfJetPosition());
         }catch(Exception e){
+            setDead(true);
         }
-       mCollider.setPosition(mSelfPos);
+    }
 
+    @Override
+    public void setSelfPos(Position pos){
+        super.setSelfPos(pos);
+        mCollider.setPosition(mSelfPos);
     }
 }

@@ -3,12 +3,13 @@ package bomb;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import hacking.to.the.gate.Hittable;
 import hacking.to.the.gate.Position;
 
 /**
  * Created by Ruiqian on 9/10/2015.
  */
-public class Bomb {
+public abstract class Bomb implements Hittable{
 
     protected Position mSelfPos;
     private float mRadius;
@@ -52,9 +53,12 @@ public class Bomb {
     }
 
     public void tick(){
-        mCounter++;
-        if(mCounter>mBombTime){
-            setDead(true);
+        if(!mShouldRecycle){
+            mCounter++;
+            if(mCounter>mBombTime){
+                setDead(true);
+            }
         }
+
     }
 }

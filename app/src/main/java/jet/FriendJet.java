@@ -2,6 +2,8 @@ package jet;
 
 import android.graphics.Paint;
 
+import java.util.List;
+
 import hacking.to.the.gate.Bullet;
 import hacking.to.the.gate.Hittable;
 import hacking.to.the.gate.Velocity;
@@ -9,9 +11,13 @@ import hacking.to.the.gate.Velocity;
 /**
  * Created by Ruiqian on 9/20/2015.
  */
-public class FriendJet extends Jet implements Hittable{
+public class FriendJet extends Jet{
 
-    public static int ATTACK_DAMAGE = 45;
+    public List<Hittable> getHittableChildren(){
+        return null;
+    }
+
+    public static int ATTACK_DAMAGE = 15;
     public static class Builder extends Jet.Builder {
         public Builder(float x, float y, float r,int animationType) {
             super(x,y,r,animationType);
@@ -52,16 +58,18 @@ public class FriendJet extends Jet implements Hittable{
     }
 
     public void onCollision(Hittable h){
-        float curHealth = getHealth();
-        if(h instanceof Bullet){
-            curHealth -= ((Bullet) h).getDamage();
-        }
-        setHealth(curHealth);
-        if(curHealth < 0) {
-            setDead(true);
-        }
-        if(h instanceof EnemyJet){
-            setDead(true);
+        if(!isDead()){
+            float curHealth = getHealth();
+            if(h instanceof Bullet){
+                curHealth -= ((Bullet) h).getDamage();
+            }
+            setHealth(curHealth);
+            if(curHealth < 0) {
+                setDead(true);
+            }
+            if(h instanceof EnemyJet){
+                setDead(true);
+            }
         }
 
     }

@@ -10,6 +10,7 @@ import java.util.List;
 import bomb.ATFieldBomb;
 import bomb.AtomicBomb;
 import jet.EnemyJet;
+import jet.FriendJet;
 import jet.SelfJet;
 
 /**
@@ -43,15 +44,20 @@ public class Bullet implements Hittable{
     public static final int BULLET_STYLE_SPIRAL = 2;
 
     private BulletAnimation mAnimation;
-	
+    public List<Hittable> getHittableChildren(){
+        return null;
+    }
 	public CircleCollider getCollider(){
         return collider;
     }
     public void onCollision(Hittable h){
-        if(h instanceof EnemyJet || h instanceof SelfJet || h instanceof AtomicBomb|| h instanceof ATFieldBomb){
-            recycle();
+        if(!shouldRecycle()){
+            if(h instanceof EnemyJet || h instanceof SelfJet ||
+                    h instanceof AtomicBomb|| h instanceof ATFieldBomb||
+                    h instanceof FriendJet){
+                recycle();
+            }
         }
-
     }
     public Bullet(Position pos, float r, Paint paint, Velocity v, float damage, ArrayList<Integer> bulletStyles, float maxSpeed){
     

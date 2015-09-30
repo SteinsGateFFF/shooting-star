@@ -16,7 +16,7 @@ import hacking.to.the.gate.PowerUp;
 /**
  * Created by Ruiqian on 9/8/2015.
  */
-public class SelfJet extends Jet implements Hittable{
+public class SelfJet extends Jet {
 
     public static class Builder extends Jet.Builder {
         public Builder(float x, float y, float r,int animationType) {
@@ -55,17 +55,22 @@ public class SelfJet extends Jet implements Hittable{
         super(builder);
 
     }
+    public List<Bullet> getHittableChildren(){
+        return mBullets;
+    }
     public void onCollision(Hittable h){
-        float curHealth = getHealth();
-        if(h instanceof PowerUp){
-            curHealth += PowerUp.POWERUP_HEAL;
-        }
-        else if(h instanceof Bullet){
-            curHealth -= ((Bullet) h).getDamage();
-        }
-        setHealth(curHealth);
-        if(curHealth < 0) {
-            setDead(true);
+        if(!isDead()){
+            float curHealth = getHealth();
+            if(h instanceof PowerUp){
+                curHealth += PowerUp.POWERUP_HEAL;
+            }
+            else if(h instanceof Bullet){
+                curHealth -= ((Bullet) h).getDamage();
+            }
+            setHealth(curHealth);
+            if(curHealth < 0) {
+                setDead(true);
+            }
         }
     }
 

@@ -12,13 +12,14 @@ import java.util.List;
 import hacking.to.the.gate.Bullet;
 import hacking.to.the.gate.CircleCollider;
 import hacking.to.the.gate.Gun;
+import hacking.to.the.gate.Hittable;
 import hacking.to.the.gate.Position;
 import hacking.to.the.gate.Velocity;
 
 /**
  * Created by Ruiqian on 9/8/2015.
  */
-public class Jet{
+public abstract class Jet implements Hittable{
 
     public static class Builder{
         //Required parameters
@@ -41,9 +42,10 @@ public class Jet{
             mAnimation = JetAnimation.getInstance(animationType);
             collider = new CircleCollider(radius, mSelfPos);
         }
-        public Jet build(){
-            return new Jet(this);
-        }
+
+       // public Jet build(){
+            //return new Jet(this);
+        //}
     }
     public CircleCollider getCollider(){
         return collider;
