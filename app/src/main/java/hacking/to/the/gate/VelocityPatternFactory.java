@@ -32,7 +32,7 @@ public class VelocityPatternFactory {
                     Velocity mInitVelocity = initVelocity;
                     int count = 0;
                     @Override
-                    Velocity nextVelocity(Velocity v) {
+                    public Velocity nextVelocity(Velocity v) {
                         count++;
                         int degree = 0;
                         if(count%60 <= 45){

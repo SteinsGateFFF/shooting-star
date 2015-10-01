@@ -1,4 +1,4 @@
-package bomb;
+package hacking.to.the.gate.Hittables.bomb;
 
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,7 +12,7 @@ public class BombFactory {
     public final static int LIGHTENING_BOMB = 1;
     public final static int KAMIKAZE_BOMB = 2;
     public final static int AT_FIELD_BOMB = 3;
-    public Bomb getBomb(int bombType, float x, float y,BombLifeCycle e){
+    public Bomb getBomb(int bombType, float x, float y){
 
         Paint p = new Paint();
         switch (bombType){
@@ -20,6 +20,12 @@ public class BombFactory {
 
                 p.setColor(Color.YELLOW);
                 AtomicBomb b =new AtomicBomb(x,y,GameManager.getInstance().getScreenRect().width()/4f,p);
+                BombLifeCycle e =  new BombLifeCycle() {
+                @Override
+                public void onStop() {
+                    GameManager.getInstance().stopVibration();
+                }
+            };
                 b.setBombCycleListener(e);
                 return b;
             case LIGHTENING_BOMB:
@@ -38,4 +44,8 @@ public class BombFactory {
         }
         return null;
     }
+    public interface BombLifeCycle {
+        void onStop();
+    }
+
 }

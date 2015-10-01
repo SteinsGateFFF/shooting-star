@@ -1,8 +1,6 @@
-package jet;
+package hacking.to.the.gate.Hittables.jet;
 
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -10,10 +8,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import hacking.to.the.gate.Bullet;
+import hacking.to.the.gate.Hittables.bullet.Bullet;
 import hacking.to.the.gate.CircleCollider;
 import hacking.to.the.gate.Gun;
-import hacking.to.the.gate.Hittable;
+import hacking.to.the.gate.Hittables.Hittable;
 import hacking.to.the.gate.Position;
 import hacking.to.the.gate.Velocity;
 
@@ -97,33 +95,33 @@ public abstract class Jet implements Hittable{
 
     private CircleCollider collider;
     /**
-     * Position of the center of the circle that represents this jet.
+     * Position of the center of the circle that represents this hacking.to.the.gate.Hittables.Hittable.jet.
      */
     protected Position mSelfPos;
     /**
-     * Position of the destination position that the jet is heading to.
+     * Position of the destination position that the hacking.to.the.gate.Hittables.Hittable.jet is heading to.
      */
     private Position mDestPos;
     private float mRadius;
     /**
-     * The current velocity of the jet.
+     * The current velocity of the hacking.to.the.gate.Hittables.Hittable.jet.
      */
     protected Velocity mVelocity;
     /**
-     * Health of the jet. Jet is destroyed if Heath < 0
+     * Health of the hacking.to.the.gate.Hittables.Hittable.jet. Jet is destroyed if Heath < 0
      */
     private float mHealth;
     private final String TAG = "Jet";
     /**
-     * The speed limit that the jet can move.
+     * The speed limit that the hacking.to.the.gate.Hittables.Hittable.jet can move.
      */
     private float mMaxSpeed;
     /**
-     * If the jet has a destination.
+     * If the hacking.to.the.gate.Hittables.Hittable.jet has a destination.
      */
     private boolean mHasDestination;
     /**
-     * List of Bullets that are shot by this jet.
+     * List of Bullets that are shot by this hacking.to.the.gate.Hittables.Hittable.jet.
      */
     protected List<Bullet> mBullets;
 
@@ -137,10 +135,10 @@ public abstract class Jet implements Hittable{
 
     /**
      * Create a Jet Object
-     * @param x x coordinate of the center of the jet
-     * @param y y coordinate of the center of the jet
-     * @param r radius of the jet
-     * @param p paint that paints the jet and bullet
+     * @param x x coordinate of the center of the hacking.to.the.gate.Hittables.Hittable.jet
+     * @param y y coordinate of the center of the hacking.to.the.gate.Hittables.Hittable.jet
+     * @param r radius of the hacking.to.the.gate.Hittables.Hittable.jet
+     * @param p paint that paints the hacking.to.the.gate.Hittables.Hittable.jet and bullet
      *
      */
 
@@ -166,7 +164,7 @@ public abstract class Jet implements Hittable{
     }
 
     /**
-     * Set the gun of this jet to the given type
+     * Set the gun of this hacking.to.the.gate.Hittables.Hittable.jet to the given type
      * @param gunType
      */
     public void setGunType(int index,int gunType, ArrayList<Integer> bulletStyles){
@@ -194,7 +192,7 @@ public abstract class Jet implements Hittable{
 
 
     /**
-     * Draw the jet to the given canvas.
+     * Draw the hacking.to.the.gate.Hittables.Hittable.jet to the given canvas.
      * @param canvas
      */
     public void draw(Canvas canvas){
@@ -224,10 +222,10 @@ public abstract class Jet implements Hittable{
     }
 
     /**
-     * Set the destination of the jet.
+     * Set the destination of the hacking.to.the.gate.Hittables.Hittable.jet.
      * @param x
      * @param y
-     * @param hasDestination true then jet will move towards the destination, otherwise will stay.
+     * @param hasDestination true then hacking.to.the.gate.Hittables.Hittable.jet will move towards the destination, otherwise will stay.
      */
     public void setDestination(float x, float y, boolean hasDestination ){
         mDestPos = new Position(x,y);
@@ -237,7 +235,7 @@ public abstract class Jet implements Hittable{
 
     /**
      *
-     * @return a list of bullets that are shot by this jet.
+     * @return a list of bullets that are shot by this hacking.to.the.gate.Hittables.Hittable.jet.
      */
     public List<Bullet> getBullets(){
         return mBullets;
@@ -256,12 +254,12 @@ public abstract class Jet implements Hittable{
     }
 
     /**
-     * Change the jet state to next tick.
+     * Change the hacking.to.the.gate.Hittables.Hittable.jet state to next tick.
      */
     public void tick(){
 
         if(mHasDestination) {
-            // Fixed a bug that the ject have weird movement if destination is at the center of the jet.
+            // Fixed a bug that the ject have weird movement if destination is at the center of the hacking.to.the.gate.Hittables.Hittable.jet.
             mVelocity = Velocity.getDisplacement(mSelfPos,mDestPos);
             if(mVelocity.getSpeed() > mMaxSpeed) {
                 mVelocity = Velocity.getDestinationVelocity(mSelfPos, mDestPos, mMaxSpeed);

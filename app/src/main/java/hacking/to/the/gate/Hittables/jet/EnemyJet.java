@@ -1,15 +1,13 @@
-package jet;
-
-import android.graphics.Paint;
+package hacking.to.the.gate.Hittables.jet;
 
 import java.util.List;
 
-import bomb.AtomicBomb;
-import bomb.LighteningBomb;
-import hacking.to.the.gate.Bullet;
+import hacking.to.the.gate.Hittables.bomb.AtomicBomb;
+import hacking.to.the.gate.Hittables.bomb.LighteningBomb;
+import hacking.to.the.gate.Hittables.bullet.Bullet;
 import hacking.to.the.gate.GameManager;
 import hacking.to.the.gate.Gun;
-import hacking.to.the.gate.Hittable;
+import hacking.to.the.gate.Hittables.Hittable;
 import hacking.to.the.gate.Position;
 
 /**

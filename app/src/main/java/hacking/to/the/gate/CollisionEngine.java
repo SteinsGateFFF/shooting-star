@@ -1,25 +1,25 @@
 package hacking.to.the.gate;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import bomb.Bomb;
+import hacking.to.the.gate.Hittables.Hittable;
+import hacking.to.the.gate.Hittables.SuperHittable;
+import hacking.to.the.gate.Hittables.bomb.Bomb;
 
-import jet.EnemyJet;
-import jet.SelfJet;
+import hacking.to.the.gate.Hittables.jet.EnemyJet;
+import hacking.to.the.gate.Hittables.jet.SelfJet;
+import hacking.to.the.gate.Hittables.powerup.PowerUp;
 
 /**
  * Created by Ruiqian on 9/2/2015.
  */
 public class CollisionEngine {
 
+
     private List<EnemyJet> mEnemies;
     private SelfJet mPlayer;
     private List<PowerUp> mPowerups;
     private List<Bomb> mBombs;
-    private List<Hittable> mNegativeOnes;
-    private List<Hittable> mPositiveOnes;
-
 
     public CollisionEngine(List<EnemyJet> jets, List<PowerUp> powerups, SelfJet player, List<Bomb> bombs){
 
@@ -27,8 +27,6 @@ public class CollisionEngine {
         mPowerups = powerups;
         mPlayer = player;
         mBombs = bombs;
-        mNegativeOnes = new ArrayList<>();
-        mPositiveOnes = new ArrayList<>();
     }
 
     public void setPlayer(SelfJet newPlayer){
@@ -123,18 +121,14 @@ public class CollisionEngine {
 
     }
     public void tick(){
-        mNegativeOnes.clear();
-        mPositiveOnes.clear();
-        mNegativeOnes.addAll(mEnemies);
-        mNegativeOnes.addAll(mPowerups);
-        mPositiveOnes.addAll(mBombs);
-        mPositiveOnes.add(mPlayer);
-        if(mNegativeOnes!= null && mPositiveOnes != null){
-            for(Hittable h : mNegativeOnes){
-                for(Hittable h2 : mPositiveOnes){
-                    traverse(h,h2);
-                }
-            }
-        }
+        SuperHittable h1 = new SuperHittable();
+        SuperHittable h2 = new SuperHittable();
+        h1.addAll(mEnemies);
+        h1.addAll(mPowerups);
+        h2.addAll(mBombs);
+        h2.add(mPlayer);
+
+        traverse(h1,h2);
+
     }
 }

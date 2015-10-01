@@ -1,4 +1,4 @@
-package bomb;
+package hacking.to.the.gate.Hittables.bomb;
 
 import android.graphics.Paint;
 
@@ -6,14 +6,14 @@ import java.util.List;
 
 import hacking.to.the.gate.CircleCollider;
 import hacking.to.the.gate.GameManager;
-import hacking.to.the.gate.Hittable;
+import hacking.to.the.gate.Hittables.Hittable;
 import hacking.to.the.gate.Position;
 
 
 /**
  * Created by Ruiqian on 9/20/2015.
  */
-public class ATFieldBomb extends Bomb implements Hittable {
+public class ATFieldBomb extends Bomb{
 
     private CircleCollider mCollider;
     public ATFieldBomb(float x, float y, float r, Paint p){

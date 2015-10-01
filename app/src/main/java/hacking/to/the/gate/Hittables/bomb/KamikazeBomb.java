@@ -1,17 +1,14 @@
-package bomb;
+package hacking.to.the.gate.Hittables.bomb;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import hacking.to.the.gate.Collider;
-import hacking.to.the.gate.Hittable;
-import jet.FriendJet;
-import jet.JetAnimation;
+import hacking.to.the.gate.Hittables.Hittable;
+import hacking.to.the.gate.Hittables.jet.FriendJet;
 
 /**
  * Created by Ruiqian on 9/20/2015.
@@ -24,9 +21,11 @@ public class KamikazeBomb extends Bomb{
         return null;
     }
 
-    public List<FriendJet> getHittableChildren(){
-       return mFriendJets;
+    @Override
+    public List<? extends Hittable> getHittableChildren() {
+        return mFriendJets;
     }
+
     public KamikazeBomb(float x, float y,Paint p){
         super(x,y,0,p);
         mFriendJets = new ArrayList<>();

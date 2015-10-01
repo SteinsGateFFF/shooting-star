@@ -1,9 +1,9 @@
-package bomb;
+package hacking.to.the.gate.Hittables.bomb;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import hacking.to.the.gate.Hittable;
+import hacking.to.the.gate.Hittables.Hittable;
 import hacking.to.the.gate.Position;
 
 /**
@@ -11,6 +11,7 @@ import hacking.to.the.gate.Position;
  */
 public abstract class Bomb implements Hittable{
 
+    protected BombFactory.BombLifeCycle bombLifeCycle;
     protected Position mSelfPos;
     private float mRadius;
     private Paint mPaint;
@@ -27,6 +28,9 @@ public abstract class Bomb implements Hittable{
         mBombTime = 200;
     }
 
+    public void setBombCycleListener(BombFactory.BombLifeCycle e){
+        bombLifeCycle = e;
+    }
     public void draw(Canvas canvas){
         if(!mShouldRecycle) {
             canvas.drawCircle(mSelfPos.getPositionX(), mSelfPos.getPositionY(), mRadius, mPaint);
@@ -62,5 +66,6 @@ public abstract class Bomb implements Hittable{
     }
     public void timeIsUp(){
         setDead(true);
+
     }
 }

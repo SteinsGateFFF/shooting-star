@@ -15,14 +15,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import bomb.Bomb;
-import bomb.BombFactory;
-import bomb.BombLifeCycle;
-import jet.EnemyJet;
+import hacking.to.the.gate.Hittables.bomb.Bomb;
+import hacking.to.the.gate.Hittables.bomb.BombFactory;
+import hacking.to.the.gate.Hittables.bullet.Bullet;
+import hacking.to.the.gate.Hittables.bullet.BulletAnimation;
+import hacking.to.the.gate.Hittables.jet.EnemyJet;
 
-import jet.JetAnimation;
-import jet.JetLifeCycle;
-import jet.SelfJet;
+import hacking.to.the.gate.Hittables.jet.JetAnimation;
+import hacking.to.the.gate.Hittables.jet.JetLifeCycle;
+import hacking.to.the.gate.Hittables.jet.SelfJet;
+import hacking.to.the.gate.Hittables.powerup.PowerUp;
 
 /**
  * Manager class that manages the game logic, holds all underlying data objects, and renders the canvas.
@@ -42,12 +44,7 @@ public class GameManager {
         }
     };
 
-    private BombLifeCycle bombLifeCycle = new BombLifeCycle() {
-        @Override
-        public void onStop() {
-            stopVibration();
-        }
-    };
+
     private Context mContext;
     /**
      * Initial State.
@@ -166,7 +163,7 @@ public class GameManager {
     }
 
     /**
-     * Create self jet and enemy jets.
+     * Create self hacking.to.the.gate.Hittables.Hittable.jet and enemy jets.
      * TODO: Should be able to load from a predefined game file.
      */
     public void createGame(){
@@ -212,7 +209,7 @@ public class GameManager {
         }
         mRemainingLife--;
         mCollisionEngine.setPlayer(mSelfJet);
-        Log.d("Selfjet","New self jet is created");
+        Log.d("Selfjet","New self hacking.to.the.gate.Hittables.Hittable.jet is created");
 
     }
 
@@ -526,11 +523,11 @@ public class GameManager {
                 break;
         }
     }
-    private void vibrateDevice(){
+    public void startVibration(){
         Vibrator v = (Vibrator)mContext.getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(60000);
     }
-    private void stopVibration(){
+    public void stopVibration(){
         Vibrator v = (Vibrator)mContext.getSystemService(Context.VIBRATOR_SERVICE);
         v.cancel();
     }
@@ -548,7 +545,7 @@ public class GameManager {
                         case 0:
                             //x = getScreenRect().centerX();
                             //y = getScreenRect().centerY();
-                            vibrateDevice();
+                            startVibration();
                             break;
                         case 1:
                             x = new Random().nextInt(100)+200;
@@ -563,7 +560,7 @@ public class GameManager {
                             break;
                     }
                     synchronized (mBombs){
-                        mBombs.add(mBombFactory.getBomb(bombType,x,y,bombLifeCycle));
+                        mBombs.add(mBombFactory.getBomb(bombType,x,y));
                     }
 
                 }

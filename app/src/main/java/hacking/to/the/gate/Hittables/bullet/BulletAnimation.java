@@ -1,4 +1,4 @@
-package hacking.to.the.gate;
+package hacking.to.the.gate.Hittables.bullet;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import hacking.to.the.gate.Position;
 
 /**
  * Created by yihuaqi on 2015/9/10.

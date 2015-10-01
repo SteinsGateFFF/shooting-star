@@ -1,4 +1,4 @@
-package bomb;
+package hacking.to.the.gate.Hittables.bomb;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,7 +8,7 @@ import android.graphics.Rect;
 import java.util.List;
 
 import hacking.to.the.gate.BoxCollider;
-import hacking.to.the.gate.Hittable;
+import hacking.to.the.gate.Hittables.Hittable;
 import hacking.to.the.gate.Position;
 
 /**

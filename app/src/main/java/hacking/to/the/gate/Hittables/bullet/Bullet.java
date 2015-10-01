@@ -1,22 +1,27 @@
-package hacking.to.the.gate;
+package hacking.to.the.gate.Hittables.bullet;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import bomb.ATFieldBomb;
-import bomb.AtomicBomb;
-import jet.EnemyJet;
-import jet.FriendJet;
-import jet.SelfJet;
+import hacking.to.the.gate.CircleCollider;
+import hacking.to.the.gate.Hittables.Hittable;
+import hacking.to.the.gate.Hittables.bomb.ATFieldBomb;
+import hacking.to.the.gate.Hittables.bomb.AtomicBomb;
+import hacking.to.the.gate.Hittables.jet.EnemyJet;
+import hacking.to.the.gate.Hittables.jet.FriendJet;
+import hacking.to.the.gate.Hittables.jet.SelfJet;
+import hacking.to.the.gate.Position;
+import hacking.to.the.gate.Velocity;
+import hacking.to.the.gate.VelocityPattern;
+import hacking.to.the.gate.VelocityPatternFactory;
 
 /**
  * Created by Jelly and Huaqi on 2015/8/15.
  */
-public class Bullet implements Hittable{
+public class Bullet implements Hittable {
     private CircleCollider collider;
     private Position mSelfPos;
     private float mRadius;
@@ -30,7 +35,7 @@ public class Bullet implements Hittable{
     private float mMaxSpeed;
     private boolean shouldRecycle = false;
     /**
-     * Damage that should be dealt to jet when is collided.
+     * Damage that should be dealt to hacking.to.the.gate.Hittables.Hittable.jet when is collided.
      */
     private float mDamage;
 

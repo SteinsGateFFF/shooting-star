@@ -1,9 +1,9 @@
-package bomb;
+package hacking.to.the.gate.Hittables.bomb;
 import android.graphics.Paint;
 
 import java.util.List;
 import hacking.to.the.gate.CircleCollider;
-import hacking.to.the.gate.Hittable;
+import hacking.to.the.gate.Hittables.Hittable;
 import hacking.to.the.gate.Position;
 
 /**
@@ -11,7 +11,7 @@ import hacking.to.the.gate.Position;
  */
 public class AtomicBomb extends Bomb{
 
-    private BombLifeCycle bombLifeCycle;
+
     private CircleCollider mCollider;
     public static int BOMB_DAMAGE = 30;
     public AtomicBomb(float x, float y, float r, Paint p){
@@ -36,9 +36,4 @@ public class AtomicBomb extends Bomb{
         setDead(true);
         bombLifeCycle.onStop();
     }
-
-    public void setBombCycleListener(BombLifeCycle e){
-        bombLifeCycle = e;
-    }
-
 }

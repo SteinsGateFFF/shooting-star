@@ -1,17 +1,15 @@
-package jet;
+package hacking.to.the.gate.Hittables.jet;
 
-import android.app.AlertDialog;
-import android.graphics.Paint;
 import android.util.Log;
 
 import java.util.List;
 
-import hacking.to.the.gate.Bullet;
+import hacking.to.the.gate.Hittables.bullet.Bullet;
 import hacking.to.the.gate.GameManager;
 import hacking.to.the.gate.Gun;
-import hacking.to.the.gate.Hittable;
+import hacking.to.the.gate.Hittables.Hittable;
 import hacking.to.the.gate.Position;
-import hacking.to.the.gate.PowerUp;
+import hacking.to.the.gate.Hittables.powerup.PowerUp;
 
 /**
  * Created by Ruiqian on 9/8/2015.

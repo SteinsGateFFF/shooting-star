@@ -1,16 +1,21 @@
-package hacking.to.the.gate;
+package hacking.to.the.gate.Hittables.powerup;
 
 import android.graphics.Paint;
 import android.graphics.Canvas;
 
 import java.util.List;
 import java.util.Random;
-import jet.SelfJet;
+
+import hacking.to.the.gate.CircleCollider;
+import hacking.to.the.gate.Hittables.Hittable;
+import hacking.to.the.gate.Hittables.jet.SelfJet;
+import hacking.to.the.gate.Position;
+import hacking.to.the.gate.Velocity;
 
 /**
  * Created by Ruiqian on 8/24/2015.
  */
-public class PowerUp implements Hittable{
+public class PowerUp implements Hittable {
 
     public CircleCollider getCollider(){
         return collider;
