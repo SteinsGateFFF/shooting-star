@@ -6,5 +6,5 @@ package hacking.to.the.gate;
 public abstract class VelocityPattern {
     public static final int WORM = 0;
     public static final int SPIRAL = 1;
-    abstract Velocity nextVelocity(Velocity v);
+    public abstract Velocity nextVelocity(Velocity v);
 }

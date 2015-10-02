@@ -1,40 +1,52 @@
-package jet;
+package hacking.to.the.gate.Hittables.jet;
 
-import android.app.AlertDialog;
-import android.graphics.Paint;
 import android.util.Log;
 
 import java.util.List;
 
-import hacking.to.the.gate.Bullet;
+import hacking.to.the.gate.Hittables.bullet.Bullet;
 import hacking.to.the.gate.GameManager;
 import hacking.to.the.gate.Gun;
-import hacking.to.the.gate.Hittable;
+import hacking.to.the.gate.Hittables.Hittable;
 import hacking.to.the.gate.Position;
-import hacking.to.the.gate.PowerUp;
+import hacking.to.the.gate.Hittables.powerup.PowerUp;
 
 /**
  * Created by Ruiqian on 9/8/2015.
  */
-public class SelfJet extends Jet implements Hittable{
+public class SelfJet extends Jet {
 
-    public void onCollision(Hittable h){
-        float curHealth = getHealth();
-        if(h instanceof PowerUp){
-            curHealth += PowerUp.POWERUP_HEAL;
+    public static class Builder extends Jet.Builder<Builder> {
+        public Builder() {
+            super();
+            mAnimation = JetAnimation.getInstance(JetAnimation.TYPE_SELF_JET);
         }
-        else if(h instanceof Bullet){
-            curHealth -= ((Bullet) h).getDamage();
-        }
-        setHealth(curHealth);
-        if(curHealth < 0) {
-            setDead(true);
+
+        public SelfJet build(){
+            return new SelfJet(this);
         }
     }
-    public SelfJet(float x, float y, float r, Paint p,int animationType) {
-        super(x,y,r,p,animationType);
-//        mGuns.add(Gun.getGun(Gun.GUN_TYPE_NO_TARGET_UP, mBulletStyles));
+    private SelfJet(Builder builder){
+        super(builder);
 
+    }
+    public List<Bullet> getHittableChildren(){
+        return mBullets;
+    }
+    public void onCollision(Hittable h){
+        if(!isDead()){
+            float curHealth = getHealth();
+            if(h instanceof PowerUp){
+                curHealth += PowerUp.POWERUP_HEAL;
+            }
+            else if(h instanceof Bullet){
+                curHealth -= ((Bullet) h).getDamage();
+            }
+            setHealth(curHealth);
+            if(curHealth < 0) {
+                setDead(true);
+            }
+        }
     }
 
     @Override

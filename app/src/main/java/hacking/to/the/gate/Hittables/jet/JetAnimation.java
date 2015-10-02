@@ -1,4 +1,4 @@
-package hacking.to.the.gate;
+package hacking.to.the.gate.Hittables.jet;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import hacking.to.the.gate.Position;
 
 /**
  * This is a class for drawing animation.
@@ -86,15 +88,15 @@ public class JetAnimation {
      */
     private Bitmap mBitmap;
     /**
-     * List of rects when jet is moving towards left.
+     * List of rects when hacking.to.the.gate.Hittables.Hittable.jet is moving towards left.
      */
     private List<Rect> mLeft;
     /**
-     * List of rects when jet is still in x.
+     * List of rects when hacking.to.the.gate.Hittables.Hittable.jet is still in x.
      */
     private List<Rect> mStill;
     /**
-     * List of rects when jet is moving towards right.
+     * List of rects when hacking.to.the.gate.Hittables.Hittable.jet is moving towards right.
      */
     private List<Rect> mRight;
     /**

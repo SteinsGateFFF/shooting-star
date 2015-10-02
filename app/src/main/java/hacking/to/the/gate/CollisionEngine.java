@@ -1,46 +1,96 @@
 package hacking.to.the.gate;
 
-import android.util.Log;
-
-import java.util.Iterator;
 import java.util.List;
 
-import jet.EnemyJet;
-import jet.SelfJet;
+import hacking.to.the.gate.Hittables.Hittable;
+import hacking.to.the.gate.Hittables.SuperHittable;
+import hacking.to.the.gate.Hittables.bomb.Bomb;
+
+import hacking.to.the.gate.Hittables.jet.EnemyJet;
+import hacking.to.the.gate.Hittables.jet.SelfJet;
+import hacking.to.the.gate.Hittables.powerup.PowerUp;
 
 /**
  * Created by Ruiqian on 9/2/2015.
  */
 public class CollisionEngine {
 
+
     private List<EnemyJet> mEnemies;
     private SelfJet mPlayer;
     private List<PowerUp> mPowerups;
+    private List<Bomb> mBombs;
 
+    public CollisionEngine(List<EnemyJet> jets, List<PowerUp> powerups, SelfJet player, List<Bomb> bombs){
 
-    public CollisionEngine(List<EnemyJet> jets, List<PowerUp> powerups, SelfJet player){
         mEnemies = jets;
         mPowerups = powerups;
         mPlayer = player;
+        mBombs = bombs;
     }
 
     public void setPlayer(SelfJet newPlayer){
         mPlayer = newPlayer;
     }
     private boolean detectCollision(Hittable t1, Hittable t2){
+
         return detectCollision(t1.getCollider(),t2.getCollider());
     }
 
-    private boolean detectCollision(CircleCollider c1, CircleCollider c2){
+    private boolean detectCollision(Collider c1, Collider c2){
 
-        return Math.pow(
-                c1.getPosition().getPositionX()-c2.getPosition().getPositionX(),
-                2)
-                +Math.pow(
-                c1.getPosition().getPositionY()-c2.getPosition().getPositionY(),
-                2)
-                < Math.pow(c1.getRadius()+c2.getRadius(),2);
+        if(c1==null || c2 == null){
+            return false;
+        }
 
+        if(c1 instanceof CircleCollider && c2 instanceof CircleCollider){
+            CircleCollider circle = (CircleCollider) c1;
+            CircleCollider circle2 = (CircleCollider) c2;
+            return Math.pow(
+                    circle.getPosition().getPositionX()-circle2.getPosition().getPositionX(),
+                    2)
+                    +Math.pow(
+                    circle.getPosition().getPositionY()-circle2.getPosition().getPositionY(),
+                    2)
+                    < Math.pow(circle.getRadius()+circle2.getRadius(),2);
+
+        }
+        else if(c1 instanceof  BoxCollider && c2 instanceof  BoxCollider){
+            BoxCollider box = (BoxCollider) c1;
+            BoxCollider box2 = (BoxCollider) c2;
+            return (Math.abs(box.getPosition().getPositionX() - box2.getPosition().getPositionX()) * 2
+                    < (box.getWidth() + box2.getWidth()))
+                    &&
+                    (Math.abs(box.getPosition().getPositionY() - box2.getPosition().getPositionY()) * 2
+                            < (box.getHeight() + box2.getHeight()));
+        }
+        else{
+            BoxCollider box;
+            CircleCollider circle;
+            if(c1 instanceof BoxCollider){
+                box = (BoxCollider) c1;
+                circle = (CircleCollider) c2;
+            }
+            else{
+                box = (BoxCollider) c2;
+                circle = (CircleCollider) c1;
+            }
+
+            float distanceX = Math.abs(circle.getPosition().getPositionX() - box.getPosition().getPositionX());
+            float distanceY = Math.abs(circle.getPosition().getPositionY() - box.getPosition().getPositionY());
+
+            if (distanceX > (box.getWidth()/2 + circle.getRadius())) { return false; }
+            if (distanceY > (box.getHeight()/2 + circle.getRadius())) { return false; }
+
+            if (distanceX <= (box.getWidth()/2)) { return true; }
+            if (distanceY <= (box.getHeight()/2)) { return true; }
+
+            double distance = Math.pow((distanceX - box.getWidth()/2),2) +
+                    Math.pow((distanceY - box.getHeight()/2),2);
+
+            return (distance <= (Math.pow(circle.getRadius(),2)));
+
+        }
     }
 
     private void doCollision(Hittable h1, Hittable h2){
@@ -48,31 +98,37 @@ public class CollisionEngine {
         h2.onCollision(h1);
     }
 
-    public void tick(){
-        for(Iterator<PowerUp> i = mPowerups.iterator();i.hasNext();) {
-            PowerUp p = i.next();
-            if(!mPlayer.isDead()&&p.isVisible()&& detectCollision(mPlayer,p)){
-                doCollision(mPlayer,p);
-            }
-        }
+    private void traverse(Hittable root1,Hittable root2){
 
-        for(EnemyJet jet:mEnemies){
-            for (Iterator<Bullet> it = jet.getBullets().iterator(); it.hasNext(); ) {
-                Bullet b = it.next();
-                if (!mPlayer.isDead() && detectCollision(mPlayer, b)) {
-                    Log.d("collision", "hit by enemy's bullet");
-                    doCollision(mPlayer,b);
-                }
-            }
-            for(Iterator<Bullet> it = mPlayer.getBullets().iterator(); it.hasNext();){
-                Bullet b = it.next();
-                if(!jet.isDead()&& detectCollision(jet,b)) {
-                    Log.d("collision","hit by player's bullet");
-                    doCollision(jet,b);
-                }
-            }
+        traverseHelper(root1,root2);
+        if(root2.getHittableChildren() == null)
+            return;
+        for(Hittable h :root2.getHittableChildren()){
+            traverse(root1,h);
+        }
+    }
+    private void traverseHelper(Hittable h1,Hittable h2){
+
+        if(detectCollision(h1,h2)){
+            doCollision(h1,h2);
+        }
+       if(h1.getHittableChildren() == null){
+           return;
+        }
+        for(Hittable h:h1.getHittableChildren()){
+            traverseHelper(h,h2);
         }
 
     }
+    public void tick(){
+        SuperHittable h1 = new SuperHittable();
+        SuperHittable h2 = new SuperHittable();
+        h1.addAll(mEnemies);
+        h1.addAll(mPowerups);
+        h2.addAll(mBombs);
+        h2.add(mPlayer);
 
+        traverse(h1,h2);
+
+    }
 }

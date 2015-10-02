@@ -1,23 +1,29 @@
-package hacking.to.the.gate;
+package hacking.to.the.gate.Hittables.bullet;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jet.EnemyJet;
-import jet.SelfJet;
+import hacking.to.the.gate.CircleCollider;
+import hacking.to.the.gate.Hittables.Hittable;
+import hacking.to.the.gate.Hittables.bomb.ATFieldBomb;
+import hacking.to.the.gate.Hittables.bomb.AtomicBomb;
+import hacking.to.the.gate.Hittables.jet.EnemyJet;
+import hacking.to.the.gate.Hittables.jet.FriendJet;
+import hacking.to.the.gate.Hittables.jet.SelfJet;
+import hacking.to.the.gate.Position;
+import hacking.to.the.gate.Velocity;
+import hacking.to.the.gate.VelocityPattern;
+import hacking.to.the.gate.VelocityPatternFactory;
 
 /**
  * Created by Jelly and Huaqi on 2015/8/15.
  */
-public class Bullet implements Hittable{
+public class Bullet implements Hittable {
     private CircleCollider collider;
     private Position mSelfPos;
-
-
     private float mRadius;
     private Velocity mVelocity;
     private Paint mPaint;
@@ -29,7 +35,7 @@ public class Bullet implements Hittable{
     private float mMaxSpeed;
     private boolean shouldRecycle = false;
     /**
-     * Damage that should be dealt to jet when is collided.
+     * Damage that should be dealt to hacking.to.the.gate.Hittables.Hittable.jet when is collided.
      */
     private float mDamage;
 
@@ -43,15 +49,20 @@ public class Bullet implements Hittable{
     public static final int BULLET_STYLE_SPIRAL = 2;
 
     private BulletAnimation mAnimation;
-	
+    public List<Hittable> getHittableChildren(){
+        return null;
+    }
 	public CircleCollider getCollider(){
         return collider;
     }
     public void onCollision(Hittable h){
-        if(h instanceof EnemyJet || h instanceof SelfJet){
-            recycle();
+        if(!shouldRecycle()){
+            if(h instanceof EnemyJet || h instanceof SelfJet ||
+                    h instanceof AtomicBomb|| h instanceof ATFieldBomb||
+                    h instanceof FriendJet){
+                recycle();
+            }
         }
-
     }
     public Bullet(Position pos, float r, Paint paint, Velocity v, float damage, ArrayList<Integer> bulletStyles, float maxSpeed){
     

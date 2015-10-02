@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import hacking.to.the.gate.Hittables.bullet.Bullet;
+
 /**
- * Gun can determines how the bullets are shot from jet.
+ * Gun can determines how the bullets are shot from hacking.to.the.gate.Hittables.Hittable.jet.
  */
 public class Gun {
     /**
@@ -85,7 +87,7 @@ public class Gun {
      */
     public final static int GUN_TYPE_DEFAULT = 0;
     /**
-     * Bullets that has the initial velocity toward self jet.
+     * Bullets that has the initial velocity toward self hacking.to.the.gate.Hittables.Hittable.jet.
      * Need a target
      */
     public final static int GUN_TYPE_SELF_TARGETING_ODD = 1;
@@ -154,20 +156,20 @@ public class Gun {
      */
     private final static int GUN_STYLE_TYPE_HOMING = 1;
     /**
-     * Has an initial velocity toward self jet.
-     * Can only be used for enemy jet.
+     * Has an initial velocity toward self hacking.to.the.gate.Hittables.Hittable.jet.
+     * Can only be used for enemy hacking.to.the.gate.Hittables.Hittable.jet.
      */
     private final static int GUN_STYLE_TYPE_SELF_TARGETING_ODD = 2;
 
     /**
-     * Has an initial velocity toward but a few angle off the self jet
-     * Can only be used for enemy jet.
+     * Has an initial velocity toward but a few angle off the self hacking.to.the.gate.Hittables.Hittable.jet
+     * Can only be used for enemy hacking.to.the.gate.Hittables.Hittable.jet.
      */
     private final static int GUN_STYLE_TYPE_SELF_TARGETING_EVEN = 3;
 
     /**
      * Burst a few bullets at random angle.
-     * Should only be used for enemy jet.
+     * Should only be used for enemy hacking.to.the.gate.Hittables.Hittable.jet.
      */
     private final static int GUN_STYLE_TYPE_RANDOM_SPLIT = 4;
 
@@ -180,8 +182,8 @@ public class Gun {
     private interface GunStyle {
         /**
          * Generates a list of bullets.
-         * @param self {@link hacking.to.the.gate.Position} of the jet that shoots.
-         * @param target {@link hacking.to.the.gate.Position} of the jet that is the target. Can be null.
+         * @param self {@link hacking.to.the.gate.Position} of the hacking.to.the.gate.Hittables.Hittable.jet that shoots.
+         * @param target {@link hacking.to.the.gate.Position} of the hacking.to.the.gate.Hittables.Hittable.jet that is the target. Can be null.
          * @return
          */
         List<Bullet> generateBullets(Position self, Position target);
@@ -267,7 +269,7 @@ public class Gun {
                             // TODO: Need more explicit indication.
                             throw new IllegalArgumentException("Self targeting must have a target");
                         } else {
-                            // Indicate this is enemy jet
+                            // Indicate this is enemy hacking.to.the.gate.Hittables.Hittable.jet
                             // TODO: Need more explicit indication.
                             Bullet b = new Bullet(self,
                                     10,
@@ -294,7 +296,7 @@ public class Gun {
                             // Self targeting must have a target
                             throw new IllegalArgumentException("Self targeting must have a target");
                         } else {
-                            // Indicate this is enemy jet
+                            // Indicate this is enemy hacking.to.the.gate.Hittables.Hittable.jet
                             // TODO: Need more explicit indication.
                             Bullet b1 = new Bullet(self,
                                     10,
@@ -333,7 +335,7 @@ public class Gun {
                             // Self targeting must have a target
                             throw new IllegalArgumentException("Self targeting must have a target");
                         } else {
-                            // Indicate this is enemy jet
+                            // Indicate this is enemy hacking.to.the.gate.Hittables.Hittable.jet
                             // TODO: Need more explicit indication.
                             Random random = new Random();
                             for (int i = 0; i < 5; i++){
