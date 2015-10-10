@@ -1,12 +1,12 @@
 package hacking.to.the.gate.Hittables.bullet;
 
 import android.graphics.Canvas;
-import android.graphics.Paint;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import hacking.to.the.gate.CircleCollider;
+import hacking.to.the.gate.Collider;
 import hacking.to.the.gate.Hittables.Hittable;
 import hacking.to.the.gate.Hittables.bomb.ATFieldBomb;
 import hacking.to.the.gate.Hittables.bomb.AtomicBomb;
@@ -14,6 +14,8 @@ import hacking.to.the.gate.Hittables.jet.EnemyJet;
 import hacking.to.the.gate.Hittables.jet.FriendJet;
 import hacking.to.the.gate.Hittables.jet.SelfJet;
 import hacking.to.the.gate.Position;
+import hacking.to.the.gate.ScriptParser.IBullet;
+import hacking.to.the.gate.ScriptParser.IEvent;
 import hacking.to.the.gate.Velocity;
 import hacking.to.the.gate.VelocityPattern;
 import hacking.to.the.gate.VelocityPatternFactory;
@@ -21,12 +23,11 @@ import hacking.to.the.gate.VelocityPatternFactory;
 /**
  * Created by Jelly and Huaqi on 2015/8/15.
  */
-public class Bullet implements Hittable {
-    private CircleCollider collider;
+public class Bullet implements Hittable, IBullet {
+    private Collider mCollider;
     private Position mSelfPos;
-    private float mRadius;
     private Velocity mVelocity;
-    private Paint mPaint;
+
     private List<VelocityPattern> mVelocityPatterns;
     /**
      * TODO: MaxSpeed actually does not guarantee the max speed.
@@ -49,11 +50,14 @@ public class Bullet implements Hittable {
     public static final int BULLET_STYLE_SPIRAL = 2;
 
     private BulletAnimation mAnimation;
+    //TODO:
+    private IEvent onCollision;
+
     public List<Hittable> getHittableChildren(){
         return null;
     }
-	public CircleCollider getCollider(){
-        return collider;
+	public Collider getCollider(){
+        return mCollider;
     }
     public void onCollision(Hittable h){
         if(!shouldRecycle()){
@@ -64,12 +68,13 @@ public class Bullet implements Hittable {
             }
         }
     }
-    public Bullet(Position pos, float r, Paint paint, Velocity v, float damage, ArrayList<Integer> bulletStyles, float maxSpeed){
+
+    public Bullet(Position pos, Collider c, Velocity v, float damage, ArrayList<Integer> bulletStyles, float maxSpeed){
     
-        collider = new CircleCollider(r,pos);
-        mRadius = r;
+        mCollider = c;
+
         mSelfPos = pos;
-        mPaint = paint;
+
         mMaxSpeed = maxSpeed;
         mDamage = damage;
         mVelocityPatterns = new ArrayList<>();
@@ -135,17 +140,12 @@ public class Bullet implements Hittable {
 
     public Position getSelfPos(){return mSelfPos;};
 
-    public float getRadius() {
-        return mRadius;
-    }
+
 
     public void draw(Canvas canvas){
-        if(mAnimation==null) {
-            // TODO: Should get rid of this condition.
-            canvas.drawCircle(mSelfPos.getPositionX(), mSelfPos.getPositionY(), mRadius, mPaint);
-        } else {
-            mAnimation.draw(canvas,mSelfPos);
-        }
+
+        mAnimation.draw(canvas,mSelfPos);
+
     }
 
     public void tick(){
@@ -156,11 +156,11 @@ public class Bullet implements Hittable {
         if(mVelocityPatterns!=null && mVelocityPatterns.size()!= 0) {
             if(mVelocityPatterns.get(mVelocityPatternCounter)!= null) {
                 mVelocity = mVelocityPatterns.get(mVelocityPatternCounter).nextVelocity(mVelocity);
-               // Log.d("Bullet-velocity: ",""+mVelocity+" speed"+mVelocity.getSpeed());
+               // Log.d("Bullet-velocity: ",""+velocity+" speed"+velocity.getSpeed());
             }
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
-        collider.setPosition(mSelfPos);
+        mCollider.setPosition(mSelfPos);
         mVelocityPatternCounter++;
 
     }
@@ -180,11 +180,84 @@ public class Bullet implements Hittable {
     }
 
     public boolean shouldRecycle(){
-        return shouldRecycle || mSelfPos.isOutOfScreen((int) mRadius);
+        return shouldRecycle
+                || (mCollider instanceof CircleCollider)?
+                mSelfPos.isOutOfScreen((int) ((CircleCollider) mCollider).getRadius()):
+                false;
     }
 
     @Override
     public String toString() {
         return mSelfPos.toString();
+    }
+
+    public void setOnCollision(IEvent onCollision) {
+        this.onCollision = onCollision;
+    }
+
+    public IEvent getOnCollision() {
+        return onCollision;
+    }
+
+    public static class Builder<T extends Builder>{
+        protected Collider collider;
+        protected Position selfpos;
+        protected Velocity velocity;
+        protected ArrayList<Integer> velocityPatterns;
+        protected float maxSpeed;
+        protected float damage;
+        protected int animation;
+        protected IEvent onCollisionEvent;
+
+        public Builder(){
+
+        }
+
+        public Builder<T> setCollider(Collider c){
+            collider = c;
+            return this;
+        }
+
+        public Builder<T> setSelfPos(Position p){
+            selfpos = p;
+            return this;
+        }
+
+        public Builder<T> setVelocity(Velocity v){
+            velocity = v;
+            return this;
+        }
+
+        public Builder<T> setBulletStyles(ArrayList<Integer> list){
+            velocityPatterns = list;
+            return this;
+        }
+
+        public Builder<T> setMaxSpeed(float maxSpeed){
+            this.maxSpeed = maxSpeed;
+            return this;
+        }
+
+        public Builder<T> setDamage(float damage){
+            this.damage = damage;
+            return this;
+        }
+
+        public Builder<T> setAnimation(int type){
+            this.animation = type;
+            return this;
+        }
+
+        public Builder<T> setOnCollision(IEvent event){
+            this.onCollisionEvent = event;
+            return this;
+        }
+
+        public Bullet build() {
+            Bullet b = new Bullet(selfpos, collider, velocity, damage, velocityPatterns, maxSpeed);
+            b.setBulletAnimation(animation);
+            b.setOnCollision(onCollisionEvent);
+            return b;
+        }
     }
 }

@@ -264,7 +264,7 @@ public abstract class Jet implements Hittable{
             if(mVelocity.getSpeed() > mMaxSpeed) {
                 mVelocity = Velocity.getDestinationVelocity(mSelfPos, mDestPos, mMaxSpeed);
             }
-            //Log.d("destination", "Set self velocity: "+mSelfPos+" "+mDestPos+" "+mVelocity);
+            //Log.d("destination", "Set self velocity: "+mSelfPos+" "+mDestPos+" "+velocity);
         } else {
             mVelocity = new Velocity(0,0);
 

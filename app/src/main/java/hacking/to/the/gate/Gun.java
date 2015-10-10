@@ -202,8 +202,7 @@ public class Gun {
                     public List<Bullet> generateBullets(Position self, Position target) {
                         List<Bullet> result = new ArrayList<>();
                         Bullet b = new Bullet(self,
-                                10,
-                                mPaint,
+                                new CircleCollider(10, self),
                                 new Velocity(0,-mBulletMaxSpeed),
                                 mBulletDamage,
                                 mBulletStyles,
@@ -222,8 +221,7 @@ public class Gun {
                     public List<Bullet> generateBullets(Position self, Position target) {
                         List<Bullet> result = new ArrayList<>();
                         Bullet b = new Bullet(self,
-                                10,
-                                mPaint,
+                                new CircleCollider(10, self),
                                 new Velocity(0,mBulletMaxSpeed),
                                 mBulletDamage,
                                 mBulletStyles,
@@ -246,8 +244,7 @@ public class Gun {
                             //throw new IllegalArgumentException("default type must have a target");
                         } else {
                             Bullet b = new Bullet(self,
-                                    10,
-                                    mPaint,
+                                    new CircleCollider(10, self),
                                     Velocity.getDestinationVelocity(self, target, mBulletMaxSpeed),
                                     mBulletDamage,
                                     mBulletStyles,
@@ -272,8 +269,7 @@ public class Gun {
                             // Indicate this is enemy hacking.to.the.gate.Hittables.Hittable.jet
                             // TODO: Need more explicit indication.
                             Bullet b = new Bullet(self,
-                                    10,
-                                    mPaint,
+                                    new CircleCollider(10, self),
                                     // TODO: Should get max speed from Bullet or Gun.
                                     //propose to close
                                     Velocity.getDestinationVelocity(self, target, mBulletMaxSpeed),
@@ -299,8 +295,7 @@ public class Gun {
                             // Indicate this is enemy hacking.to.the.gate.Hittables.Hittable.jet
                             // TODO: Need more explicit indication.
                             Bullet b1 = new Bullet(self,
-                                    10,
-                                    mPaint,
+                                    new CircleCollider(10, self),
                                     // TODO: Should get max speed from Bullet or Gun.
                                     //propose to close
                                     Velocity.getDestinationVelocity(self, target, mBulletMaxSpeed).rotate(5),
@@ -309,8 +304,7 @@ public class Gun {
                                     mBulletMaxSpeed);
                             b1.setBulletAnimation(mBulletAnimationType);
                             Bullet b2 = new Bullet(self,
-                                    10,
-                                    mPaint,
+                                    new CircleCollider(10, self),
                                     // TODO: Should get max speed from Bullet or Gun.
                                     //propose to close
                                     Velocity.getDestinationVelocity(self, target, mBulletMaxSpeed).rotate(-5),
@@ -341,8 +335,7 @@ public class Gun {
                             for (int i = 0; i < 5; i++){
                                 int angle = random.nextInt(120);
                                 Bullet b = new Bullet(self,
-                                        10,
-                                        mPaint,
+                                        new CircleCollider(10, self),
                                         // TODO: Should get max speed from Bullet or Gun.
                                         //propose to close
                                         Velocity.getDestinationVelocity(self, target, mBulletMaxSpeed).rotate(angle - 60),
