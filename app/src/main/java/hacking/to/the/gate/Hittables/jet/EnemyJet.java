@@ -9,11 +9,12 @@ import hacking.to.the.gate.GameManager;
 import hacking.to.the.gate.Gun;
 import hacking.to.the.gate.Hittables.Hittable;
 import hacking.to.the.gate.Position;
+import hacking.to.the.gate.ScriptParser.IJet;
 
 /**
  * Created by Ruiqian on 9/8/2015.
  */
-public class EnemyJet extends Jet{
+public class EnemyJet extends Jet {
 
     public List<Bullet> getHittableChildren(){
         return mBullets;

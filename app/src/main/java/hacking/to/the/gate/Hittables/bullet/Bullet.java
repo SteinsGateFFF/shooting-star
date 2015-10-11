@@ -213,44 +213,44 @@ public class Bullet implements Hittable, IBullet {
 
         }
 
-        public Builder<T> setCollider(Collider c){
+        public T setCollider(Collider c){
             collider = c;
-            return this;
+            return (T) this;
         }
 
-        public Builder<T> setSelfPos(Position p){
+        public T setSelfPos(Position p){
             selfpos = p;
-            return this;
+            return (T) this;
         }
 
-        public Builder<T> setVelocity(Velocity v){
+        public T setVelocity(Velocity v){
             velocity = v;
-            return this;
+            return (T) this;
         }
 
-        public Builder<T> setBulletStyles(ArrayList<Integer> list){
+        public T setBulletStyles(ArrayList<Integer> list){
             velocityPatterns = list;
-            return this;
+            return (T) this;
         }
 
-        public Builder<T> setMaxSpeed(float maxSpeed){
+        public T setMaxSpeed(float maxSpeed){
             this.maxSpeed = maxSpeed;
-            return this;
+            return (T) this;
         }
 
-        public Builder<T> setDamage(float damage){
+        public T setDamage(float damage){
             this.damage = damage;
-            return this;
+            return (T) this;
         }
 
-        public Builder<T> setAnimation(int type){
+        public T setAnimation(int type){
             this.animation = type;
-            return this;
+            return (T) this;
         }
 
-        public Builder<T> setOnCollision(IEvent event){
+        public T setOnCollision(IEvent event){
             this.onCollisionEvent = event;
-            return this;
+            return (T) this;
         }
 
         public Bullet build() {
