@@ -172,7 +172,8 @@ public class GameManager {
         synchronized (mEnemyJets) {
             for (int i = 0; i < 5; i++) {
                 EnemyJet enemyJet = new EnemyJet.Builder()
-                        .selfPosition((i + 1) * mScreenWidth / 6, 25 + 25 * i)
+                        .setPosition(new Position((i + 1) * mScreenWidth / 6, 25 + 25 * i))
+                        .setCollider(new CircleCollider(20, new Position((i + 1) * mScreenWidth / 6, 25 + 25 * i)))
                         .setGunType(Gun.GUN_TYPE_SELF_TARGETING_EVEN)
                         .build();
 
@@ -201,7 +202,10 @@ public class GameManager {
 
     public void createSelfJet(float x, float y){
 
-        mSelfJet = new SelfJet.Builder().selfPosition(x,y).build();
+        mSelfJet = new SelfJet.Builder()
+                .setPosition(new Position(x, y))
+                .setCollider(new CircleCollider(20, new Position(x,y)))
+                .build();
         for(int i = 0; i<mSelfJet.getNumOfGuns();i++){
             ArrayList<Integer> bulletStyles = new ArrayList<>();
             bulletStyles.add(Bullet.BULLET_STYLE_DEFAULT);

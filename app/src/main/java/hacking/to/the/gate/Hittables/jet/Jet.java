@@ -8,26 +8,28 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import hacking.to.the.gate.Collider;
 import hacking.to.the.gate.Hittables.bullet.Bullet;
 import hacking.to.the.gate.CircleCollider;
 import hacking.to.the.gate.Gun;
 import hacking.to.the.gate.Hittables.Hittable;
 import hacking.to.the.gate.Position;
+import hacking.to.the.gate.ScriptParser.ICollider;
+import hacking.to.the.gate.ScriptParser.IJet;
 import hacking.to.the.gate.Velocity;
 
 /**
  * Created by Ruiqian on 9/8/2015.
  */
-public abstract class Jet implements Hittable{
+public abstract class Jet implements Hittable, IJet{
 
     public static class Builder<T extends Builder>{
         //Required parameters
 
         //optional parameters
-        protected float mRadius;
         protected Position mSelfPos;
         protected JetAnimation mAnimation;
-        protected CircleCollider collider;
+        protected ICollider collider;
 
         protected float mHealth = 100;
         protected float mMaxSpeed = 20;
@@ -37,23 +39,23 @@ public abstract class Jet implements Hittable{
 
 
         public Builder(){
-            mRadius = 50;
+
             mSelfPos = new Position(0,0);
             mAnimation = JetAnimation.getInstance(JetAnimation.TYPE_ENEMY_JET_0);
-            collider = new CircleCollider(mRadius, mSelfPos);
+
         }
 
-        public T radius(int val){
-            mRadius = val;
+        public T setCollider(ICollider c){
+            this.collider = c;
             return (T) this;
         }
 
-        public T selfPosition(float xPosition,float yPosition){
-            mSelfPos = new Position(xPosition,yPosition);
+        public T setPosition(Position p){
+            mSelfPos = p;
             return (T) this;
         }
 
-        public T animationType(int val)
+        public T setAnimation(int val)
         {
             if(val != JetAnimation.TYPE_ENEMY_JET_0 && val!= JetAnimation.TYPE_SELF_JET){
                 throw new IllegalArgumentException("Type provided is not valid");
@@ -64,14 +66,14 @@ public abstract class Jet implements Hittable{
             return (T) this;
         }
 
-        public T health(int val){
+        public T setHealth(int val){
             mHealth = val;
             return (T) this;
         }
 
-        public T maxSpeed(int val){
+        public T setMaxSpeed(int val){
             mMaxSpeed = val;
-            return (T)this;
+            return (T) this;
         }
 
         public T hasDestination(boolean val){
@@ -88,12 +90,14 @@ public abstract class Jet implements Hittable{
             mBulletStyle = val;
             return (T)this;
         }
+
+
     }
-    public CircleCollider getCollider(){
-        return collider;
+    public ICollider getCollider(){
+        return mCollider;
     }
 
-    private CircleCollider collider;
+    private ICollider mCollider;
     /**
      * Position of the center of the circle that represents this hacking.to.the.gate.Hittables.Hittable.jet.
      */
@@ -102,7 +106,7 @@ public abstract class Jet implements Hittable{
      * Position of the destination position that the hacking.to.the.gate.Hittables.Hittable.jet is heading to.
      */
     private Position mDestPos;
-    private float mRadius;
+
     /**
      * The current velocity of the hacking.to.the.gate.Hittables.Hittable.jet.
      */
@@ -146,9 +150,8 @@ public abstract class Jet implements Hittable{
     protected boolean mIsDead = false;
     protected Jet(Builder builder){
 
-        collider = builder.collider;
+        mCollider = builder.collider;
         mSelfPos = builder.mSelfPos;
-        mRadius = builder.mRadius;
         mHealth = builder.mHealth;
         mMaxSpeed = builder.mMaxSpeed;
         mHasDestination = builder.mHasDestination;
@@ -270,12 +273,13 @@ public abstract class Jet implements Hittable{
 
         }
         mSelfPos = mSelfPos.applyVelocity(mVelocity);
-        collider.setPosition(mSelfPos);
+        mCollider.setPosition(mSelfPos);
 
     }
 
     public boolean shouldRecycle(){
         boolean noBullets = mBullets.isEmpty();
-        return noBullets&&(mIsDead || mSelfPos.isOutOfScreen((int) mRadius));
+        //TODO: Should make isOutOfScreen a method of Collider.
+        return noBullets&&(mIsDead) || mCollider.isOutOfScreen();
     }
 }

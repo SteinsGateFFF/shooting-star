@@ -9,6 +9,7 @@ import hacking.to.the.gate.Hittables.bomb.Bomb;
 import hacking.to.the.gate.Hittables.jet.EnemyJet;
 import hacking.to.the.gate.Hittables.jet.SelfJet;
 import hacking.to.the.gate.Hittables.powerup.PowerUp;
+import hacking.to.the.gate.ScriptParser.ICollider;
 
 /**
  * Created by Ruiqian on 9/2/2015.
@@ -37,7 +38,7 @@ public class CollisionEngine {
         return detectCollision(t1.getCollider(),t2.getCollider());
     }
 
-    private boolean detectCollision(Collider c1, Collider c2){
+    private boolean detectCollision(ICollider c1, ICollider c2){
 
         if(c1==null || c2 == null){
             return false;

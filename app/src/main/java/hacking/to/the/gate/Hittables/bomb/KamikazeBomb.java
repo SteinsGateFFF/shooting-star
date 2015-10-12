@@ -6,9 +6,11 @@ import android.graphics.Paint;
 import java.util.ArrayList;
 import java.util.List;
 
+import hacking.to.the.gate.CircleCollider;
 import hacking.to.the.gate.Collider;
 import hacking.to.the.gate.Hittables.Hittable;
 import hacking.to.the.gate.Hittables.jet.FriendJet;
+import hacking.to.the.gate.Position;
 
 /**
  * Created by Ruiqian on 9/20/2015.
@@ -58,8 +60,8 @@ public class KamikazeBomb extends Bomb{
         while(i < 10){
             int xPos = i*60;
             mFriendJets.add(new FriendJet.Builder()
-                    .selfPosition(xPos,mSelfPos.getPositionY())
-                    .radius(20)
+                    .setPosition(new Position(xPos, mSelfPos.getPositionY()))
+                    .setCollider(new CircleCollider(20, new Position(xPos, mSelfPos.getPositionY())))
                     .build());
             i++;
         }
